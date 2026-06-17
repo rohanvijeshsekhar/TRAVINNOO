@@ -65,7 +65,7 @@ const thirdColumn = testimonials.slice(6, 9);
 function TestimonialCard({ text, image, name, role }) {
   return (
     <div className="new-testimonial-card">
-      <div className="new-testimonial-text">“{text}”</div>
+      <div className="new-testimonial-text">{text}</div>
       <div className="new-testimonial-footer">
         <img
           src={image}
