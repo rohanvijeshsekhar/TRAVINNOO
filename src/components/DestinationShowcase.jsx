@@ -72,8 +72,10 @@ export default function DestinationShowcase() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: 'bottom bottom',
+          end: '+=700%',
           scrub: 1.5,
+          pin: true,
+          anticipatePin: 1
         }
       });
 

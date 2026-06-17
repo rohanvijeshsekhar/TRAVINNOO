@@ -506,16 +506,16 @@ button, a {
 .showcase-section {
   background-color: #000000;
   width: 100%;
-  height: 800vh; /* Long scroll wrapper */
+  height: 100vh;
+  height: 100dvh;
   position: relative;
   z-index: 5;
+  overflow: hidden;
 }
 
 .showcase-sticky-container {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  height: 100dvh;
+  position: relative;
+  height: 100%;
   width: 100%;
   overflow: hidden;
   display: flex;
@@ -689,9 +689,6 @@ button, a {
 
 /* Tablet adjustments */
 @media (max-width: 1023px) {
-  .showcase-section {
-    height: 800vh;
-  }
 }
 
 /* Mobile adjustments */
