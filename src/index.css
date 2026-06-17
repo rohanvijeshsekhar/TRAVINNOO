@@ -499,240 +499,206 @@ button, a {
    Start Your Journey - Destination Showcase Section
    ========================================================================== */
 
+/* ==========================================================================
+   Start Your Journey - Cinematic Scroll Storytelling Section
+   ========================================================================== */
+
 .showcase-section {
-  background-color: #FFFFFF;
+  background-color: #000000;
   width: 100%;
-  padding: 100px 0 140px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  height: 800vh; /* Long scroll wrapper */
   position: relative;
   z-index: 5;
-  overflow: hidden;
 }
 
-.showcase-container {
+.showcase-sticky-container {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
   width: 100%;
-  max-width: 900px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  text-align: center;
-  padding: 0 24px;
 }
 
-.showcase-title {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.45);
-  margin-bottom: 24px;
-}
-
-.showcase-intro {
-  font-family: 'Satoshi', var(--font-sans);
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.8;
-  color: rgba(0, 0, 0, 0.65);
-  max-width: 600px;
-  margin-bottom: 80px;
-}
-
-/* Infinite Horizontal Marquee Container */
-.marquee-container {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  padding: 10px 0;
-}
-
-
-
-.marquee-wrapper {
-  display: flex;
-  width: max-content;
-  animation: marquee-infinite 45s linear infinite;
-}
-
-.marquee-wrapper:hover {
-  animation-play-state: paused;
-}
-
-.marquee-track {
-  display: flex;
-  gap: 40px;
-  padding-right: 40px;
-}
-
-@keyframes marquee-infinite {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-/* Destination Landscape Panels */
-.destination-panel {
-  position: relative;
-  width: 650px;
-  height: 380px;
-  border-radius: 24px;
-  overflow: hidden;
-  background-color: #0d0d0d;
-  cursor: pointer;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  transform: translateZ(0); /* Force GPU acceleration */
-}
-
-.destination-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-  will-change: transform;
-}
-
-.destination-overlay {
+/* Background images container */
+.showcase-bg-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
-  transition: background 0.5s ease;
-  z-index: 2;
+  z-index: 1;
+  background-color: #000000;
 }
 
-.destination-content {
+.showcase-bg-item {
   position: absolute;
-  bottom: 40px;
-  left: 40px;
-  right: 40px;
-  z-index: 3;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: scale(1.08);
+  will-change: opacity, transform;
+}
+
+.showcase-bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.75) 100%),
+              linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%);
   pointer-events: none;
 }
 
-.destination-name {
-  font-family: 'Satoshi', var(--font-sans);
-  font-size: 24px;
+/* Content overlays */
+.showcase-content-container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 4%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Intro slide styling */
+.showcase-slide-intro {
+  position: absolute;
+  text-align: center;
+  max-width: 800px;
+  width: 100%;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  will-change: opacity, transform;
+}
+
+.showcase-intro-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 32px;
+  display: block;
+}
+
+.showcase-intro-heading {
+  font-family: var(--font-heading);
+  font-size: clamp(32px, 5.5vw, 76px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #FFFFFF;
-  margin-bottom: 8px;
+  margin-bottom: 24px;
 }
 
-.destination-meta {
+.showcase-intro-desc {
+  font-family: 'Satoshi', var(--font-sans);
+  font-size: clamp(14px, 2vw, 18px);
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* Destination slide styling */
+.showcase-slide-dest {
+  position: absolute;
+  text-align: center;
+  max-width: 900px;
+  width: 100%;
+  padding: 0 24px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-}
-
-.destination-subtitle {
-  font-family: 'Satoshi', var(--font-sans);
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.65);
-  font-weight: 400;
-  letter-spacing: 0.05em;
-  transition: color 0.5s ease;
-}
-
-.destination-explore {
-  font-family: 'Satoshi', var(--font-sans);
-  font-size: 13px;
-  color: #FFFFFF;
-  font-weight: 500;
-  letter-spacing: 0.05em;
   opacity: 0;
-  transform: translate3d(-10px, 0, 0);
-  transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  display: flex;
+  transform: translateY(40px);
+  will-change: opacity, transform;
+}
+
+.showcase-dest-name {
+  font-family: var(--font-heading);
+  font-size: clamp(40px, 8.5vw, 110px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  margin-bottom: 18px;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.showcase-dest-desc {
+  font-family: 'Satoshi', var(--font-sans);
+  font-size: clamp(14px, 2.2vw, 20px);
+  line-height: 1.6;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 680px;
+  margin-bottom: 32px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.showcase-explore-link {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: #FFFFFF;
+  text-decoration: none;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.35);
+  padding-bottom: 6px;
+  transition: all 0.4s ease;
+  cursor: pointer;
 }
 
-/* Hover States */
-.destination-panel:hover .destination-image {
-  transform: scale(1.06);
+.showcase-explore-link span {
+  display: inline-block;
+  transition: transform 0.3s ease;
 }
 
-.destination-panel:hover .destination-overlay {
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+.showcase-explore-link:hover {
+  color: #FFFFFF;
+  border-color: #FFFFFF;
 }
 
-.destination-panel:hover .destination-explore {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
+.showcase-explore-link:hover span {
+  transform: translateX(6px);
 }
 
-.destination-panel:hover .destination-subtitle {
-  color: rgba(255, 255, 255, 0.95);
-}
-
-/* Tablet Responsive Details (max-width: 1023px) */
+/* Tablet adjustments */
 @media (max-width: 1023px) {
   .showcase-section {
-    padding: 80px 0 100px 0;
-  }
-  
-  .showcase-intro {
-    font-size: 15px;
-    margin-bottom: 60px;
-  }
-  
-  .destination-panel {
-    width: 500px;
-    height: 320px;
-  }
-  
-  .marquee-track {
-    gap: 30px;
-    padding-right: 30px;
+    height: 800vh;
   }
 }
 
-/* Mobile Responsive Details (max-width: 767px) */
+/* Mobile adjustments */
 @media (max-width: 767px) {
-  .showcase-section {
-    padding: 60px 0 80px 0;
-  }
-  
-  .showcase-intro {
-    font-size: 14px;
-    margin-bottom: 40px;
-    padding: 0 10px;
-  }
-  
-  .destination-panel {
-    width: 320px;
-    height: 220px;
-    border-radius: 16px;
-  }
-  
-  .destination-content {
-    bottom: 24px;
-    left: 24px;
-    right: 24px;
-  }
-  
-  .destination-name {
-    font-size: 18px;
-    margin-bottom: 4px;
-  }
-  
-  .destination-subtitle,
-  .destination-explore {
-    font-size: 11px;
-  }
-  
-  .marquee-track {
-    gap: 20px;
-    padding-right: 20px;
+  .showcase-explore-link {
+    font-size: 10px;
+    padding-bottom: 4px;
   }
 }
 
