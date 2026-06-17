@@ -15,9 +15,7 @@ import Loader from './components/Loader';
 
 function App() {
   const [currentView, setCurrentView] = useState('home');
-  const [showLoader, setShowLoader] = useState(() => {
-    return !sessionStorage.getItem('travinno_loaded');
-  });
+  const [showLoader, setShowLoader] = useState(true);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -61,7 +59,6 @@ function App() {
       {showLoader && (
         <Loader
           onComplete={() => {
-            sessionStorage.setItem('travinno_loaded', 'true');
             setShowLoader(false);
           }}
         />
