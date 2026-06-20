@@ -113,6 +113,7 @@ function TestimonialsColumn({ testimonialsList, duration, className = "" }) {
 export default function TestimonialsSection() {
   return (
     <section className="new-testimonials-section" id="insights">
+      <div className="section-blend-overlay blend-to-05" />
       <div className="new-testimonials-container">
         {/* Intro Header */}
         <motion.div

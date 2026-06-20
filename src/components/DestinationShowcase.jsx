@@ -1,189 +1,631 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const destinationsData = [
+const DESTINATIONS_DATA = [
   {
+    code: 'DXB',
     name: 'Dubai',
-    description: 'A futuristic metropolis blending ultra-luxury with timeless Arabian heritage.',
-    image: 'images/dubai.png'
+    quote: 'Where luxury meets innovation.',
+    date: 'APR 12, 2026',
+    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1200&auto=format&fit=crop',
+    description: 'Discover soaring skyscrapers, pristine beaches, and desert dining.',
+    notes: 'The view from the Burj at sunset is surreal. Golden light bounces off steel and glass, stretching all the way to the desert horizon. Tonight we dine at a private camp in the dunes under the stars.',
+    coordinates: '25.2048° N / 55.2708° E',
+    sketch: 'M 30,85 L 90,85 M 60,85 V 20 M 60,30 C 75,35 90,50 90,65 C 90,75 75,80 60,85 M 60,25 C 45,30 35,45 35,60 C 35,72 45,80 60,85'
   },
   {
+    code: 'NBO',
     name: 'Kenya',
-    description: 'Unrivaled wilderness and majestic wildlife encounters in the heart of Africa.',
-    image: 'images/kenya.png'
+    quote: 'Experience the heart of African wilderness.',
+    date: 'MAY 04, 2026',
+    image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200&auto=format&fit=crop',
+    description: 'Immerse your groups in wildlife safaris and premium savanna camps.',
+    notes: 'Woke up at 5 AM to the call of the wild. Watched a pride of lions move silhouetted against the rising blood-orange sun. The air is crisp, carrying the scent of red earth and dry savanna.',
+    coordinates: '1.2921° S / 36.8219° E',
+    sketch: 'M 60,85 V 60 M 60,60 C 50,55 35,50 30,40 C 25,30 35,22 60,32 C 85,22 95,30 90,40 C 85,50 70,55 60,60 M 30,38 C 22,28 35,15 60,25 C 85,15 98,28 90,38'
   },
   {
+    code: 'BKK',
     name: 'Thailand',
-    description: 'Breathtaking tropical island sanctuaries and rich cultural tapestries.',
-    image: 'images/thailand.png'
+    quote: 'A perfect blend of culture and tropical beauty.',
+    date: 'OCT 18, 2026',
+    image: 'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?q=80&w=1200&auto=format&fit=crop',
+    description: 'Vibrant floating markets and white-sand retreats.',
+    notes: 'The scent of jasmine and street food fills the humid night air. Visited Wat Arun at dusk; the spires look like ancient porcelain lace. A longtail boat ride down Chao Phraya river completes a magical day.',
+    coordinates: '13.7563° N / 100.5018° E',
+    sketch: 'M 25,80 L 95,80 M 35,80 V 55 L 60,30 L 85,55 V 80 M 60,30 V 15 M 30,55 C 25,50 15,55 10,65 M 90,55 C 95,50 105,55 110,65'
   },
   {
+    code: 'HAN',
     name: 'Vietnam',
-    description: 'A journey through historic landscapes, vibrant culture, and serene natural beauty.',
-    image: 'images/vietnam.png'
+    quote: 'Timeless traditions with modern energy.',
+    date: 'NOV 23, 2026',
+    image: 'https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop',
+    description: 'Cruise through limestone pillars and lantern-lit ancient trading towns.',
+    notes: 'Old Quarter is a maze of sensory wonders. Sipped strong egg coffee in a quiet colonial courtyard while rain fell on tiles. Tomorrow we board the junk boat into the emerald maze of Ha Long Bay.',
+    coordinates: '21.0285° N / 105.8542° E',
+    sketch: 'M 20,70 L 60,30 L 100,70 Z M 20,70 C 40,73 80,73 100,70 M 60,30 V 71'
   },
   {
+    code: 'SIN',
     name: 'Singapore',
-    description: 'A dynamic garden city fusing cutting-edge innovation with diverse cultures.',
-    image: 'images/singapore.png'
+    quote: "The world's most refined urban destination.",
+    date: 'DEC 09, 2026',
+    image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=1200&auto=format&fit=crop',
+    description: 'Lush gardens under bio-domes and high-end culinary stages.',
+    notes: 'Felt like stepping into the future at Gardens by the Bay. Giant bio-domes house rare orchids under massive glass vaults. The city runs like clockwork, yet feels lush, green, and completely alive.',
+    coordinates: '1.3521° N / 103.8198° E',
+    sketch: 'M 50,85 C 50,65 55,55 60,45 C 65,35 70,35 65,25 C 60,15 50,20 45,30 C 45,40 48,50 45,60 M 45,60 C 40,63 35,67 38,75 M 38,75 C 40,80 45,83 50,85'
   },
   {
+    code: 'KUL',
     name: 'Malaysia',
-    description: 'A vibrant melting pot of pristine rainforests, beaches, and modern skylines.',
-    image: 'images/malaysia.png'
+    quote: 'Nature, culture and cosmopolitan elegance.',
+    date: 'JAN 15, 2027',
+    image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=1200&auto=format&fit=crop',
+    description: 'Historic rainforest walks and the sleek Twin Towers skyline.',
+    notes: 'Walked the skybridge between the twin giants today. The contrast between ancient rainforests and hyper-modern towers defines this place. Visited Batu Caves; the steps are a rainbow under massive cliffs.',
+    coordinates: '3.1390° N / 101.6869° E',
+    sketch: 'M 35,85 V 25 L 45,15 V 85 M 45,35 H 75 M 65,85 V 25 L 75,15 V 85 M 45,45 H 75 M 45,55 H 75 M 45,65 H 75'
   },
   {
+    code: 'DPS',
     name: 'Bali',
-    description: 'An enchanting island of spiritual tranquility, dramatic coastlines, and wellness.',
-    image: 'images/bali.png'
+    quote: 'The island where every journey becomes unforgettable.',
+    date: 'MAR 02, 2027',
+    image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200&auto=format&fit=crop',
+    description: 'Emerald terraced valleys and private luxury wellness sanctuaries.',
+    notes: 'Woke to the sound of temple bells in Ubud. Emerald rice fields ripple in the breeze. Ubud feels like a sanctuary where time stands still and the spirit heals. Dinner by the river was candlelight and water flow.',
+    coordinates: '8.4095° S / 115.1889° E',
+    sketch: 'M 25,85 V 20 L 45,30 V 85 M 75,85 V 20 L 55,30 V 85 M 20,85 H 80 M 25,35 H 45 M 55,35 H 75 M 25,50 H 45 M 55,50 H 75'
   }
 ];
 
+const DistressedStamp = ({ code, date, active }) => {
+  const logoPath = "M 78.80,88.83 L 77.99,89.92 L 76.90,91.00 L 76.09,92.08 L 75.00,92.62 L 73.91,93.17 L 72.83,93.44 L 71.74,93.71 L 70.65,93.98 L 69.57,93.98 L 68.48,94.25 L 67.39,94.25 L 66.30,93.98 L 65.22,93.71 L 64.13,93.44 L 63.04,92.90 L 61.96,92.08 L 61.14,91.00 L 60.60,89.92 L 60.33,88.83 L 60.05,87.75 L 59.78,86.67 L 59.78,85.58 L 59.78,84.50 L 59.78,83.42 L 59.78,82.33 L 59.78,81.25 L 59.78,80.17 L 59.78,79.08 L 59.78,78.00 L 59.78,76.92 L 59.78,75.83 L 59.78,74.75 L 59.78,73.67 L 59.78,72.58 L 59.78,71.50 L 59.78,70.42 L 59.78,69.33 L 59.78,68.25 L 59.78,67.17 L 59.78,66.08 L 59.78,65.00 L 59.78,63.92 L 59.78,62.83 L 59.78,61.75 L 59.78,60.67 L 59.78,59.58 L 60.05,58.50 L 61.14,58.50 L 62.23,58.50 L 63.32,58.50 L 64.40,58.50 L 65.49,58.50 L 66.58,58.50 L 67.66,58.50 L 68.75,58.50 L 69.84,58.50 L 70.92,58.50 L 72.01,58.50 L 73.10,58.50 L 74.18,58.50 L 75.27,58.50 L 76.36,58.23 L 76.36,57.15 L 76.36,56.06 L 76.36,54.98 L 76.36,53.90 L 76.36,52.81 L 76.36,51.73 L 76.36,50.65 L 76.36,49.56 L 76.36,48.48 L 76.36,47.40 L 76.36,46.31 L 76.36,45.23 L 76.36,44.15 L 75.27,43.88 L 74.18,43.88 L 73.10,43.88 L 72.01,43.88 L 70.92,43.88 L 69.84,43.88 L 68.75,43.88 L 67.66,43.88 L 66.58,43.88 L 65.49,43.88 L 64.40,43.88 L 63.32,43.88 L 62.23,43.88 L 61.14,43.88 L 60.05,43.88 L 59.78,42.79 L 59.78,41.71 L 59.78,40.62 L 59.78,39.54 L 59.78,38.46 L 59.78,37.38 L 59.78,36.29 L 59.78,35.21 L 59.78,34.12 L 59.78,33.04 L 59.78,31.96 L 59.78,30.88 L 59.78,29.79 L 59.78,28.71 L 59.51,27.62 L 58.42,27.62 L 57.34,27.62 L 56.25,27.62 L 55.16,27.62 L 54.08,27.62 L 52.99,27.62 L 51.90,27.62 L 50.82,27.62 L 49.73,27.62 L 48.64,27.62 L 47.55,27.62 L 46.47,27.62 L 45.38,27.62 L 44.29,27.62 L 43.21,27.62 L 42.12,27.62 L 41.03,27.62 L 40.22,28.17 L 40.22,29.25 L 40.22,30.33 L 40.22,31.42 L 40.22,32.50 L 40.22,33.58 L 40.22,34.67 L 40.22,35.75 L 40.22,36.83 L 40.22,37.92 L 40.22,39.00 L 40.22,40.08 L 40.22,41.17 L 40.22,42.25 L 40.22,43.33 L 40.22,44.42 L 40.22,45.50 L 40.22,46.58 L 40.22,47.67 L 40.22,48.75 L 40.22,49.83 L 40.22,50.92 L 40.22,52.00 L 40.22,53.08 L 40.22,54.17 L 40.22,55.25 L 40.22,56.33 L 40.22,57.42 L 40.22,58.50 L 40.22,59.58 L 40.22,60.67 L 40.22,61.75 L 40.22,62.83 L 40.22,63.92 L 40.22,65.00 L 40.22,66.08 L 40.22,67.17 L 40.22,68.25 L 40.22,69.33 L 40.22,70.42 L 40.22,71.50 L 40.22,72.58 L 40.22,73.67 L 40.22,74.75 L 40.22,75.83 L 40.22,76.92 L 40.22,78.00 L 40.22,79.08 L 40.22,80.17 L 40.22,81.25 L 40.22,82.33 L 40.22,83.42 L 40.22,84.50 L 40.22,85.58 L 40.22,86.67 L 40.22,87.75 L 40.49,88.83 L 40.49,89.92 L 40.76,91.00 L 40.76,92.08 L 41.03,93.17 L 41.30,94.25 L 41.58,95.33 L 42.12,96.42 L 42.66,97.50 M 42.66,97.50 L 43.48,99.12 L 44.57,100.75 L 45.92,102.38 L 47.28,103.73 L 48.91,105.08 L 50.54,106.17 L 52.17,106.98 L 53.80,107.52 L 55.43,108.06 L 57.07,108.60 L 58.15,109.15 L 56.52,110.50 L 54.89,111.85 L 53.26,113.48 L 51.63,114.83 L 50.00,116.19 L 48.37,115.10 L 46.74,113.48 L 45.11,112.12 L 43.48,110.50 L 41.85,109.15 L 40.22,107.52 L 38.59,106.17 L 36.96,104.54 L 35.33,103.19 L 33.70,101.56 L 32.07,100.21 L 30.43,98.58 L 28.80,96.96 L 27.17,95.33 L 25.54,93.71 L 23.91,92.08 L 22.55,90.46 L 20.92,88.83 L 19.57,87.21 L 18.21,85.58 L 17.12,83.96 L 15.76,82.33 L 14.67,80.71 L 13.59,79.08 L 12.50,77.46 L 11.68,75.83 L 10.87,74.21 L 10.05,72.58 L 9.24,70.96 L 8.70,69.33 L 8.15,67.71 L 7.61,66.08 L 7.34,64.46 L 7.07,62.83 L 6.79,61.21 L 6.52,59.58 L 6.52,57.96 L 6.52,56.33 L 6.52,54.71 L 6.52,53.08 L 6.79,51.46 L 7.07,49.83 L 7.34,48.21 L 7.61,46.58 L 8.15,44.96 L 8.70,43.33 L 9.24,41.71 L 9.78,40.08 L 10.60,38.46 L 11.41,36.83 L 12.23,35.21 L 13.32,33.58 L 14.40,31.96 L 15.76,30.33 L 17.12,28.71 L 18.48,27.08 L 20.11,25.73 L 21.74,24.10 L 23.37,23.02 L 25.00,21.67 L 26.63,20.58 L 28.26,19.77 L 29.89,18.69 L 31.52,18.15 L 33.15,17.33 L 34.78,16.79 L 36.41,15.98 L 38.04,15.71 L 39.67,15.17 L 41.30,14.90 L 42.93,14.62 L 44.57,14.35 L 45.92,14.08 L 47.55,14.08 L 49.18,14.08 L 50.82,14.08 L 52.45,14.08 L 54.08,14.08 L 55.71,14.35 L 57.34,14.62 L 58.97,14.90 L 60.60,15.44 L 62.23,15.71 L 63.86,16.25 L 65.49,16.79 L 67.12,17.60 L 68.75,18.15 L 70.38,18.96 L 72.01,20.04 L 73.64,20.85 L 75.27,21.94 L 76.90,23.29 L 78.53,24.65 L 80.16,26.00 L 81.79,27.62 L 83.15,29.25 L 84.51,30.88 L 85.60,32.50 L 86.68,34.12 L 87.77,35.75 L 88.59,37.38 L 89.40,39.00 L 90.22,40.62 L 90.76,42.25 L 91.30,43.88 L 91.85,45.50 L 92.12,47.12 L 92.66,48.75 L 92.93,50.38 L 92.93,52.00 L 93.21,53.62 L 93.21,55.25 L 93.21,56.88 L 93.21,58.50 L 93.21,60.12 L 92.93,61.75 L 92.66,63.38 L 92.39,65.00 L 91.85,66.62 L 91.30,68.25 L 90.76,69.88 L 90.22,71.50 L 89.40,73.12 L 88.59,74.75 L 87.77,76.38 L 86.96,78.00 L 85.87,79.62 L 84.78,81.25 L 83.70,82.88 L 82.34,84.50 L 81.25,86.12 L 79.89,87.75 L 79.08,88.56";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 1.8, rotate: -40 }}
+      animate={active ? { opacity: 0.85, scale: 1, rotate: -12 } : { opacity: 0, scale: 1.8, rotate: -40 }}
+      transition={{ 
+        opacity: { duration: 0.4 },
+        scale: { type: "spring", stiffness: 140, damping: 14, delay: 0.25 },
+        rotate: { type: "spring", stiffness: 140, damping: 14, delay: 0.25 }
+      }}
+      style={{
+        position: 'absolute',
+        bottom: '25px',
+        right: '25px',
+        width: '95px',
+        height: '95px',
+        borderRadius: '50%',
+        border: '3px double #C1121F',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#C1121F',
+        fontFamily: 'monospace',
+        userSelect: 'none',
+        pointerEvents: 'none',
+        filter: 'url(#stamp-ink-bleed)',
+      }}
+    >
+      <span style={{ fontSize: '6px', fontWeight: 'bold', letterSpacing: '2px', textTransform: 'uppercase', lineHeight: 1, marginTop: '2px' }}>ENTRY</span>
+      <div style={{ width: '50px', height: '1px', borderBottom: '1px dashed #C1121F', margin: '2px 0' }} />
+      <span style={{ fontSize: '18px', fontWeight: '900', letterSpacing: '0.5px', lineHeight: 1 }}>{code}</span>
+      
+      {/* Subtly integrated Travinno Logo */}
+      <svg
+        viewBox="0 0 100 130"
+        style={{
+          width: '12px',
+          height: '15px',
+          display: 'block',
+          fill: '#C1121F',
+          margin: '2px 0'
+        }}
+      >
+        <path d={logoPath} fillRule="evenodd" />
+      </svg>
+
+      <div style={{ width: '50px', height: '1px', borderBottom: '1px dashed #C1121F', margin: '2px 0' }} />
+      <span style={{ fontSize: '7.5px', fontWeight: 'bold', letterSpacing: '1px', lineHeight: 1 }}>{date}</span>
+    </motion.div>
+  );
+};
+
+const CoffeeRingStain = () => {
+  return (
+    <svg viewBox="0 0 200 200" style={{ position: 'absolute', bottom: '-20px', left: '-20px', width: '130px', height: '130px', opacity: 0.05, pointerEvents: 'none', transform: 'rotate(25deg)' }} className="coffee-ring-overlay">
+      <circle cx="100" cy="100" r="75" fill="none" stroke="#5a4a35" strokeWidth="4" strokeDasharray="300 20 40 10 100 30" />
+      <circle cx="100" cy="100" r="72" fill="none" stroke="#5a4a35" strokeWidth="1" strokeDasharray="50 150 120 40" />
+      <path d="M 80 40 Q 60 70 80 100 T 120 150" fill="none" stroke="#5a4a35" strokeWidth="2" opacity="0.3" />
+    </svg>
+  );
+};
+
+const InkSplatStain = () => {
+  return (
+    <svg viewBox="0 0 100 100" style={{ position: 'absolute', top: '40px', right: '30px', width: '40px', height: '40px', opacity: 0.04, pointerEvents: 'none' }}>
+      <circle cx="50" cy="50" r="7" fill="#5a4a35" />
+      <circle cx="38" cy="46" r="2.5" fill="#5a4a35" />
+      <circle cx="58" cy="58" r="2" fill="#5a4a35" />
+      <circle cx="62" cy="40" r="1" fill="#5a4a35" />
+      <circle cx="48" cy="62" r="0.8" fill="#5a4a35" />
+    </svg>
+  );
+};
+
+const CreaseOverlay = () => {
+  return (
+    <div style={{
+      position: 'absolute',
+      inset: 0,
+      background: 'linear-gradient(135deg, transparent 45%, rgba(0,0,0,0.02) 48%, rgba(255,255,255,0.06) 50%, rgba(0,0,0,0.02) 52%, transparent 55%)',
+      pointerEvents: 'none',
+      zIndex: 15
+    }} />
+  );
+};
+
+const BackgroundChart = () => {
+  return (
+    <div className="passport-bg-charts">
+      <svg viewBox="0 0 1920 1080" fill="none" stroke="#ffffff" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" preserveAspectRatio="xMidYMid slice" style={{ width: "100%", height: "100%" }}>
+        <line x1="0" y1="200" x2="1920" y2="200" strokeDasharray="2,12" />
+        <line x1="0" y1="800" x2="1920" y2="800" strokeDasharray="2,12" />
+        <line x1="400" y1="0" x2="400" y2="1080" strokeDasharray="2,12" />
+        <line x1="1500" y1="0" x2="1500" y2="1080" strokeDasharray="2,12" />
+        <circle cx="960" cy="540" r="500" strokeDasharray="2,8" />
+        <circle cx="960" cy="540" r="485" opacity="0.5" />
+        <path d="M 150 300 Q 250 250 350 350 T 550 400 T 700 300 T 900 350 T 1100 450 T 1300 400 T 1500 500 T 1700 450" strokeDasharray="3,10" />
+        <path d="M 120 450 Q 280 400 400 500 T 650 600 T 800 550 T 1000 680 T 1200 700 T 1450 780 T 1600 720 T 1800 650" strokeDasharray="3,10" />
+        <path d="M 400 300 C 600 100 1000 100 1200 400" stroke="#C1121F" strokeWidth="1.5" strokeDasharray="4,6" opacity="0.3" />
+        <path d="M 600 700 C 800 500 1200 500 1400 800" stroke="#C1121F" strokeWidth="1.5" strokeDasharray="4,6" opacity="0.3" />
+        <g transform="translate(150, 850) scale(0.8)">
+          <circle cx="0" cy="0" r="60" strokeDasharray="2,4" />
+          <line x1="0" y1="-70" x2="0" y2="70" />
+          <line x1="-70" y1="0" x2="70" y2="0" />
+          <polygon points="0,0 -5,-10 0,-50" fill="#ffffff" opacity="0.2" />
+          <polygon points="0,0 5,-10 0,-50" fill="#ffffff" opacity="0.4" />
+        </g>
+        <text x="70" y="100" fill="#ffffff" fontSize="10" fontFamily="monospace" letterSpacing="2">ROUTE PREVIEW: TRV-NAV-DISC</text>
+        <text x="1750" y="100" fill="#ffffff" fontSize="10" fontFamily="monospace" letterSpacing="2">LAT 23° 26' N / LON 0° 0' E</text>
+      </svg>
+    </div>
+  );
+};
+
 export default function DestinationShowcase() {
   const containerRef = useRef(null);
-  const stickyRef = useRef(null);
-  const introRef = useRef(null);
-  const bgRefs = useRef([]);
-  const textRefs = useRef([]);
+  const sheetsRefs = useRef([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(true);
+  const [hoveredExplore, setHoveredExplore] = useState(false);
 
-  // Initialize arrays
-  bgRefs.current = [];
-  textRefs.current = [];
+  sheetsRefs.current = [];
 
-  const addToBgRefs = (el) => {
-    if (el && !bgRefs.current.includes(el)) {
-      bgRefs.current.push(el);
-    }
-  };
+  // Handle responsive check
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  const addToTextRefs = (el) => {
-    if (el && !textRefs.current.includes(el)) {
-      textRefs.current.push(el);
-    }
-  };
-
+  // GSAP ScrollTrigger timeline for scroll lock and page turn syncing
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Create ScrollTrigger timeline
+      if (!isDesktop) return; // Stacks vertically on mobile
+
+      // Measure and prepare departures SVG paths for sketch-in pen animation on section enter
+      const depPaths = document.querySelectorAll(".canvas-departures-svg path");
+      if (depPaths.length > 0) {
+        depPaths.forEach(path => {
+          const length = path.getTotalLength();
+          gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
+        });
+      }
+
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top top',
-          end: '+=700%',
-          scrub: 1.5,
+          trigger: ".map-route-section",
+          start: "top top",
+          end: `+=${DESTINATIONS_DATA.length * 90}vh`,
           pin: true,
-          anticipatePin: 1
-        }
-      });
-
-      // Step 0: Fade out Intro
-      tl.to(introRef.current, {
-        opacity: 0,
-        y: -40,
-        duration: 0.8,
-        ease: 'power2.inOut'
-      });
-
-      // Step 1 to N: Sequential crossfade for destinations
-      destinationsData.forEach((dest, idx) => {
-        const bgEl = bgRefs.current[idx];
-        const textEl = textRefs.current[idx];
-
-        if (bgEl && textEl) {
-          // Fade in background and text
-          tl.to(bgEl, {
-            opacity: 1,
-            scale: 1.02,
-            duration: 1.2,
-            ease: 'power2.inOut'
-          }, '-=0.4')
-          .to(textEl, {
-            opacity: 1,
-            y: 0,
-            duration: 1.2,
-            ease: 'power2.out'
-          }, '<')
-          // Hold the current destination
-          .to({}, { duration: 1.2 });
-
-          // If not the last item, fade it out before the next enters
-          if (idx < destinationsData.length - 1) {
-            tl.to(textEl, {
-              opacity: 0,
-              y: -40,
-              duration: 0.8,
-              ease: 'power2.in'
-            })
-            .to(bgEl, {
-              opacity: 0,
-              duration: 1.2,
-              ease: 'power2.inOut'
-            }, '<');
+          scrub: 0.5,
+          onEnter: () => {
+            gsap.to(".canvas-departures-svg path", {
+              strokeDashoffset: 0,
+              duration: 2.4,
+              ease: "power1.inOut"
+            });
+          },
+          onUpdate: (self) => {
+            const progress = self.progress;
+            const index = Math.min(
+              DESTINATIONS_DATA.length - 1,
+              Math.floor(progress * DESTINATIONS_DATA.length)
+            );
+            setActiveIndex(index);
           }
         }
       });
-    }, containerRef);
+
+      // Clear any initial state transformation perspective
+      gsap.set(sheetsRefs.current, { transformPerspective: 1800 });
+
+      // Animate each sheet's flip and curl
+      sheetsRefs.current.forEach((sheetEl, i) => {
+        if (!sheetEl) return;
+
+        // 1. Flip rotateY from 0 to -180
+        tl.to(sheetEl, {
+          rotateY: -180,
+          ease: "sine.inOut",
+          duration: 1.0
+        }, i);
+
+        // 2. Adjust Z-index dynamically at the 90deg (halfway) point
+        // Initially stacked N-i. After flipping, stacked i+1.
+        tl.set(sheetEl, { zIndex: i + 1 }, i + 0.5);
+
+
+
+        // 5. Page-turn micro-animations: airplane, birds, right canvas brightening
+        if (i < DESTINATIONS_DATA.length - 1) {
+          // Tiny airplane flies gently across the top of the journal
+          tl.fromTo(".canvas-flying-airplane", {
+            x: -20,
+            y: 15,
+            rotation: 12,
+            opacity: 0,
+            scale: 0.8
+          }, {
+            x: 620,
+            y: -15,
+            rotation: -8,
+            opacity: 0.85,
+            scale: 1.0,
+            ease: "sine.inOut",
+            duration: 0.8
+          }, i);
+
+          tl.to(".canvas-flying-airplane", {
+            opacity: 0,
+            scale: 0.7,
+            duration: 0.2,
+            ease: "sine.in"
+          }, i + 0.8);
+
+          // Birds drift slowly
+          tl.to(".canvas-drifting-birds", {
+            x: "+=12",
+            y: "-=5",
+            rotation: -2,
+            duration: 1.0,
+            ease: "sine.inOut"
+          }, i);
+
+          tl.to(".canvas-drifting-birds-right", {
+            x: "-=10",
+            y: "-=7",
+            rotation: 3,
+            duration: 1.0,
+            ease: "sine.inOut"
+          }, i);
+
+          // Right arrivals illustration softly brightens and dims
+          tl.to(".canvas-arrivals-container", {
+            opacity: 0.16,
+            duration: 0.4,
+            ease: "sine.out"
+          }, i);
+
+          tl.to(".canvas-arrivals-container", {
+            opacity: 0.07,
+            duration: 0.6,
+            ease: "sine.in"
+          }, i + 0.4);
+        }
+      });
+    });
 
     return () => ctx.revert();
-  }, []);
+  }, [isDesktop]);
 
   return (
-    <section ref={containerRef} className="showcase-section" id="destinations">
-      <div ref={stickyRef} className="showcase-sticky-container">
-        {/* Background layer */}
-        <div className="showcase-bg-container">
-          {destinationsData.map((dest, idx) => (
-            <div
-              key={`bg-${idx}`}
-              ref={addToBgRefs}
-              className="showcase-bg-item"
-              style={{
-                backgroundImage: `url(${import.meta.env.BASE_URL}${dest.image})`
-              }}
-            />
-          ))}
-          <div className="showcase-bg-overlay" />
-        </div>
+    <section className="map-route-section" id="destinations" ref={containerRef}>
+      {/* SVG Distress Stamp Noise Filters */}
+      <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+        <defs>
+          <filter id="stamp-ink-bleed">
+            <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="4" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+      </svg>
 
-        {/* Foreground Content layer */}
-        <div className="showcase-content-container">
-          {/* Intro Slide */}
-          <div ref={introRef} className="showcase-slide-intro">
-            <span className="showcase-intro-label">START YOUR JOURNEY</span>
-            <h2 className="showcase-intro-heading">Discover the Extraordinary</h2>
-            <p className="showcase-intro-desc">
-              Discover destinations where culture, adventure, luxury and unforgettable experiences come together through local expertise and seamless destination management.
-            </p>
+      <BackgroundChart />
+
+      {/* Storytelling Canvas Illustrations */}
+      {isDesktop && (
+        <>
+          {/* Departures Illustration on the Left */}
+          <div className="canvas-departures-container">
+            <svg className="canvas-departures-svg" viewBox="0 0 320 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M -20,560 C 50,520 100,550 160,510 C 210,480 250,510 290,480 
+                   M -40,490 C 20,500 70,470 120,460 C 170,450 220,480 270,470 C 290,465 310,450 330,440 
+                   M 60,465 L 90,410 L 120,462 
+                   M 140,455 L 175,395 L 210,458 L 225,440 L 255,472 
+                   M 90,505 C 92,505 95,502 96,498 L 96,450 C 96,448 94,446 91,446 L 76,446 C 73,446 71,448 71,450 L 71,498 C 71,502 74,505 76,505 Z M 84,446 L 84,410 H 94 M 94,410 L 110,385 C 115,378 122,365 122,350 C 122,338 116,330 126,315 C 132,305 144,305 150,315 C 154,325 150,335 146,345 C 141,355 142,370 142,388 L 152,450 L 158,505 M 142,388 C 136,410 132,435 125,470 L 118,505 
+                   M 155,510 C 155,505 160,498 160,495 C 160,492 157,489 155,489 C 153,489 150,492 150,495 C 150,498 155,505 155,510 Z M 155,493 C 156.5,493 157,494.5 157,495.5 C 157,496.5 156.5,498 155,498 C 153.5,498 153,496.5 153,495.5 C 153,494.5 153.5,493 155,493 
+                   M 40,180 C 40,150 70,150 70,180 C 70,210 40,210 40,180 Z 
+                   M 55,140 V 130 M 55,220 V 230 M 15,180 H 5 M 95,180 H 105 M 27,152 L 20,145 M 83,208 L 90,215 M 83,152 L 90,145 M 27,208 L 20,215 
+                   M 180,140 Q 188,132 196,140 Q 204,132 212,140 
+                   M 220,165 Q 226,159 232,165 Q 238,159 244,165"
+                stroke="#F7F5F2"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </div>
 
-          {/* Destination Slides */}
-          {destinationsData.map((dest, idx) => (
-            <div
-              key={`dest-${idx}`}
-              ref={addToTextRefs}
-              className="showcase-slide-dest"
-            >
-              <h3 className="showcase-dest-name">{dest.name}</h3>
-              <p className="showcase-dest-desc">{dest.description}</p>
-              <a
-                href={`#explore-${dest.name.toLowerCase()}`}
-                className="showcase-explore-link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const contactEl = document.getElementById('contact');
-                  if (contactEl) {
-                    contactEl.scrollIntoView({ behavior: 'smooth' });
-                  }
+          {/* Arrivals Illustration on the Right */}
+          <div className="canvas-arrivals-container">
+            <svg className="canvas-arrivals-svg" viewBox="0 0 320 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M -10,530 Q 30,540 70,530 T 150,530 T 230,530 T 310,530 
+                   M 10,550 Q 50,560 90,550 T 170,550 T 250,550 T 330,550 
+                   M 230,530 C 220,470 235,420 260,390 
+                   M 260,390 Q 240,380 220,385 M 260,390 Q 250,370 238,360 M 260,390 Q 270,370 282,360 M 260,390 Q 280,380 300,385 M 260,390 Q 268,405 274,420 
+                   M 10,505 H 25 V 430 H 50 V 455 H 75 V 410 H 95 V 475 H 115 V 440 H 145 V 505 
+                   M 140,505 V 475 L 170,455 L 200,475 V 505 Z M 155,505 V 490 H 185 V 505 
+                   M 60,180 L 78,172 L 95,178 L 84,192 L 88,205 L 80,200 L 73,210 L 75,195 Z 
+                   M 60,180 C 100,160 160,190 200,280 C 215,315 220,350 225,385 
+                   M 70,110 m -22,0 a 22,22 0 1,0 44,0 a 22,22 0 1,0 -44,0 
+                   M 70,88 L 73,110 L 70,132 L 67,110 Z M 48,110 H 92 M 55,95 L 85,125 M 55,125 L 85,95 
+                   M 225,385 C 225,380 230,373 230,370 C 230,367 227,364 225,364 C 223,364 220,367 220,370 C 220,373 225,380 225,385 Z M 225,368 C 226.5,368 227,369.5 227,370.5 C 227,371.5 226.5,373 225,373 C 223.5,373 223,371.5 223,370.5 C 223,369.5 223.5,368 225,368"
+                stroke="#F7F5F2"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+
+          {/* Flying Airplane overlay */}
+          <div className="canvas-flying-airplane">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#F7F5F2" strokeWidth="1.5">
+              <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z" />
+            </svg>
+          </div>
+
+          {/* Drifting Birds left & right */}
+          <div className="canvas-drifting-birds">
+            <svg viewBox="0 0 100 50" fill="none" stroke="#F7F5F2" strokeWidth="1" strokeOpacity="0.2">
+              <path d="M 10,25 Q 15,20 20,25 Q 25,20 30,25" />
+              <path d="M 50,15 Q 53,11 56,15 Q 59,11 62,15" />
+            </svg>
+          </div>
+          <div className="canvas-drifting-birds-right">
+            <svg viewBox="0 0 100 50" fill="none" stroke="#F7F5F2" strokeWidth="1" strokeOpacity="0.2">
+              <path d="M 15,20 Q 20,15 25,20 Q 30,15 35,20" />
+              <path d="M 60,30 Q 64,26 68,30 Q 72,26 76,30" />
+            </svg>
+          </div>
+        </>
+      )}
+
+      {/* Section Header */}
+      <div className="destinations-header-container">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+          <motion.span
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className="destinations-pill"
+          >
+            <span className="destinations-pill-dot" />
+            OUR DESTINATIONS
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.8, ease: 'easeOut', delay: 0.15 }}
+            className="destinations-heading"
+          >
+            <span>Collect</span>
+            <span className="destinations-gradient-text">Memories</span>
+          </motion.h2>
+        </div>
+      </div>
+
+      {/* Main Luxury Open Journal Container */}
+      <div className="passport-container">
+        <motion.div 
+          className="passport-book"
+          animate={hoveredExplore ? { rotateX: 6, rotateY: -6, scale: 1.01 } : { rotateX: 0, rotateY: 0, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+          style={{ transformStyle: 'preserve-3d' }}
+        >
+          {/* Spine stitch lines & curved leather crease */}
+          <div className="passport-spine" />
+
+          {/* Underlay Left: Displays Destination 0 Visuals */}
+          <div className="journal-underlay journal-underlay-left">
+            <div className="journal-page journal-page-back" style={{ transform: 'none', position: 'relative' }}>
+              <div className="journal-page-stitching margin-right" />
+              <div className="page-paper-stitching" />
+              
+              <div className="journal-page-grid-layout">
+                {/* Header */}
+                <div className="journal-header-block">
+                  <span className="journal-airport-code muted">{DESTINATIONS_DATA[0].code}</span>
+                  <h3 className="journal-destination-name">{DESTINATIONS_DATA[0].name}</h3>
+                  <span className="journal-coordinates-handwritten">{DESTINATIONS_DATA[0].coordinates}</span>
+                </div>
+
+                {/* Polaroid Visual */}
+                <div className="journal-photo-polaroid">
+                  <div className="photo-corner top-left" />
+                  <div className="photo-corner top-right" />
+                  <div className="photo-corner bottom-left" />
+                  <div className="photo-corner bottom-right" />
+                  <div className="image-viewport">
+                    <img src={DESTINATIONS_DATA[0].image} alt={DESTINATIONS_DATA[0].name} className="page-destination-image" />
+                  </div>
+                </div>
+
+                {/* Hand-drawn travel sketch outline */}
+                <div className="journal-sketch-container">
+                  <svg viewBox="0 0 120 120" fill="none" stroke="rgba(90, 74, 53, 0.22)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className="pencil-sketch-svg">
+                    <path d={DESTINATIONS_DATA[0].sketch} />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Satisfying Distress Stamp Ink Press Animation */}
+              <DistressedStamp 
+                code={DESTINATIONS_DATA[0].code} 
+                date={DESTINATIONS_DATA[0].date} 
+                active={true}
+              />
+              <CoffeeRingStain />
+            </div>
+          </div>
+
+          {/* Underlay Right inside cover lining */}
+          <div className="journal-underlay journal-underlay-right">
+            <div className="journal-page lining-page-right">
+              <div className="lining-text">Collect Memories</div>
+            </div>
+          </div>
+          
+          {/* Rotating Sheets */}
+          {DESTINATIONS_DATA.map((dest, idx) => {
+            const nextDest = idx + 1 < DESTINATIONS_DATA.length ? DESTINATIONS_DATA[idx + 1] : null;
+
+            return (
+              <div 
+                key={dest.code} 
+                ref={el => sheetsRefs.current[idx] = el}
+                className="journal-sheet"
+                style={{
+                  zIndex: DESTINATIONS_DATA.length - idx
                 }}
               >
-                Explore Destination <span>→</span>
-              </a>
-            </div>
-          ))}
-        </div>
+                <div className="journal-page-curl">
+                  {/* Front Face: Right page displaying Destination i notes */}
+                  <div className="journal-page journal-page-front">
+                    <div className="journal-page-stitching margin-left" />
+                    <div className="page-paper-stitching" />
+                    
+                    <div className="journal-page-grid-layout">
+                      {/* Ruled lines and travel notes */}
+                      <div className="journal-ruled-notes-block" style={{ marginTop: '20px' }}>
+                        <span className="journal-date">{dest.date}</span>
+                        <div className="ruled-lines-container">
+                          <span></span>
+                          <span></span>
+                          <span></span>
+                          <span></span>
+                          <span></span>
+                          <span></span>
+                          <span></span>
+                          <span></span>
+                        </div>
+                        <p className="journal-handwritten-text" style={{ padding: '0 4px', fontSize: '1.18rem', lineHeight: '23px' }}>
+                          {dest.notes}
+                        </p>
+                      </div>
+
+                      {/* Accent quote */}
+                      <div style={{ marginTop: '16px', padding: '0 4px' }}>
+                        <p className="journal-handwritten-text italic">“{dest.quote}”</p>
+                      </div>
+
+                      {/* Explore buttons */}
+                      <div className="page-explore-btn-box" style={{ marginTop: 'auto' }}>
+                        <a 
+                          href="#contact"
+                          className="page-explore-link"
+                          onMouseEnter={() => setHoveredExplore(true)}
+                          onMouseLeave={() => setHoveredExplore(false)}
+                        >
+                          Explore Destination <span>&rarr;</span>
+                        </a>
+                      </div>
+                    </div>
+                    <CreaseOverlay />
+                  </div>
+                  
+                  {/* Back Face: Left page displaying Destination i + 1 visuals */}
+                  <div className="journal-page journal-page-back">
+                    <div className="journal-page-stitching margin-right" />
+                    <div className="page-paper-stitching" />
+
+                    {nextDest ? (
+                      <div className="journal-page-grid-layout">
+                        {/* Header with coordinates */}
+                        <div className="journal-header-block">
+                          <span className="journal-airport-code muted">{nextDest.code}</span>
+                          <h3 className="journal-destination-name">{nextDest.name}</h3>
+                          <span className="journal-coordinates-handwritten">{nextDest.coordinates}</span>
+                        </div>
+
+                        {/* Polaroid travel photo */}
+                        <div className="journal-photo-polaroid">
+                          <div className="photo-corner top-left" />
+                          <div className="photo-corner top-right" />
+                          <div className="photo-corner bottom-left" />
+                          <div className="photo-corner bottom-right" />
+                          <div className="image-viewport">
+                            <img src={nextDest.image} alt={nextDest.name} className="page-destination-image" />
+                          </div>
+                        </div>
+
+                        {/* Hand-drawn travel sketch outline */}
+                        <div className="journal-sketch-container">
+                          <svg viewBox="0 0 120 120" fill="none" stroke="rgba(90, 74, 53, 0.22)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className="pencil-sketch-svg">
+                            <path d={nextDest.sketch} />
+                          </svg>
+                        </div>
+
+                        {/* Satisfying Distress Stamp Ink Press Animation */}
+                        <DistressedStamp 
+                          code={nextDest.code} 
+                          date={nextDest.date} 
+                          active={idx < activeIndex} // Stamps when the previous page has flipped (revealing nextDest visual on left)
+                        />
+
+                        {/* Stains & overlays */}
+                        {idx % 3 === 0 && <InkSplatStain />}
+                        {idx % 3 === 1 && <CoffeeRingStain />}
+                      </div>
+                    ) : (
+                      <div className="lining-page-left" style={{ height: '100%' }}>
+                        <div className="lining-text">Travinno Journal // End</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </motion.div>
       </div>
     </section>
   );

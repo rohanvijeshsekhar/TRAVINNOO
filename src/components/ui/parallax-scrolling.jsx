@@ -61,41 +61,41 @@ export function ParallaxComponent() {
           <div className="parallax__black-line-overflow"></div>
           <div data-parallax-layers className="parallax__layers">
             {/* Background Layer 1 - Unsplash mountain backdrop */}
-            <img 
-              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80" 
-              loading="eager" 
-              width="800" 
-              data-parallax-layer="1" 
-              alt="Background Mountain backdrop" 
-              className="parallax__layer-img" 
+            <img
+              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80"
+              loading="eager"
+              width="800"
+              data-parallax-layer="1"
+              alt="Background Mountain backdrop"
+              className="parallax__layer-img"
             />
             {/* Midground Layer 2 - Osmo transparent midground hills */}
-            <img 
-              src="https://cdn.prod.website-files.com/671752cd4027f01b1b8f1c7f/6717795b4d5ac529e7d3a562_osmo-parallax-layer-2.webp" 
-              loading="eager" 
-              width="800" 
-              data-parallax-layer="2" 
-              alt="Hills Midground" 
-              className="parallax__layer-img" 
+            <img
+              src="https://cdn.prod.website-files.com/671752cd4027f01b1b8f1c7f/6717795b4d5ac529e7d3a562_osmo-parallax-layer-2.webp"
+              loading="eager"
+              width="800"
+              data-parallax-layer="2"
+              alt="Hills Midground"
+              className="parallax__layer-img"
             />
             {/* Text Title Layer 3 */}
             <div data-parallax-layer="3" className="parallax__layer-title">
               <h2 className="parallax__title">JOURNEY</h2>
             </div>
             {/* Foreground Layer 4 - Osmo transparent foreground forest */}
-            <img 
-              src="https://cdn.prod.website-files.com/671752cd4027f01b1b8f1c7f/6717795bb5aceca85011ad83_osmo-parallax-layer-1.webp" 
-              loading="eager" 
-              width="800" 
-              data-parallax-layer="4" 
-              alt="Forest Foreground" 
-              className="parallax__layer-img" 
+            <img
+              src="https://cdn.prod.website-files.com/671752cd4027f01b1b8f1c7f/6717795bb5aceca85011ad83_osmo-parallax-layer-1.webp"
+              loading="eager"
+              width="800"
+              data-parallax-layer="4"
+              alt="Forest Foreground"
+              className="parallax__layer-img"
             />
           </div>
           <div className="parallax__fade"></div>
         </div>
       </section>
-      
+
       {/* Editorial Content under header */}
       <section className="parallax__content">
         <div style={{
@@ -125,7 +125,7 @@ export function ParallaxComponent() {
           }}>
             <p style={{
               fontFamily: 'Satoshi, sans-serif',
-              fontSize: '18px',
+              fontSize: '16px',
               lineHeight: 1.8,
               color: 'rgba(255, 255, 255, 0.7)',
               margin: 0
@@ -134,7 +134,7 @@ export function ParallaxComponent() {
             </p>
             <p style={{
               fontFamily: 'Satoshi, sans-serif',
-              fontSize: '18px',
+              fontSize: '16px',
               lineHeight: 1.8,
               color: 'rgba(255, 255, 255, 0.7)',
               margin: 0
@@ -143,7 +143,7 @@ export function ParallaxComponent() {
             </p>
             <p style={{
               fontFamily: 'Satoshi, sans-serif',
-              fontSize: '18px',
+              fontSize: '16px',
               lineHeight: 1.8,
               color: 'rgba(255, 255, 255, 0.7)',
               margin: 0

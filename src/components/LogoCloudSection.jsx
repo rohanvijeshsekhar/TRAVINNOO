@@ -5,6 +5,7 @@ import { Plus } from 'lucide-react';
 export default function LogoCloudSection() {
   return (
     <section className="logo-cloud-section">
+      <div className="section-blend-overlay blend-to-05" />
       <div className="logo-cloud-container">
         <motion.h2
           className="logo-cloud-title"
