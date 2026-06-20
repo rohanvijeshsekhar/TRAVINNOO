@@ -383,7 +383,7 @@ const BackgroundIllustrations = () => {
         style={{ width: "100%", height: "100%" }}
       >
         {/* LEFT SIDE: Dubai-inspired architectural sketch (strokeOpacity 0.08) */}
-        <g id="dubai-architectural-sketch" strokeOpacity="0.08">
+        <g id="dubai-architectural-sketch" strokeOpacity="0.15">
           {/* Burj Khalifa */}
           <line x1="220" y1="130" x2="220" y2="820" />
           <path d="M 216,280 V 380 M 224,280 V 380" />
@@ -463,7 +463,7 @@ const BackgroundIllustrations = () => {
         </g>
 
         {/* RIGHT SIDE: Malaysia-inspired architectural sketch (strokeOpacity 0.08) */}
-        <g id="malaysia-architectural-sketch" strokeOpacity="0.08">
+        <g id="malaysia-architectural-sketch" strokeOpacity="0.15">
           {/* Petronas Twin Towers */}
           <line x1="1540" y1="160" x2="1540" y2="820" />
           <line x1="1700" y1="160" x2="1700" y2="820" />

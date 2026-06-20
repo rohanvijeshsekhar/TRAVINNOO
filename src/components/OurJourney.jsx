@@ -81,7 +81,7 @@ const BackgroundIllustrations = () => {
         style={{ width: '100%', height: '100%' }}
       >
         {/* LEFT SIDE: Thailand-inspired architectural & landscape sketch (strokeOpacity 0.08) */}
-        <g id="thailand-journey-sketch" strokeOpacity="0.08">
+        <g id="thailand-journey-sketch" strokeOpacity="0.15">
           {/* Wat Arun Style Temple Spire (Prang) */}
           <path d="M 230,700 L 230,580 L 238,580 L 238,510 L 244,510 L 244,430 L 248,430 L 248,220 L 252,220 L 252,430 L 256,430 L 256,510 L 262,510 L 262,580 L 270,580 L 270,700 Z M 210,700 H 290" />
           <line x1="248" y1="240" x2="252" y2="240" />
@@ -162,7 +162,7 @@ const BackgroundIllustrations = () => {
         </g>
 
         {/* RIGHT SIDE: Bali-inspired architectural & landscape sketch (strokeOpacity 0.08) */}
-        <g id="bali-journey-sketch" strokeOpacity="0.08">
+        <g id="bali-journey-sketch" strokeOpacity="0.15">
           {/* Balinese Split Gate (Candi Bentar) */}
           <path d="M 1480,700 V 650 H 1520 V 700 Z" />
           <path d="M 1490,650 V 580 H 1520 V 650 Z" />

@@ -202,6 +202,151 @@ const BackgroundChart = () => {
   );
 };
 
+const BackgroundIllustrations = () => {
+  return (
+    <div className="destinations-bg-illustrations">
+      <svg
+        viewBox="0 0 1920 1080"
+        fill="none"
+        stroke="#F3EEE6"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        preserveAspectRatio="xMidYMid slice"
+        style={{ width: "100%", height: "100%" }}
+      >
+        {/* LEFT SIDE: Kenya-inspired editorial sketch */}
+        <g id="kenya-safari-sketch" strokeOpacity="0.15">
+          {/* Mount Kilimanjaro silhouette */}
+          <path d="M 80,680 Q 220,420 280,410 Q 320,405 380,410 T 520,680" />
+          <path d="M 255,425 C 270,440 310,445 345,430 C 375,415 395,425 405,435" />
+          <path d="M 230,470 Q 290,490 350,475 T 450,490" />
+          <path d="M 200,530 Q 300,555 420,535" />
+          <path d="M 440,580 L 485,550 L 530,680" />
+
+          {/* Acacia Tree */}
+          <path d="M 190,950 Q 210,850 180,720 Q 150,620 160,540" />
+          <path d="M 205,950 Q 225,860 195,730 Q 165,630 178,540" />
+          <path d="M 178,560 Q 120,520 80,500" />
+          <path d="M 175,590 Q 230,550 290,530" />
+          <path d="M 183,570 Q 190,480 200,430" />
+          <path d="M 165,620 Q 130,590 100,585" />
+          <path d="M 170,420 C 190,410 220,410 240,420 C 220,425 190,425 170,420 Z" />
+          <path d="M 50,490 C 80,480 120,480 140,495 C 110,500 80,500 50,490 Z" />
+          <path d="M 120,460 C 160,450 200,450 230,465 C 190,470 150,470 120,460 Z" />
+          <path d="M 220,510 C 260,500 300,500 330,515 C 290,520 250,520 220,510 Z" />
+          <path d="M 60,495 L 130,495" />
+          <path d="M 130,465 L 210,465" />
+          <path d="M 230,515 L 310,515" />
+          <path d="M 180,425 L 230,425" />
+          <path d="M 80,585 C 100,575 120,575 135,585" />
+
+          {/* Elephant outline */}
+          <path d="M 250,950 C 248,910 252,880 265,855 C 275,835 295,830 315,840 C 330,845 342,860 348,875 C 352,885 365,890 375,885 C 385,880 392,890 382,905 C 372,920 365,935 358,950 H 345 L 348,905 C 348,890 335,880 325,880 H 295 L 292,950 H 280 L 285,890 C 285,880 275,880 270,890 L 265,950 Z" />
+          <path d="M 320,840 C 310,850 305,880 318,900 C 325,910 332,890 328,865" />
+          <path d="M 352,885 Q 365,892 360,898" />
+          <circle cx="339.5" cy="858" r="1.5" />
+
+          {/* Giraffe outline */}
+          <path d="M 110,950 L 115,870 L 118,840 C 112,810 120,800 130,800 L 145,760 L 155,670 Q 158,655 162,660 L 168,660 Q 172,662 168,668 L 162,674 L 152,780 Q 142,800 145,820 L 140,950 H 130 L 133,860 C 133,850 127,850 125,860 L 120,950 Z" />
+          <path d="M 152,780 L 154,775 M 153,750 L 155,745 M 154,720 L 156,715 M 155,690 L 157,685" />
+          <path d="M 115,820 Q 105,835 107,875" />
+          <path d="M 125,830 Q 128,825 132,830 Z" />
+          <path d="M 135,800 Q 138,795 142,800 Z" />
+          <path d="M 148,740 Q 150,735 152,740 Z" />
+
+          {/* Safari Jeep */}
+          <circle cx="380" cy="935" r="15" />
+          <circle cx="440" cy="935" r="15" />
+          <path d="M 360,930 H 370 V 910 H 450 V 930 H 465 L 470,910 H 455 L 450,880 H 405 L 398,895 H 370 Z" />
+          <path d="M 405,880 V 845 H 445 L 450,880" />
+          <path d="M 400,845 H 452" />
+          <circle cx="355" cy="898" r="12" />
+          <path d="M 450,880 L 442,845" />
+          <path d="M 436,860 L 440,865" />
+
+          {/* Savannah Grass */}
+          <path d="M 50,950 L 55,920 M 55,950 L 62,915 M 180,950 L 175,910 M 185,950 L 192,905 M 330,950 L 333,925 M 335,950 L 328,918 M 470,950 L 475,930 M 478,950 L 472,925" />
+
+          {/* Hot air balloon */}
+          <path d="M 375,150 C 350,150 335,175 360,210 L 368,230 H 382 L 390,210 C 415,175 400,150 375,150 Z" />
+          <path d="M 368,230 L 372,245 H 378 L 382,230" />
+          <path d="M 370,245 H 380 V 253 H 370 Z" />
+          <path d="M 375,150 Q 365,185 375,230" />
+          <path d="M 375,150 Q 385,185 375,230" />
+          <path d="M 375,150 Q 350,185 369,230" />
+          <path d="M 375,150 Q 400,185 381,230" />
+
+          {/* Flying birds */}
+          <path d="M 80,180 Q 90,170 100,180 Q 110,170 120,180" />
+          <path d="M 130,200 Q 138,192 146,200 Q 154,192 162,200" />
+          <path d="M 200,140 Q 206,134 212,140 Q 218,134 224,140" />
+          <path d="M 240,165 Q 244,160 248,165 Q 252,160 256,165" />
+        </g>
+
+        {/* RIGHT SIDE: Singapore-inspired editorial sketch */}
+        <g id="singapore-skyline-sketch" strokeOpacity="0.15">
+          {/* Marina Bay Sands */}
+          <path d="M 1530,820 L 1550,560 H 1570 L 1550,820" />
+          <path d="M 1540,820 L 1557,560" />
+          <path d="M 1600,820 L 1612,560 H 1632 L 1620,820" />
+          <path d="M 1610,820 L 1620,560" />
+          <path d="M 1670,820 L 1674,560 H 1694 L 1690,820" />
+          <path d="M 1680,820 L 1682,560" />
+          <path d="M 1510,560 L 1720,560 C 1735,560 1735,548 1715,548 L 1530,548 C 1515,548 1505,554 1510,560" />
+          <path d="M 1512,554 H 1718" />
+
+          {/* Merlion outline */}
+          <path d="M 1405,820 Q 1430,815 1455,820" />
+          <path d="M 1450,820 C 1460,800 1458,780 1448,765 C 1442,755 1438,745 1442,730 C 1438,715 1425,720 1412,725 C 1405,728 1400,735 1402,742 L 1395,745 L 1398,752 H 1405 L 1412,752 C 1418,765 1422,790 1426,820 Z" />
+          <path d="M 1395,747 Q 1340,770 1355,830" />
+          <path d="M 1396,750 Q 1345,775 1362,830" />
+          <path d="M 1397,753 Q 1350,780 1368,830" />
+          <path d="M 1430,775 Q 1440,770 1435,788" />
+
+          {/* Supertree Grove */}
+          <path d="M 1805,820 Q 1805,710 1785,640 H 1795 Q 1815,710 1815,820" />
+          <path d="M 1785,640 L 1755,570 H 1825 L 1795,640" />
+          <path d="M 1755,570 L 1795,640 M 1772,570 L 1790,640 M 1790,570 L 1790,640 M 1808,570 L 1792,640 M 1825,570 L 1795,640" />
+          <path d="M 1755,570 L 1810,640 M 1825,570 L 1770,640" />
+          <path d="M 1765,595 Q 1790,605 1815,595 M 1775,620 Q 1790,630 1805,620" />
+          <path d="M 1700,630 Q 1740,635 1790,625" />
+          <path d="M 1715,632 V 645 M 1735,634 V 645 M 1755,633 V 645 M 1775,630 V 645" />
+          <path d="M 1745,820 Q 1745,745 1732,695 H 1738 Q 1750,745 1750,820" />
+          <path d="M 1732,695 L 1712,645 H 1758 L 1738,695" />
+          <path d="M 1712,645 L 1738,695 M 1758,645 L 1732,695" />
+
+          {/* Singapore Skyline (Skyscrapers) */}
+          <path d="M 1430,820 V 590 H 1452 V 820" />
+          <path d="M 1465,820 V 530 L 1475,505 L 1485,530 V 820" />
+          <path d="M 1495,820 V 580 H 1520 V 820" />
+          <path d="M 1580,820 V 600 H 1600 V 820" />
+          <path d="M 1635,820 V 570 L 1655,590 V 820" />
+          <path d="M 1705,820 V 610 H 1730 V 820" />
+
+          {/* Tropical palms */}
+          <path d="M 1910,820 Q 1870,750 1850,680" />
+          <path d="M 1850,680 Q 1810,680 1795,695" />
+          <path d="M 1850,680 Q 1820,650 1812,630" />
+          <path d="M 1850,680 Q 1855,635 1870,620" />
+          <path d="M 1850,680 Q 1885,650 1905,665" />
+          <path d="M 1850,680 Q 1890,705 1900,725" />
+
+          {/* Small bay waves */}
+          <path d="M 1350,830 C 1400,822 1450,835 1500,830 C 1550,822 1600,835 1650,830 C 1700,822 1750,835 1800,830 C 1850,822 1900,835 1950,830" />
+          <path d="M 1380,845 C 1430,838 1480,850 1530,845 C 1580,838 1630,850 1680,845 C 1730,838 1780,850 1830,845 C 1880,838 1930,850 1980,845" />
+
+          {/* Elegant Airplane above skyline */}
+          <path d="M 1730,360 L 1795,330 C 1801,327 1803,322 1797,323 L 1725,352 Z" />
+          <path d="M 1760,343 L 1750,315 H 1757 L 1770,337 Z" />
+          <path d="M 1732,354 L 1720,335 H 1726 L 1737,352 Z" />
+          <path d="M 1715,368 Q 1660,390 1580,410" />
+        </g>
+      </svg>
+    </div>
+  );
+};
+
 export default function DestinationShowcase() {
   const containerRef = useRef(null);
   const sheetsRefs = useRef([]);
@@ -226,15 +371,6 @@ export default function DestinationShowcase() {
     const ctx = gsap.context(() => {
       if (!isDesktop) return; // Stacks vertically on mobile
 
-      // Measure and prepare departures SVG paths for sketch-in pen animation on section enter
-      const depPaths = document.querySelectorAll(".canvas-departures-svg path");
-      if (depPaths.length > 0) {
-        depPaths.forEach(path => {
-          const length = path.getTotalLength();
-          gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
-        });
-      }
-
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: ".map-route-section",
@@ -242,13 +378,6 @@ export default function DestinationShowcase() {
           end: `+=${DESTINATIONS_DATA.length * 90}vh`,
           pin: true,
           scrub: 0.5,
-          onEnter: () => {
-            gsap.to(".canvas-departures-svg path", {
-              strokeDashoffset: 0,
-              duration: 2.4,
-              ease: "power1.inOut"
-            });
-          },
           onUpdate: (self) => {
             const progress = self.progress;
             const index = Math.min(
@@ -277,65 +406,6 @@ export default function DestinationShowcase() {
         // 2. Adjust Z-index dynamically at the 90deg (halfway) point
         // Initially stacked N-i. After flipping, stacked i+1.
         tl.set(sheetEl, { zIndex: i + 1 }, i + 0.5);
-
-
-
-        // 5. Page-turn micro-animations: airplane, birds, right canvas brightening
-        if (i < DESTINATIONS_DATA.length - 1) {
-          // Tiny airplane flies gently across the top of the journal
-          tl.fromTo(".canvas-flying-airplane", {
-            x: -20,
-            y: 15,
-            rotation: 12,
-            opacity: 0,
-            scale: 0.8
-          }, {
-            x: 620,
-            y: -15,
-            rotation: -8,
-            opacity: 0.85,
-            scale: 1.0,
-            ease: "sine.inOut",
-            duration: 0.8
-          }, i);
-
-          tl.to(".canvas-flying-airplane", {
-            opacity: 0,
-            scale: 0.7,
-            duration: 0.2,
-            ease: "sine.in"
-          }, i + 0.8);
-
-          // Birds drift slowly
-          tl.to(".canvas-drifting-birds", {
-            x: "+=12",
-            y: "-=5",
-            rotation: -2,
-            duration: 1.0,
-            ease: "sine.inOut"
-          }, i);
-
-          tl.to(".canvas-drifting-birds-right", {
-            x: "-=10",
-            y: "-=7",
-            rotation: 3,
-            duration: 1.0,
-            ease: "sine.inOut"
-          }, i);
-
-          // Right arrivals illustration softly brightens and dims
-          tl.to(".canvas-arrivals-container", {
-            opacity: 0.16,
-            duration: 0.4,
-            ease: "sine.out"
-          }, i);
-
-          tl.to(".canvas-arrivals-container", {
-            opacity: 0.07,
-            duration: 0.6,
-            ease: "sine.in"
-          }, i + 0.4);
-        }
       });
     });
 
@@ -357,75 +427,7 @@ export default function DestinationShowcase() {
       <BackgroundChart />
 
       {/* Storytelling Canvas Illustrations */}
-      {isDesktop && (
-        <>
-          {/* Departures Illustration on the Left */}
-          <div className="canvas-departures-container">
-            <svg className="canvas-departures-svg" viewBox="0 0 320 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M -20,560 C 50,520 100,550 160,510 C 210,480 250,510 290,480 
-                   M -40,490 C 20,500 70,470 120,460 C 170,450 220,480 270,470 C 290,465 310,450 330,440 
-                   M 60,465 L 90,410 L 120,462 
-                   M 140,455 L 175,395 L 210,458 L 225,440 L 255,472 
-                   M 90,505 C 92,505 95,502 96,498 L 96,450 C 96,448 94,446 91,446 L 76,446 C 73,446 71,448 71,450 L 71,498 C 71,502 74,505 76,505 Z M 84,446 L 84,410 H 94 M 94,410 L 110,385 C 115,378 122,365 122,350 C 122,338 116,330 126,315 C 132,305 144,305 150,315 C 154,325 150,335 146,345 C 141,355 142,370 142,388 L 152,450 L 158,505 M 142,388 C 136,410 132,435 125,470 L 118,505 
-                   M 155,510 C 155,505 160,498 160,495 C 160,492 157,489 155,489 C 153,489 150,492 150,495 C 150,498 155,505 155,510 Z M 155,493 C 156.5,493 157,494.5 157,495.5 C 157,496.5 156.5,498 155,498 C 153.5,498 153,496.5 153,495.5 C 153,494.5 153.5,493 155,493 
-                   M 40,180 C 40,150 70,150 70,180 C 70,210 40,210 40,180 Z 
-                   M 55,140 V 130 M 55,220 V 230 M 15,180 H 5 M 95,180 H 105 M 27,152 L 20,145 M 83,208 L 90,215 M 83,152 L 90,145 M 27,208 L 20,215 
-                   M 180,140 Q 188,132 196,140 Q 204,132 212,140 
-                   M 220,165 Q 226,159 232,165 Q 238,159 244,165"
-                stroke="#F7F5F2"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-
-          {/* Arrivals Illustration on the Right */}
-          <div className="canvas-arrivals-container">
-            <svg className="canvas-arrivals-svg" viewBox="0 0 320 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M -10,530 Q 30,540 70,530 T 150,530 T 230,530 T 310,530 
-                   M 10,550 Q 50,560 90,550 T 170,550 T 250,550 T 330,550 
-                   M 230,530 C 220,470 235,420 260,390 
-                   M 260,390 Q 240,380 220,385 M 260,390 Q 250,370 238,360 M 260,390 Q 270,370 282,360 M 260,390 Q 280,380 300,385 M 260,390 Q 268,405 274,420 
-                   M 10,505 H 25 V 430 H 50 V 455 H 75 V 410 H 95 V 475 H 115 V 440 H 145 V 505 
-                   M 140,505 V 475 L 170,455 L 200,475 V 505 Z M 155,505 V 490 H 185 V 505 
-                   M 60,180 L 78,172 L 95,178 L 84,192 L 88,205 L 80,200 L 73,210 L 75,195 Z 
-                   M 60,180 C 100,160 160,190 200,280 C 215,315 220,350 225,385 
-                   M 70,110 m -22,0 a 22,22 0 1,0 44,0 a 22,22 0 1,0 -44,0 
-                   M 70,88 L 73,110 L 70,132 L 67,110 Z M 48,110 H 92 M 55,95 L 85,125 M 55,125 L 85,95 
-                   M 225,385 C 225,380 230,373 230,370 C 230,367 227,364 225,364 C 223,364 220,367 220,370 C 220,373 225,380 225,385 Z M 225,368 C 226.5,368 227,369.5 227,370.5 C 227,371.5 226.5,373 225,373 C 223.5,373 223,371.5 223,370.5 C 223,369.5 223.5,368 225,368"
-                stroke="#F7F5F2"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-
-          {/* Flying Airplane overlay */}
-          <div className="canvas-flying-airplane">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#F7F5F2" strokeWidth="1.5">
-              <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z" />
-            </svg>
-          </div>
-
-          {/* Drifting Birds left & right */}
-          <div className="canvas-drifting-birds">
-            <svg viewBox="0 0 100 50" fill="none" stroke="#F7F5F2" strokeWidth="1" strokeOpacity="0.2">
-              <path d="M 10,25 Q 15,20 20,25 Q 25,20 30,25" />
-              <path d="M 50,15 Q 53,11 56,15 Q 59,11 62,15" />
-            </svg>
-          </div>
-          <div className="canvas-drifting-birds-right">
-            <svg viewBox="0 0 100 50" fill="none" stroke="#F7F5F2" strokeWidth="1" strokeOpacity="0.2">
-              <path d="M 15,20 Q 20,15 25,20 Q 30,15 35,20" />
-              <path d="M 60,30 Q 64,26 68,30 Q 72,26 76,30" />
-            </svg>
-          </div>
-        </>
-      )}
+      {isDesktop && <BackgroundIllustrations />}
 
       {/* Section Header */}
       <div className="destinations-header-container">
