@@ -35,7 +35,7 @@ export default function Header() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const rect = mapSection.getBoundingClientRect();
       const startY = rect.top + scrollTop;
-      
+
       // Total scroll range pinned for map is 6.5 * window.innerHeight
       const totalScrollRange = window.innerHeight * 6.5;
       const targetFraction = index / 6;
@@ -72,22 +72,22 @@ export default function Header() {
     >
       {/* Brand Logo */}
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <a 
-          href="#" 
-          style={{ 
+        <a
+          href="#"
+          style={{
             display: 'flex',
             alignItems: 'center',
             textDecoration: 'none'
           }}
         >
-          <img 
-            src={logoImg} 
-            alt="TRAVINNO Logo" 
-            style={{ 
-              height: '36px', 
+          <img
+            src={logoImg}
+            alt="TRAVINNO Logo"
+            style={{
+              height: '36px',
               width: 'auto',
               display: 'block'
-            }} 
+            }}
           />
         </a>
       </div>
@@ -95,7 +95,7 @@ export default function Header() {
       {/* Desktop Menu Navigation Links (matching screenshot layout) */}
       <div className="desktop-nav-container">
         <nav style={{ display: 'flex', gap: '35px', alignItems: 'center' }}>
-          
+
           {/* Link: Home */}
           <a
             href="#"
@@ -151,7 +151,7 @@ export default function Header() {
               Company
               <span style={{ fontSize: '0.55rem', transition: 'transform 0.3s ease', transform: hoveredMenu === 'company' ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
             </a>
-            
+
             <AnimatePresence>
               {hoveredMenu === 'company' && (
                 <motion.div
@@ -241,7 +241,7 @@ export default function Header() {
               Destinations
               <span style={{ fontSize: '0.55rem', transition: 'transform 0.3s ease', transform: hoveredMenu === 'destinations' ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
             </a>
-            
+
             <AnimatePresence>
               {hoveredMenu === 'destinations' && (
                 <motion.div
@@ -393,9 +393,9 @@ export default function Header() {
             }}
           >
             {/* Mobile Home */}
-            <a 
-              href="#" 
-              onClick={() => setIsMobileMenuOpen(false)} 
+            <a
+              href="#"
+              onClick={() => setIsMobileMenuOpen(false)}
               className="mobile-nav-link"
               style={{
                 fontFamily: 'var(--font-sans)',
@@ -413,7 +413,7 @@ export default function Header() {
 
             {/* Mobile Company Accordion */}
             <div style={{ width: '100%' }}>
-              <button 
+              <button
                 onClick={() => setMobileCompanyOpen(!mobileCompanyOpen)}
                 style={{
                   width: '100%',
@@ -432,10 +432,10 @@ export default function Header() {
                   cursor: 'pointer'
                 }}
               >
-                Company 
+                Company
                 <span style={{ fontSize: '0.8rem' }}>{mobileCompanyOpen ? '▲' : '▼'}</span>
               </button>
-              
+
               <AnimatePresence>
                 {mobileCompanyOpen && (
                   <motion.div
@@ -476,7 +476,7 @@ export default function Header() {
 
             {/* Mobile Destinations Accordion */}
             <div style={{ width: '100%' }}>
-              <button 
+              <button
                 onClick={() => setMobileDestinationsOpen(!mobileDestinationsOpen)}
                 style={{
                   width: '100%',
@@ -495,10 +495,10 @@ export default function Header() {
                   cursor: 'pointer'
                 }}
               >
-                Destinations 
+                Destinations
                 <span style={{ fontSize: '0.8rem' }}>{mobileDestinationsOpen ? '▲' : '▼'}</span>
               </button>
-              
+
               <AnimatePresence>
                 {mobileDestinationsOpen && (
                   <motion.div
@@ -538,9 +538,9 @@ export default function Header() {
             </div>
 
             {/* Mobile Contact */}
-            <a 
-              href="#contact" 
-              onClick={() => setIsMobileMenuOpen(false)} 
+            <a
+              href="#contact"
+              onClick={() => setIsMobileMenuOpen(false)}
               className="mobile-nav-link"
               style={{
                 fontFamily: 'var(--font-sans)',

@@ -31,98 +31,6 @@ function CountUp({ to, suffix = "", duration = 1.8 }) {
   return <span ref={ref} style={{ color: 'inherit' }}>{count}{suffix}</span>;
 }
 
-const BackgroundIllustrations = () => {
-  return (
-    <div className="editorial-bg-airplane">
-      <svg
-        viewBox="0 0 1920 900"
-        fill="none"
-        stroke="#F3EEE6"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        preserveAspectRatio="xMidYMid slice"
-        style={{ width: "100%", height: "100%" }}
-      >
-        {/* Editorial Airplane Sketch */}
-        <g id="editorial-airplane-sketch" strokeOpacity="0.15">
-          {/* Central axis line */}
-          <path d="M -200,810 L 800,470" strokeDasharray="4, 12" />
-
-          {/* Fuselage Outline */}
-          <path d="M -180,750 C -30,700 110,650 250,600 C 390,550 510,510 620,480 C 632,476 638,482 630,488 C 610,505 550,545 480,590 C 380,660 230,750 -180,880" />
-
-          {/* Cockpit Windshield */}
-          <path d="M 595,487 Q 602,484 608,489 L 606,494 Q 598,489 592,492 Z" />
-          <path d="M 602,484 L 603,491" />
-          <path d="M 598,486 L 599,493" />
-
-          {/* Nose cone panel line */}
-          <path d="M 610,482 Q 602,492 595,502" />
-
-          {/* Left Wing (Swept-back) */}
-          <path d="M 380,550 L 150,220 C 145,210 135,215 140,225 L 310,575" />
-          {/* Left Winglet */}
-          <path d="M 150,220 Q 140,200 135,180" />
-          <path d="M 156,225 Q 145,203 135,180" />
-          {/* Left Wing panel lines */}
-          <path d="M 360,540 L 170,260" />
-          <path d="M 330,550 L 180,315" />
-          <path d="M 270,410 L 255,420" />
-          <path d="M 220,338 L 205,348" />
-
-          {/* Right Wing (Swept-back) */}
-          <path d="M 430,615 L 750,910 C 760,920 770,915 765,905 L 380,635" />
-          {/* Right Winglet */}
-          <path d="M 750,910 Q 770,925 790,940" />
-          <path d="M 762,903 Q 780,922 790,940" />
-          {/* Right Wing panel lines */}
-          <path d="M 420,630 L 710,880" />
-          <path d="M 400,640 L 670,860" />
-          <path d="M 480,705 L 465,720" />
-          <path d="M 590,795 L 575,810" />
-
-          {/* Left Engine */}
-          <path d="M 240,430 C 255,420 280,435 285,455 C 290,475 270,490 255,500 C 240,510 215,500 210,480 C 205,460 225,440 240,430 Z" />
-          <path d="M 255,425 L 250,370" />
-          <path d="M 268,435 L 263,380" />
-
-          {/* Right Engine */}
-          <path d="M 410,725 C 425,715 450,730 455,750 C 460,770 440,785 425,795 C 410,805 385,795 380,775 C 375,755 395,735 410,725 Z" />
-          <path d="M 425,720 L 440,650" />
-          <path d="M 438,728 L 453,658" />
-
-          {/* Window Belt Line */}
-          <path d="M 560,500 C 450,545 320,600 180,660 C 40,720 -100,780 -180,815" strokeDasharray="3, 10" />
-
-          {/* Dimension guidelines */}
-          <path d="M 620,440 V 510" opacity="0.3" />
-          <path d="M 150,150 V 220" opacity="0.3" />
-          <path d="M 150,170 H 620" opacity="0.3" />
-          <circle cx="620" cy="170" r="2.5" fill="#F3EEE6" />
-          <circle cx="150" cy="170" r="2.5" fill="#F3EEE6" />
-
-          {/* Cloud 1 (Wispy cloud top-left) */}
-          <path d="M 80,150 Q 140,120 200,130 Q 260,120 320,140 T 420,150" />
-          <path d="M 140,145 Q 210,135 280,145" />
-          <path d="M 100,165 H 380" />
-          <path d="M 130,175 H 330" />
-
-          {/* Cloud 2 (Wispy cloud bottom-right) */}
-          <path d="M 680,780 Q 730,760 780,770 Q 830,760 880,780 T 980,790" />
-          <path d="M 740,778 Q 800,768 860,778" />
-          <path d="M 700,800 H 940" />
-          <path d="M 730,810 H 890" />
-
-          {/* Cloud 3 (Wispy cloud nose/center) */}
-          <path d="M 550,300 Q 610,280 670,290 Q 730,280 790,300" />
-          <path d="M 600,295 Q 670,285 740,295" />
-          <path d="M 580,315 H 760" />
-        </g>
-      </svg>
-    </div>
-  );
-};
 
 export default function EditorialSection() {
   const containerVariants = {
@@ -161,21 +69,6 @@ export default function EditorialSection() {
           width: 100%;
         }
 
-        .editorial-bg-airplane {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-          z-index: 1;
-        }
-
-        @media (max-width: 1024px) {
-          .editorial-bg-airplane {
-            display: none !important;
-          }
-        }
 
         /* Standardized subtle check grid (7% opacity, 50px size, layered bottom fade) */
         .editorial-grid-bg {
@@ -216,7 +109,7 @@ export default function EditorialSection() {
           align-items: flex-start;
           text-align: left;
           position: relative;
-          top: 75px;
+          top: 35px;
           z-index: 10;
           padding-right: 45px;
         }
@@ -242,7 +135,6 @@ export default function EditorialSection() {
         }
 
 
-        /* Pill Badge styling */
         .editorial-badge {
           align-self: flex-start;
           display: inline-flex;
@@ -255,7 +147,8 @@ export default function EditorialSection() {
           font-size: 0.72rem;
           font-weight: 500;
           letter-spacing: 0.05em;
-          color: rgba(247, 245, 242, 0.85);
+          text-transform: none;
+          color: rgba(255, 255, 255, 0.85);
           margin-bottom: 12px;
           background: rgba(193, 18, 31, 0.05);
           backdrop-filter: blur(4px);
@@ -271,11 +164,11 @@ export default function EditorialSection() {
 
         /* Heading size reduced by 35% and placed in the upper-left corner */
         .editorial-heading {
-          font-family: var(--font-sans);
+          font-family: var(--font-heading);
           font-size: clamp(2rem, 3.8vw, 3.2rem);
-          font-weight: 700;
+          font-weight: 500;
           line-height: 1.15;
-          letter-spacing: -0.01em;
+          letter-spacing: 0.02em;
           color: var(--text-warm-white);
           margin: 0;
           display: flex;
@@ -291,6 +184,17 @@ export default function EditorialSection() {
           -webkit-text-fill-color: transparent;
           background-clip: text;
           display: inline-block;
+        }
+
+        .purpose-text {
+          font-family: 'Allura', cursive;
+          font-size: 1.35em;
+          font-weight: 400;
+          letter-spacing: 0.02em;
+          line-height: 1;
+          display: inline-block;
+          text-transform: none;
+          vertical-align: middle;
         }
 
         /* Radial backdrop glow behind globe shifted to match the globe canvas */
@@ -483,8 +387,6 @@ export default function EditorialSection() {
       {/* Subtle guide lines grid */}
       <div className="editorial-grid-bg" />
 
-      {/* Background Airplane Illustration */}
-      <BackgroundIllustrations />
 
       {/* Blending overlay to fade grid lines at top/bottom */}
       <div className="section-blend-overlay blend-to-05" />
@@ -514,7 +416,7 @@ export default function EditorialSection() {
           </motion.span>
           <motion.h2 className="editorial-heading" variants={itemVariants}>
             <span>Crafted</span>
-            <span>With <span className="gradient-text">PURPOSE</span></span>
+            <span>With <span className="gradient-text purpose-text">Purpose</span></span>
           </motion.h2>
         </div>
 

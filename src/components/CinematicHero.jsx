@@ -269,19 +269,6 @@ export default function CinematicHero() {
                 filter: 'contrast(1.08) saturate(0.88)'
               }}
             />
-            {/* Subtle overlay (38%) to improve headline readability */}
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                backgroundColor: 'rgba(0, 0, 0, 0.38)',
-                zIndex: 2,
-                pointerEvents: 'none'
-              }}
-            />
           </div>
         ))}
 
@@ -302,22 +289,20 @@ export default function CinematicHero() {
           maxWidth: '1200px'
         }}
       >
-        {/* Fixed Headline (Uppercase single-line typography) */}
         <h1
           style={{
-            fontFamily: 'var(--font-heading)', // Oswald
-            fontSize: 'clamp(1.1rem, 3.6vw, 2.5rem)',
-            fontWeight: 700,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: '#F7F5F2',
+            fontFamily: 'var(--font-heading)',
+            fontSize: 'clamp(1.35rem, 4.0vw, 2.9rem)',
+            fontWeight: 500,
+            letterSpacing: '0.02em',
+            color: '#F5F2EC',
             margin: '0 0 16px 0',
             lineHeight: 1.2,
             textShadow: '0 2px 14px rgba(0, 0, 0, 0.45)',
             whiteSpace: 'nowrap'
           }}
         >
-          CURATORS OF EXTRAORDINARY JOURNEYS
+          Curators Of Extraordinary Journeys
         </h1>
 
         {/* Transitioning Active Destination name */}
@@ -339,12 +324,12 @@ export default function CinematicHero() {
                 ref={addToTextRefs}
                 style={{
                   position: 'absolute',
-                  fontFamily: 'var(--font-sans)',
+                  fontFamily: "'General Sans', 'Inter', sans-serif",
                   fontSize: 'clamp(1rem, 2.2vw, 1.4rem)',
                   fontWeight: 500,
                   letterSpacing: '0.24em',
                   textTransform: 'uppercase',
-                  color: '#F7F5F2',
+                  color: '#F5F2EC',
                   opacity: idx === 0 ? 1 : 0,
                   transform: idx === 0 ? 'translateY(0px)' : 'translateY(15px)',
                   textShadow: '0 2px 10px rgba(0, 0, 0, 0.4)'
@@ -362,12 +347,12 @@ export default function CinematicHero() {
             style={{
               fontFamily: 'var(--font-sans)',
               fontSize: '0.75rem',
-              fontWeight: 700,
+              fontWeight: 600,
               letterSpacing: '2.2px',
               textTransform: 'uppercase',
-              color: '#F7F5F2',
+              color: '#F5F2EC',
               background: 'transparent',
-              border: '1px solid #F7F5F2',
+              border: '1px solid #F5F2EC',
               padding: '16px 36px',
               borderRadius: '0px',
               textDecoration: 'none',
@@ -378,12 +363,12 @@ export default function CinematicHero() {
               gap: '8px'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#F7F5F2';
+              e.currentTarget.style.backgroundColor = '#F5F2EC';
               e.currentTarget.style.color = '#000000';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.color = '#F7F5F2';
+              e.currentTarget.style.color = '#F5F2EC';
             }}
           >
             Explore Destinations &rarr;

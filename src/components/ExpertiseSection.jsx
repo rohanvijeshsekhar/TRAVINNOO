@@ -244,7 +244,7 @@ const ConnectingRoute = ({
           strokeWidth="6"
           strokeLinecap="round"
           strokeLinejoin="round"
-          opacity="0.12"
+          opacity="0.18"
           filter="blur(2px)"
         />
         {/* Dotted path */}
@@ -256,16 +256,16 @@ const ConnectingRoute = ({
           strokeDasharray="1 10"
           strokeLinecap="round"
           strokeLinejoin="round"
-          opacity="0.35"
+          opacity="0.38"
         />
       </svg>
       {/* Desktop Route (3 cols x 2 rows) - Airplane Layer */}
       <svg className="expertise-airplane-container desktop-route" viewBox="0 0 1200 600" fill="none" preserveAspectRatio="none">
         <g ref={desktopAirplaneRef} style={{ display: 'none' }}>
           {/* Subtle crimson glow under the plane */}
-          <circle r="30" fill="#C1121F" opacity="0.25" filter="blur(8px)" />
+          <circle r="30" fill="#C1121F" opacity="0.5" filter="blur(8px)" />
           {/* Subtle white core glow for glass card visibility */}
-          <circle r="12" fill="#FFFFFF" opacity="0.3" filter="blur(5px)" />
+          <circle r="12" fill="#FFFFFF" opacity="0.65" filter="blur(5px)" />
           {/* Inner group for banking rotation at original wingspan */}
           <g className="airplane-inner">
             {/* The white outer outline */}
@@ -292,7 +292,7 @@ const ConnectingRoute = ({
           strokeWidth="6"
           strokeLinecap="round"
           strokeLinejoin="round"
-          opacity="0.12"
+          opacity="0.18"
           filter="blur(2px)"
         />
         <path
@@ -303,14 +303,14 @@ const ConnectingRoute = ({
           strokeDasharray="1 10"
           strokeLinecap="round"
           strokeLinejoin="round"
-          opacity="0.35"
+          opacity="0.38"
         />
       </svg>
       {/* Tablet Route (2 cols x 3 rows) - Airplane Layer */}
       <svg className="expertise-airplane-container tablet-route" viewBox="0 0 800 900" fill="none" preserveAspectRatio="none">
         <g ref={tabletAirplaneRef} style={{ display: 'none' }}>
-          <circle r="30" fill="#C1121F" opacity="0.25" filter="blur(8px)" />
-          <circle r="12" fill="#FFFFFF" opacity="0.3" filter="blur(5px)" />
+          <circle r="30" fill="#C1121F" opacity="0.5" filter="blur(8px)" />
+          <circle r="12" fill="#FFFFFF" opacity="0.65" filter="blur(5px)" />
           <g className="airplane-inner">
             <path 
               d="M 20,0 L 8,-4 L 4,-4 L -8,-25 L -12,-25 L -3,-4 L -16,-3 L -22,-15 L -25,-15 L -23,0 L -25,15 L -22,15 L -16,3 L -3,4 L -12,25 L -8,25 L 4,4 L 8,4 Z" 
@@ -333,7 +333,7 @@ const ConnectingRoute = ({
           strokeWidth="6"
           strokeLinecap="round"
           strokeLinejoin="round"
-          opacity="0.12"
+          opacity="0.18"
           filter="blur(2px)"
         />
         <path
@@ -344,14 +344,14 @@ const ConnectingRoute = ({
           strokeDasharray="1 10"
           strokeLinecap="round"
           strokeLinejoin="round"
-          opacity="0.35"
+          opacity="0.38"
         />
       </svg>
       {/* Mobile Route (1 col x 6 rows) - Airplane Layer */}
       <svg className="expertise-airplane-container mobile-route" viewBox="0 0 400 1200" fill="none" preserveAspectRatio="none">
         <g ref={mobileAirplaneRef} style={{ display: 'none' }}>
-          <circle r="30" fill="#C1121F" opacity="0.25" filter="blur(8px)" />
-          <circle r="12" fill="#FFFFFF" opacity="0.3" filter="blur(5px)" />
+          <circle r="30" fill="#C1121F" opacity="0.5" filter="blur(8px)" />
+          <circle r="12" fill="#FFFFFF" opacity="0.65" filter="blur(5px)" />
           <g className="airplane-inner">
             <path 
               d="M 20,0 L 8,-4 L 4,-4 L -8,-25 L -12,-25 L -3,-4 L -16,-3 L -22,-15 L -25,-15 L -23,0 L -25,15 L -22,15 L -16,3 L -3,4 L -12,25 L -8,25 L 4,4 L 8,4 Z" 
@@ -383,7 +383,7 @@ const BackgroundIllustrations = () => {
         style={{ width: "100%", height: "100%" }}
       >
         {/* LEFT SIDE: Dubai-inspired architectural sketch (strokeOpacity 0.08) */}
-        <g id="dubai-architectural-sketch" strokeOpacity="0.15">
+        <g id="dubai-architectural-sketch" strokeOpacity="0.10">
           {/* Burj Khalifa */}
           <line x1="220" y1="130" x2="220" y2="820" />
           <path d="M 216,280 V 380 M 224,280 V 380" />
@@ -463,7 +463,7 @@ const BackgroundIllustrations = () => {
         </g>
 
         {/* RIGHT SIDE: Malaysia-inspired architectural sketch (strokeOpacity 0.08) */}
-        <g id="malaysia-architectural-sketch" strokeOpacity="0.15">
+        <g id="malaysia-architectural-sketch" strokeOpacity="0.10">
           {/* Petronas Twin Towers */}
           <line x1="1540" y1="160" x2="1540" y2="820" />
           <line x1="1700" y1="160" x2="1700" y2="820" />
@@ -890,7 +890,7 @@ export default function ExpertiseSection() {
             className="expertise-pill"
           >
             <span className="expertise-pill-dot" />
-            OUR EXPERTISE
+            Our Expertise
           </motion.span>
           
           <motion.h2
@@ -901,7 +901,7 @@ export default function ExpertiseSection() {
             className="expertise-heading"
           >
             <span>Travel</span>
-            <span className="expertise-gradient-text">Expertise</span>
+            <span className="expertise-gradient-text expertise-allura-text">Expertise</span>
           </motion.h2>
         </div>
       </div>

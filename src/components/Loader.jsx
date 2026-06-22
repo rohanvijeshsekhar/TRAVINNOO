@@ -106,7 +106,7 @@ export default function Loader({ onComplete }) {
         }}
         style={{
           marginTop: '32px',
-          fontFamily: "'Satoshi', sans-serif",
+          fontFamily: "var(--font-sans)",
           fontWeight: 500,
           fontSize: '24px',
           letterSpacing: '0.25em',

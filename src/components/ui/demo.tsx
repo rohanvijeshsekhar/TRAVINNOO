@@ -1,13 +1,11 @@
-"use client"
+import InteractiveSelector from "@/components/ui/interactive-selector";
 
-import { GlobePulse } from "./cobe-globe-pulse"
-
-export default function GlobePulseDemo() {
+const DemoOne = () => {
   return (
-    <div className="flex items-center justify-center w-full min-h-screen bg-black p-8 overflow-hidden">
-      <div className="w-full max-w-lg">
-        <GlobePulse />
-      </div>
+    <div className="w-full h-min-screen">
+      <InteractiveSelector />
     </div>
-  )
-}
+  );
+};
+
+export { DemoOne };

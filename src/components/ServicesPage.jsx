@@ -224,10 +224,10 @@ function ServiceChapter({ service, idx }) {
       >
         <span
           style={{
-            fontFamily: 'monospace',
+            fontFamily: 'var(--font-mono)',
             fontSize: '0.72rem',
-            color: 'rgba(255, 255, 255, 0.4)',
-            letterSpacing: '3px',
+            color: 'rgba(245, 242, 236, 0.4)',
+            letterSpacing: '0.25em',
             textTransform: 'uppercase',
             fontWeight: 500
           }}
@@ -238,12 +238,12 @@ function ServiceChapter({ service, idx }) {
         <div>
           <h2
             style={{
-              fontFamily: "'Oswald', sans-serif",
+              fontFamily: 'var(--font-heading)',
               fontSize: 'clamp(2rem, 3.5vw, 3rem)',
-              fontWeight: 700,
-              letterSpacing: '1px',
+              fontWeight: 500,
+              letterSpacing: '0.02em',
               textTransform: 'uppercase',
-              color: '#F7F5F2',
+              color: '#F5F2EC',
               margin: 0
             }}
           >
@@ -343,13 +343,13 @@ function EditorialDivider({ text }) {
         viewport={{ once: true, margin: '-10% 0px' }}
         transition={faderTransition}
         style={{
-          fontFamily: "'Oswald', sans-serif",
+          fontFamily: 'var(--font-heading)',
           fontSize: 'clamp(2rem, 5.5vw, 4.8rem)',
-          fontWeight: 700,
+          fontWeight: 500,
           lineHeight: 1.15,
-          letterSpacing: '1px',
+          letterSpacing: '0.02em',
           textTransform: 'uppercase',
-          color: '#FFFFFF',
+          color: '#F5F2EC',
           textAlign: 'center',
           maxWidth: '1200px',
           margin: 0
@@ -382,10 +382,10 @@ export default function ServicesPage() {
     <div
       style={{
         backgroundColor: '#050505',
-        color: '#F7F5F2',
+        color: '#F5F2EC',
         width: '100%',
         minHeight: '100vh',
-        fontFamily: '"SF Pro Display", "Satoshi", sans-serif',
+        fontFamily: 'var(--font-sans)',
         overflowX: 'hidden'
       }}
     >
@@ -483,13 +483,13 @@ export default function ServicesPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={faderTransition}
             style={{
-              fontFamily: "'Oswald', sans-serif",
+              fontFamily: 'var(--font-heading)',
               fontSize: 'clamp(3rem, 9vw, 6.5rem)',
-              fontWeight: 800,
+              fontWeight: 500,
               lineHeight: 1.0,
-              letterSpacing: '5px',
+              letterSpacing: '4px',
               textTransform: 'uppercase',
-              color: '#F7F5F2',
+              color: '#F5F2EC',
               margin: 0
             }}
           >
@@ -547,12 +547,12 @@ export default function ServicesPage() {
         >
           <h2
             style={{
-              fontFamily: "'Oswald', sans-serif",
+              fontFamily: 'var(--font-heading)',
               fontSize: 'clamp(2rem, 4vw, 3.2rem)',
-              fontWeight: 700,
-              letterSpacing: '1px',
+              fontWeight: 500,
+              letterSpacing: '0.02em',
               textTransform: 'uppercase',
-              color: '#F7F5F2',
+              color: '#F5F2EC',
               margin: 0
             }}
           >
@@ -635,11 +635,11 @@ export default function ServicesPage() {
             viewport={{ once: true, margin: '-100px' }}
             transition={faderTransition}
             style={{
-              fontFamily: "'Oswald', sans-serif",
+              fontFamily: 'var(--font-mono)',
               fontSize: '1.1rem',
-              fontWeight: 800,
-              color: 'var(--accent-red)',
-              letterSpacing: '4px',
+              fontWeight: 500,
+              color: 'rgba(245, 242, 236, 0.45)',
+              letterSpacing: '0.25em',
               textTransform: 'uppercase',
               textAlign: 'center',
               marginBottom: '60px'
@@ -664,12 +664,12 @@ export default function ServicesPage() {
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.9, delay: index * 0.1, ease: [0.25, 1, 0.5, 1] }}
                 style={{
-                  fontFamily: "'Oswald', sans-serif",
+                  fontFamily: 'var(--font-heading)',
                   fontSize: 'clamp(1.8rem, 4.5vw, 3.4rem)',
-                  fontWeight: 700,
+                  fontWeight: 500,
                   textTransform: 'uppercase',
-                  letterSpacing: '2px',
-                  color: '#FFFFFF',
+                  letterSpacing: '0.02em',
+                  color: '#F5F2EC',
                   textAlign: 'center',
                   lineHeight: 1.2
                 }}
@@ -698,11 +698,11 @@ export default function ServicesPage() {
             viewport={{ once: true }}
             transition={faderTransition}
             style={{
-              fontFamily: "'Oswald', sans-serif",
+              fontFamily: 'var(--font-mono)',
               fontSize: '1.1rem',
-              fontWeight: 800,
-              color: '#FFFFFF',
-              letterSpacing: '4px',
+              fontWeight: 500,
+              color: 'rgba(245, 242, 236, 0.45)',
+              letterSpacing: '0.25em',
               textTransform: 'uppercase',
               textAlign: 'center',
               marginBottom: '100px'
@@ -811,11 +811,11 @@ export default function ServicesPage() {
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 8%', marginBottom: '40px' }}>
           <h2
             style={{
-              fontFamily: "'Oswald', sans-serif",
+              fontFamily: 'var(--font-mono)',
               fontSize: '0.85rem',
-              fontWeight: 800,
-              color: 'rgba(255, 255, 255, 0.4)',
-              letterSpacing: '3px',
+              fontWeight: 500,
+              color: 'rgba(245, 242, 236, 0.45)',
+              letterSpacing: '0.25em',
               textTransform: 'uppercase',
               textAlign: 'center',
               margin: 0
@@ -842,12 +842,12 @@ export default function ServicesPage() {
               <span
                 key={`${partner}-${idx}`}
                 style={{
-                  fontFamily: "'Oswald', sans-serif",
+                  fontFamily: 'var(--font-sans)',
                   fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)',
-                  fontWeight: 600,
+                  fontWeight: 500,
                   letterSpacing: '6px',
                   textTransform: 'uppercase',
-                  color: 'rgba(255, 255, 255, 0.25)',
+                  color: 'rgba(245, 242, 236, 0.25)',
                   margin: '0 60px',
                   display: 'inline-block',
                   cursor: 'default',
@@ -893,13 +893,13 @@ export default function ServicesPage() {
             viewport={{ once: true }}
             transition={faderTransition}
             style={{
-              fontFamily: "'Oswald', sans-serif",
+              fontFamily: 'var(--font-heading)',
               fontSize: 'clamp(2.5rem, 5.5vw, 4.8rem)',
-              fontWeight: 800,
+              fontWeight: 500,
               lineHeight: 1.1,
               letterSpacing: '2px',
               textTransform: 'uppercase',
-              color: '#F7F5F2',
+              color: '#F5F2EC',
               margin: 0
             }}
           >

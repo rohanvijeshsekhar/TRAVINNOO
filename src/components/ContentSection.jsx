@@ -77,19 +77,19 @@ export default function ContentSection() {
         <h1
           className="hero-headline"
           style={{
-            fontFamily: 'var(--font-heading)', // Oswald
-            fontSize: '3.2vw', // Proportional elegant sizing
+            fontFamily: 'var(--font-heading)',
+            fontSize: '3.2vw',
             minFontSize: '32px',
-            fontWeight: 600,
-            letterSpacing: '0.12em', // Reduced letter spacing to keep in single line
+            fontWeight: 500,
+            letterSpacing: '0.12em',
             textTransform: 'uppercase',
-            color: '#FFFFFF',
+            color: '#F5F2EC',
             margin: 0,
             lineHeight: 1.25,
-            textShadow: '0 2px 12px rgba(0, 0, 0, 0.4)' // Very subtle drop shadow
+            textShadow: '0 2px 12px rgba(0, 0, 0, 0.4)'
           }}
         >
-          Curators of Extraordinary Journeys
+          Curators of <span className="highlight-gradient">Extraordinary Journeys</span>
         </h1>
       </motion.div>
 
@@ -104,8 +104,8 @@ export default function ContentSection() {
           fontSize: '0.75rem',
           fontWeight: 500,
           lineHeight: '1.5',
-          letterSpacing: '0.22em', // Spaced tracking
-          color: '#FFFFFF',
+          letterSpacing: '0.22em',
+          color: '#F5F2EC',
           textTransform: 'uppercase',
           margin: '0 0 45px 0',
           opacity: 0.9,
@@ -136,24 +136,24 @@ export default function ContentSection() {
             style={{
               fontFamily: 'var(--font-sans)',
               fontSize: '0.75rem',
-              fontWeight: 700,
+              fontWeight: 600,
               letterSpacing: '2px',
               textTransform: 'uppercase',
-              color: '#FFFFFF',
+              color: '#F5F2EC',
               background: 'transparent',
-              border: '1px solid #FFFFFF',
+              border: '1px solid #F5F2EC',
               padding: '16px 36px',
-              borderRadius: '0px', // Flat corners
+              borderRadius: '0px',
               boxShadow: 'none',
               transition: 'all 0.35s ease'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#FFFFFF';
-              e.currentTarget.style.color = '#0B1220';
+              e.currentTarget.style.backgroundColor = '#F5F2EC';
+              e.currentTarget.style.color = '#000000';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.color = '#FFFFFF';
+              e.currentTarget.style.color = '#F5F2EC';
             }}
           >
             Explore Destinations

@@ -81,7 +81,7 @@ const BackgroundIllustrations = () => {
         style={{ width: '100%', height: '100%' }}
       >
         {/* LEFT SIDE: Thailand-inspired architectural & landscape sketch (strokeOpacity 0.08) */}
-        <g id="thailand-journey-sketch" strokeOpacity="0.15">
+        <g id="thailand-journey-sketch" strokeOpacity="0.10">
           {/* Wat Arun Style Temple Spire (Prang) */}
           <path d="M 230,700 L 230,580 L 238,580 L 238,510 L 244,510 L 244,430 L 248,430 L 248,220 L 252,220 L 252,430 L 256,430 L 256,510 L 262,510 L 262,580 L 270,580 L 270,700 Z M 210,700 H 290" />
           <line x1="248" y1="240" x2="252" y2="240" />
@@ -162,7 +162,7 @@ const BackgroundIllustrations = () => {
         </g>
 
         {/* RIGHT SIDE: Bali-inspired architectural & landscape sketch (strokeOpacity 0.08) */}
-        <g id="bali-journey-sketch" strokeOpacity="0.15">
+        <g id="bali-journey-sketch" strokeOpacity="0.10">
           {/* Balinese Split Gate (Candi Bentar) */}
           <path d="M 1480,700 V 650 H 1520 V 700 Z" />
           <path d="M 1490,650 V 580 H 1520 V 650 Z" />
@@ -409,9 +409,13 @@ export default function OurJourney() {
           width: '95%',
           maxWidth: '1300px',
           marginBottom: '36px',
-          textAlign: 'left',
+          textAlign: 'center',
           boxSizing: 'border-box',
-          padding: '0 8px' // aligned with card grid edges
+          padding: '0 8px', // aligned with card grid edges
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          margin: '0 auto 36px auto'
         }}
       >
         <motion.span
@@ -448,33 +452,23 @@ export default function OurJourney() {
         <motion.h2
           variants={itemVariants}
           style={{
-            fontFamily: 'var(--font-sans)',
+            fontFamily: 'var(--font-heading)',
             fontSize: 'clamp(2rem, 3.8vw, 3.2rem)',
-            fontWeight: 700,
+            fontWeight: 500,
             lineHeight: 1.15,
-            letterSpacing: '-0.01em',
-            color: '#FFFFFF',
+            letterSpacing: '0.02em',
+            color: '#F5F2EC',
             margin: 0,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'flex-start',
-            textAlign: 'left'
+            alignItems: 'center',
+            textAlign: 'center'
           }}
         >
           <span>Growing</span>
           <span>
-            Beyond{' '}
-            <span
-              style={{
-                background: 'linear-gradient(to bottom, #FFFFFF 15%, #FF6B6B 65%, #C1121F 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                display: 'inline-block'
-              }}
-            >
-              BORDERS
-            </span>
+            Beyond
+            <span className="journey-allura-text">Borders</span>
           </span>
         </motion.h2>
         <motion.p
@@ -484,11 +478,13 @@ export default function OurJourney() {
             fontSize: '16px',
             lineHeight: 1.8,
             letterSpacing: '-0.02em',
-            color: 'rgba(255, 255, 255, 0.82)',
-            fontWeight: 400,
+            color: 'rgba(245, 242, 236, 0.6)',
+            fontWeight: 300,
             marginTop: '16px',
             marginBottom: 0,
-            maxWidth: '620px'
+            maxWidth: '620px',
+            textAlign: 'center',
+            margin: '16px auto 0 auto'
           }}
         >
           A visual timeline of Travinno’s journey from a single vision to a leading global destination management partner.

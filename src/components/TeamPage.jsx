@@ -96,7 +96,7 @@ export default function TeamPage() {
         width: '100%', 
         minHeight: '100vh',
         overflowX: 'hidden',
-        fontFamily: '"SF Pro Display", "Satoshi", sans-serif'
+        fontFamily: 'var(--font-sans)'
       }}
     >
       <style>{`
@@ -198,13 +198,13 @@ export default function TeamPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={faderTransition}
             style={{
-              fontFamily: "'Oswald', sans-serif",
-              fontSize: 'clamp(2.5rem, 8vw, 5.5rem)',
-              fontWeight: 800,
-              lineHeight: 1.05,
-              letterSpacing: '4px',
-              textTransform: 'uppercase',
-              color: '#F7F5F2',
+            fontFamily: 'var(--font-heading)',
+            fontSize: 'clamp(2.5rem, 8vw, 5.5rem)',
+            fontWeight: 500,
+            lineHeight: 1.05,
+            letterSpacing: '4px',
+            textTransform: 'uppercase',
+            color: '#F5F2EC',
               margin: 0
             }}
           >
@@ -410,10 +410,10 @@ export default function TeamPage() {
                 <div>
                   <h2 
                     style={{
-                      fontFamily: "'Oswald', sans-serif",
+                      fontFamily: 'var(--font-heading)',
                       fontSize: 'clamp(2rem, 4vw, 3rem)',
-                      fontWeight: 800,
-                      color: '#F7F5F2',
+                      fontWeight: 500,
+                      color: '#F5F2EC',
                       margin: 0,
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
@@ -471,10 +471,10 @@ export default function TeamPage() {
           
           <h2 
             style={{
-              fontFamily: "'Oswald', sans-serif",
+              fontFamily: 'var(--font-heading)',
               fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-              fontWeight: 800,
-              color: '#F7F5F2',
+              fontWeight: 500,
+              color: '#F5F2EC',
               marginBottom: '60px',
               textTransform: 'uppercase',
               letterSpacing: '2px'
@@ -618,11 +618,11 @@ export default function TeamPage() {
           
           <h2 
             style={{
-              fontFamily: "'Oswald', sans-serif",
+              fontFamily: 'var(--font-mono)',
               fontSize: '1rem',
-              fontWeight: 800,
-              color: '#F7F5F2',
-              letterSpacing: '4px',
+              fontWeight: 500,
+              color: 'rgba(245, 242, 236, 0.45)',
+              letterSpacing: '0.25em',
               textTransform: 'uppercase',
               textAlign: 'center',
               marginBottom: '40px'
@@ -697,10 +697,10 @@ export default function TeamPage() {
           <div style={{ textAlign: 'center' }}>
             <h3 
               style={{ 
-                fontFamily: "'Oswald', sans-serif", 
+                fontFamily: 'var(--font-heading)', 
                 fontSize: 'clamp(4rem, 8vw, 5.5rem)', 
-                fontWeight: 800, 
-                color: '#F7F5F2', 
+                fontWeight: 500, 
+                color: '#F5F2EC', 
                 margin: 0,
                 lineHeight: 1.0
               }}
@@ -728,10 +728,10 @@ export default function TeamPage() {
           <div style={{ textAlign: 'center' }}>
             <h3 
               style={{ 
-                fontFamily: "'Oswald', sans-serif", 
+                fontFamily: 'var(--font-heading)', 
                 fontSize: 'clamp(4rem, 8vw, 5.5rem)', 
-                fontWeight: 800, 
-                color: '#F7F5F2', 
+                fontWeight: 500, 
+                color: '#F5F2EC', 
                 margin: 0,
                 lineHeight: 1.0
               }}
@@ -759,10 +759,10 @@ export default function TeamPage() {
           <div style={{ textAlign: 'center' }}>
             <h3 
               style={{ 
-                fontFamily: "'Oswald', sans-serif", 
+                fontFamily: 'var(--font-heading)', 
                 fontSize: 'clamp(4rem, 8vw, 5.5rem)', 
-                fontWeight: 800, 
-                color: '#F7F5F2', 
+                fontWeight: 500, 
+                color: '#F5F2EC', 
                 margin: 0,
                 lineHeight: 1.0
               }}
@@ -840,13 +840,13 @@ export default function TeamPage() {
             viewport={{ once: true }}
             transition={faderTransition}
             style={{
-              fontFamily: "'Oswald', sans-serif",
+              fontFamily: 'var(--font-heading)',
               fontSize: 'clamp(1.8rem, 5vw, 3.5rem)',
-              fontWeight: 800,
+              fontWeight: 500,
               lineHeight: 1.2,
               letterSpacing: '3px',
               textTransform: 'uppercase',
-              color: '#F7F5F2',
+              color: '#F5F2EC',
               margin: 0
             }}
           >
@@ -870,10 +870,10 @@ export default function TeamPage() {
       >
         <h2 
           style={{
-            fontFamily: "'Oswald', sans-serif",
+            fontFamily: 'var(--font-heading)',
             fontSize: 'clamp(2.2rem, 5vw, 3.5rem)',
-            fontWeight: 800,
-            color: '#F7F5F2',
+            fontWeight: 500,
+            color: '#F5F2EC',
             margin: 0,
             letterSpacing: '2px',
             textTransform: 'uppercase'
