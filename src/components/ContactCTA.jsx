@@ -230,10 +230,12 @@ export default function ContactCTA() {
               textTransform: 'none',
               letterSpacing: 'normal',
               lineHeight: 1.0,
-              paddingTop: '6px'
+              paddingTop: '6px',
+              paddingBottom: '20px',
+              marginBottom: '-20px'
             }}
           >
-            journey today.
+            Journey Today.
           </span>
         </motion.h2>
 
