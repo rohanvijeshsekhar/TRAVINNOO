@@ -207,11 +207,11 @@ export default function ContactCTA() {
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: 'easeOut', delay: 0.1 }}
           style={{
-            fontFamily: 'var(--font-sans)',
+            fontFamily: 'var(--font-heading)',
             fontSize: 'clamp(2.2rem, 5.2vw, 4.4rem)',
-            fontWeight: 700,
+            fontWeight: 500,
             lineHeight: 1.15,
-            letterSpacing: '-0.02em',
+            letterSpacing: '0.02em',
             color: '#FFFFFF',
             margin: '0 0 20px 0'
           }}
@@ -223,7 +223,8 @@ export default function ContactCTA() {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              display: 'inline-block'
+              display: 'inline-block',
+              fontWeight: 500
             }}
           >
             journey today.
