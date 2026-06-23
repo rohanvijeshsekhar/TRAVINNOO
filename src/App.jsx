@@ -15,6 +15,7 @@ import TeamPage from './components/TeamPage';
 import ServicesPage from './components/ServicesPage';
 import CinematicHero from './components/CinematicHero';
 import ContactCTA from './components/ContactCTA';
+import Footer from './components/Footer';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from '@studio-freight/lenis';
@@ -344,6 +345,9 @@ function App() {
           <div className="home-contact-cta-fade-wrap">
             <ContactCTA />
           </div>
+
+          {/* Footer Section */}
+          <Footer />
         </>
       )}
     </div>
