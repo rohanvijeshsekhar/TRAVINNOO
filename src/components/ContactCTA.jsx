@@ -210,7 +210,7 @@ export default function ContactCTA() {
             fontFamily: 'var(--font-heading)',
             fontSize: 'clamp(2.2rem, 5.2vw, 4.4rem)',
             fontWeight: 500,
-            lineHeight: 1.15,
+            lineHeight: 1.25,
             letterSpacing: '0.02em',
             color: '#FFFFFF',
             margin: '0 0 20px 0'
@@ -219,12 +219,18 @@ export default function ContactCTA() {
           Start your luxury <br />
           <span 
             style={{
+              fontFamily: "'Allura', cursive",
+              fontSize: '1.25em',
               background: 'linear-gradient(to right, #C1121F 20%, #F77F00 85%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
               display: 'inline-block',
-              fontWeight: 500
+              fontWeight: 400,
+              textTransform: 'none',
+              letterSpacing: 'normal',
+              lineHeight: 1.0,
+              paddingTop: '6px'
             }}
           >
             journey today.
