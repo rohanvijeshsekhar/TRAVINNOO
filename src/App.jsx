@@ -19,86 +19,25 @@ import Footer from './components/Footer';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from '@studio-freight/lenis';
+import spaceStarsImg from './assets/space_stars.png';
 
-function StarryBackground() {
-  const [stars, setStars] = useState([]);
-  
-  useEffect(() => {
-    const starArray = Array.from({ length: 60 }).map((_, i) => ({
-      id: i,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      size: Math.random() * 2 + 1,
-      delay: `${Math.random() * 8}s`,
-      duration: `${6 + Math.random() * 8}s`,
-      driftX: (Math.random() - 0.5) * 40,
-      driftY: (Math.random() - 0.5) * 40
-    }));
-    setStars(starArray);
-  }, []);
 
-  return (
-    <div 
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        overflow: 'hidden',
-        pointerEvents: 'none',
-        zIndex: 1
-      }}
-    >
-      {stars.map((star) => (
-        <span
-          key={star.id}
-          className="animate-star-move"
-          style={{
-            position: 'absolute',
-            top: star.top,
-            left: star.left,
-            width: `${star.size}px`,
-            height: `${star.size}px`,
-            backgroundColor: '#ffffff',
-            borderRadius: '50%',
-            boxShadow: `0 0 ${star.size * 2}px #ffffff`,
-            opacity: 0.2,
-            animationDelay: star.delay,
-            animationDuration: star.duration,
-            animationIterationCount: 'infinite',
-            animationTimingFunction: 'ease-in-out',
-            ['--drift-x']: `${star.driftX}px`,
-            ['--drift-y']: `${star.driftY}px`
-          }}
-        />
-      ))}
-      <style>{`
-        @keyframes starMove {
-          0% {
-            opacity: 0.2;
-            transform: translate(0, 0) scale(1);
-          }
-          50% {
-            opacity: 1;
-            transform: translate(calc(var(--drift-x) * 0.5), calc(var(--drift-y) * 0.5)) scale(1.3);
-          }
-          100% {
-            opacity: 0.2;
-            transform: translate(var(--drift-x), var(--drift-y)) scale(1);
-          }
-        }
-        .animate-star-move {
-          animation-name: starMove;
-        }
-      `}</style>
-    </div>
-  );
-}
 
 function App() {
   const [currentView, setCurrentView] = useState('home');
   const [showLoader, setShowLoader] = useState(true);
+
+  // Starry sky background movement state
+  const [stars] = useState(() =>
+    Array.from({ length: 45 }).map((_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      size: Math.random() * 1.5 + 1.2,
+      delay: `${Math.random() * 6}s`,
+      duration: `${Math.random() * 8 + 5}s`
+    }))
+  );
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -254,20 +193,79 @@ function App() {
           </div>
 
           {/* Destinations Showcase Section */}
-          <div 
-            id="destinations" 
-            className="home-destinations-fade-wrap" 
-            style={{ 
-              backgroundImage: `linear-gradient(to bottom, #050505 0%, rgba(5, 5, 5, 0.75) 15%, rgba(5, 5, 5, 0.75) 85%, #050505 100%), url(${import.meta.env.BASE_URL}images/space_bg.jpg)`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              padding: '100px 24px 130px 24px', 
-              position: 'relative', 
-              zIndex: 5 
+          <div
+            id="destinations"
+            className="home-destinations-fade-wrap"
+            style={{
+              backgroundColor: '#050505',
+              padding: '100px 24px 0 24px',
+              position: 'relative',
+              clipPath: 'inset(0 0 0 0)',
+              WebkitClipPath: 'inset(0 0 0 0)',
+              zIndex: 5,
+              overflow: 'hidden'
             }}
           >
-            {/* Moving stars space background overlay */}
-            <StarryBackground />
+            {/* Fixed Background Starry Sky */}
+            <div 
+              style={{
+                position: 'fixed',
+                inset: 0,
+                backgroundImage: `linear-gradient(to bottom, rgba(5, 5, 5, 0.45) 0%, rgba(5, 5, 5, 0.45) 100%), url(${spaceStarsImg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                zIndex: 1,
+                pointerEvents: 'none'
+              }}
+            />
+
+            {/* Fixed Twinkling & Drifting Stars */}
+            <div 
+              style={{ 
+                position: 'fixed', 
+                inset: 0, 
+                overflow: 'hidden', 
+                pointerEvents: 'none', 
+                zIndex: 2 
+              }}
+            >
+              <style>{`
+                @keyframes starDrift {
+                  0% {
+                    transform: translate(0, 0) scale(0.85);
+                    opacity: 0.25;
+                  }
+                  50% {
+                    transform: translate(15px, -15px) scale(1.15);
+                    opacity: 0.85;
+                  }
+                  100% {
+                    transform: translate(30px, -30px) scale(0.85);
+                    opacity: 0.25;
+                  }
+                }
+                .drifting-twinkle-star {
+                  position: absolute;
+                  background-color: #ffffff;
+                  border-radius: 50%;
+                  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+                }
+              `}</style>
+              {stars.map((star) => (
+                <div
+                  key={star.id}
+                  className="drifting-twinkle-star"
+                  style={{
+                    left: star.left,
+                    top: star.top,
+                    width: `${star.size}px`,
+                    height: `${star.size}px`,
+                    animation: `starDrift ${star.duration} infinite ease-in-out`,
+                    animationDelay: star.delay
+                  }}
+                />
+              ))}
+            </div>
 
             <div style={{ maxWidth: '1300px', margin: '0 auto', textAlign: 'center', boxSizing: 'border-box', padding: '0 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 10 }}>
               <span

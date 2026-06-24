@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from '@studio-freight/lenis';
+import AboutJourney from '../AboutJourney';
 
 export function ParallaxComponent() {
   const parallaxRef = useRef(null);
@@ -152,6 +153,9 @@ export function ParallaxComponent() {
           </div>
         </div>
       </section>
+      
+      {/* Scroll-Linked Vertical Journey Timeline */}
+      <AboutJourney />
     </div>
   );
 }

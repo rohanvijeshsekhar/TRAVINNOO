@@ -1,335 +1,601 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const InteractiveSelector = () => {
+interface Destination {
+  title: string;       // Destination Name (e.g. Dubai, Malaysia...)
+  region: string;      // Region (e.g. Middle East, Southeast Asia...)
+  countryName: string; // Bold Country Name (e.g. United Arab Emirates, Malaysia...)
+  heading: string;     // Large Editorial Heading
+  description: string; // Short Description
+  highlights: string[];// Feature Pills
+  image: string;       // Image URL
+}
+
+const destinations: Destination[] = [
+  {
+    title: "Dubai",
+    region: "Middle East",
+    countryName: "United Arab Emirates",
+    heading: "Modern Skylines & Desert Safaris",
+    description: "Experience a world where futuristic glass skyscrapers rise directly from ancient desert sands, curating the ultimate heights of luxury leisure and private safaris.",
+    highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
+    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    title: "Malaysia",
+    region: "Southeast Asia",
+    countryName: "Malaysia",
+    heading: "Vibrant Cultures & Rainforest Escapes",
+    description: "Discover a rich tapestry of history, modern capital luxury, and pristine ancient rainforest canopies home to unique biodiversity.",
+    highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
+    image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    title: "Thailand",
+    region: "Southeast Asia",
+    countryName: "Thailand",
+    heading: "Golden Temples & Tropical Islands",
+    description: "Immerse yourself in the warm hospitality of golden temple cities and white sand archipelago islands with tailored beachfront luxury.",
+    highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
+    image: "https://images.unsplash.com/photo-1504214208698-ea1916a2195a?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    title: "Singapore",
+    region: "Southeast Asia",
+    countryName: "Singapore",
+    heading: "Futuristic Gardens & Cosmopolitan Charm",
+    description: "Walk through the world's most advanced architectural nature displays, leading Michelin-starred dining, and premium lifestyle ports.",
+    highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
+    image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    title: "Bali",
+    region: "Southeast Asia",
+    countryName: "Indonesia",
+    heading: "Sacred Temples & Pristine Beaches",
+    description: "Reconnect in the spiritual capital of volcanic lake vistas, iconic terraced valleys, and private pool luxury villas.",
+    highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
+    image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    title: "Kenya",
+    region: "East Africa",
+    countryName: "Kenya",
+    heading: "Untamed Wildlife & Savannah Reserves",
+    description: "Witness the great wilderness migration on the plains of Masai Mara, pairing raw nature with five-star luxury tented camp reserves.",
+    highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
+    image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    title: "Vietnam",
+    region: "Southeast Asia",
+    countryName: "Vietnam",
+    heading: "Historic Cities & Dramatic Karst Bays",
+    description: "Cruise the emerald waters of Ha Long Bay and explore French colonial cities, combining rich historic heritage with luxury maritime travel.",
+    highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
+    image: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop"
+  }
+];
+
+const getFlag = (title: string) => {
+  switch (title) {
+    case "Dubai": return "🇦🇪";
+    case "Malaysia": return "🇲🇾";
+    case "Thailand": return "🇹🇭";
+    case "Singapore": return "🇸🇬";
+    case "Bali": return "🇮🇩";
+    case "Kenya": return "🇰🇪";
+    case "Vietnam": return "🇻🇳";
+    default: return "";
+  }
+};
+
+export default function InteractiveSelector() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const titleRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const ctaRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
+  
   const [activeIndex, setActiveIndex] = useState(0);
-  const [animatedOptions, setAnimatedOptions] = useState<number[]>([]);
-  
-  const options = [
-    {
-      title: "Dubai",
-      description: "Modern skylines & desert safaris",
-      image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1200&auto=format&fit=crop"
-    },
-    {
-      title: "Kenya",
-      description: "Untamed wildlife & savannah reserves",
-      image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200&auto=format&fit=crop"
-    },
-    {
-      title: "Thailand",
-      description: "Golden temples & tropical islands",
-      image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=1200&auto=format&fit=crop"
-    },
-    {
-      title: "Malaysia",
-      description: "Vibrant cultures & rainforest escapes",
-      image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=80&w=1200&auto=format&fit=crop"
-    },
-    {
-      title: "Singapore",
-      description: "Futuristic gardens & cosmopolitan charm",
-      image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=1200&auto=format&fit=crop"
-    },
-    {
-      title: "Vietnam",
-      description: "Historic cities & dramatic karst bays",
-      image: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop"
-    },
-    {
-      title: "Bali",
-      description: "Sacred temples & pristine beaches",
-      image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200&auto=format&fit=crop"
-    }
-  ];
-
-  const handleOptionClick = (index: number) => {
-    if (index !== activeIndex) {
-      setActiveIndex(index);
-    }
-  };
-
-  const [activeMobileIndex, setActiveMobileIndex] = useState<number | null>(null);
-  
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchStartY, setTouchStartY] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
-  const [touchEndY, setTouchEndY] = useState<number | null>(null);
-
-  const minSwipeDistance = 50;
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null);
-    setTouchEndY(null);
-    setTouchStart(e.targetTouches[0].clientX);
-    setTouchStartY(e.targetTouches[0].clientY);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-    setTouchEndY(e.targetTouches[0].clientY);
-  };
-
-  const handleTouchEnd = () => {
-    if (touchStart === null || touchEnd === null || touchStartY === null || touchEndY === null) return;
-    
-    const xDistance = touchStart - touchEnd;
-    const yDistance = touchStartY - touchEndY;
-    
-    if (Math.abs(xDistance) > Math.abs(yDistance)) {
-      if (Math.abs(xDistance) > minSwipeDistance) {
-        if (xDistance > 0) {
-          // Swipe Left -> next
-          setActiveMobileIndex((prev) => {
-            if (prev === null) return 0;
-            return (prev + 1) % options.length;
-          });
-        } else {
-          // Swipe Right -> prev
-          setActiveMobileIndex((prev) => {
-            if (prev === null) return options.length - 1;
-            return (prev - 1 + options.length) % options.length;
-          });
-        }
-      }
-    }
-  };
-
-  const handleMobileClick = (index: number) => {
-    if (activeMobileIndex === index) {
-      setActiveMobileIndex(null);
-    } else {
-      setActiveMobileIndex(index);
-    }
-  };
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const timers: any[] = [];
-    
-    options.forEach((_, i) => {
-      const timer = setTimeout(() => {
-        setAnimatedOptions(prev => [...prev, i]);
-      }, 180 * i);
-      timers.push(timer);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const cards = cardRefs.current;
+
+    // Reset initial card styles programmatically
+    cards.forEach((card, idx) => {
+      if (!card) return;
+      if (idx === 0) {
+        gsap.set(card, { y: "0px", opacity: 1, scale: 1 });
+      } else {
+        gsap.set(card, { y: "100vh", opacity: 1, scale: 1 });
+      }
     });
-    
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container,
+        start: "top top",
+        end: "+=600vh",
+        scrub: true,
+        pin: true,
+        snap: {
+          snapTo: 1 / 6,
+          duration: { min: 0.4, max: 0.7 },
+          ease: "power1.inOut"
+        },
+        onUpdate: (self) => {
+          const progress = self.progress;
+          const targetIdx = Math.min(6, Math.max(0, Math.round(progress * 6)));
+          setActiveIndex(targetIdx);
+        }
+      }
+    });
+
+    // Animate Card Stacking Transitions
+    for (let i = 1; i < 7; i++) {
+      const position = i - 1; // absolute start position in timeline
+
+      // 1. Outgoing Card (i-1) - moves up slightly, scales down slightly, remains fully opaque
+      if (cards[i-1]) {
+        tl.to(cards[i-1], {
+          y: "-30px",
+          opacity: 1,
+          scale: 0.97,
+          duration: 1,
+          ease: "power2.inOut"
+        }, position);
+      }
+
+      // 2. Incoming Card (i) - slides up, remains fully opaque
+      if (cards[i]) {
+        tl.fromTo(cards[i],
+          { y: "100vh", opacity: 1, scale: 1 },
+          { y: "0px", opacity: 1, scale: 1, duration: 1, ease: "power2.inOut" },
+          position
+        );
+      }
+    }
+
     return () => {
-      timers.forEach(timer => clearTimeout(timer));
+      if (tl.scrollTrigger) {
+        tl.scrollTrigger.kill();
+      }
+      tl.kill();
     };
   }, []);
 
   return (
-    <div className="relative flex flex-col items-center justify-center w-full bg-transparent font-sans text-white py-12">
-      {/* Desktop Version */}
-      <div className="options hidden md:flex w-full max-w-[1100px] min-w-[320px] h-[450px] mx-auto items-stretch overflow-hidden relative rounded-2xl border border-white/10 bg-[#0c0c0c] shadow-2xl">
-        {options.map((option, index) => (
-          <div
-            key={index}
-            className={`
-              option relative flex flex-col justify-end overflow-hidden transition-all duration-700 ease-in-out
-              ${activeIndex === index ? 'active' : ''}
-            `}
-            style={{
-              backgroundImage: `url('${option.image}')`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backfaceVisibility: 'hidden',
-              opacity: animatedOptions.includes(index) ? 1 : 0,
-              transform: animatedOptions.includes(index) ? 'translateX(0)' : 'translateX(-60px)',
-              minWidth: '40px',
-              minHeight: '100px',
-              margin: 0,
-              borderRight: index < options.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none',
-              cursor: 'pointer',
-              backgroundColor: '#18181b',
-              flex: activeIndex === index ? '7 1 0%' : '1 1 0%',
-              zIndex: activeIndex === index ? 10 : 1,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-end',
-              position: 'relative',
-              overflow: 'hidden',
-              willChange: 'flex-grow'
-            }}
-            onClick={() => handleOptionClick(index)}
-          >
-            {/* Shadow effect overlay */}
-            <div 
-              className="absolute inset-0 pointer-events-none transition-opacity duration-500 ease-in-out bg-gradient-to-t from-black/90 via-black/40 to-transparent"
-              style={{
-                opacity: activeIndex === index ? 0.95 : 0.4
-              }}
-            ></div>
-            
-            {/* Label with info (Only visible for active) */}
-            <div className="absolute left-6 bottom-6 z-10 pointer-events-none max-w-[90%]">
-              <div 
-                className="info text-white relative transition-all duration-700 ease-in-out"
-                style={{
-                  opacity: activeIndex === index ? 1 : 0,
-                  transform: activeIndex === index ? 'translateY(0)' : 'translateY(15px)'
-                }}
-              >
-                <div className="main font-bold text-xl tracking-wide uppercase text-[#F5F2EC] drop-shadow-md">
-                  {option.title}
-                </div>
-                <div className="sub text-xs text-white/80 font-medium whitespace-nowrap mt-1 drop-shadow-sm">
-                  {option.description}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Mobile-only Options Container */}
-      <div 
-        className="options-mobile flex md:hidden w-[calc(100%-32px)] h-[500px] mx-auto items-stretch overflow-hidden relative rounded-2xl border border-white/10 bg-[#0c0c0c] shadow-2xl select-none"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        {options.map((option, index) => {
-          const isExpanded = activeMobileIndex === index;
-          return (
-            <div
-              key={index}
-              className={`
-                option-mobile relative flex flex-col justify-end overflow-hidden
-                ${isExpanded ? 'active' : ''}
-              `}
-              style={{
-                flex: activeMobileIndex === null
-                  ? '1 1 0%'
-                  : isExpanded
-                    ? '22 1 0%'
-                    : '1 1 0%',
-                transition: 'flex 750ms cubic-bezier(0.645, 0.045, 0.355, 1), opacity 700ms ease-in-out, transform 700ms ease-in-out',
-                opacity: animatedOptions.includes(index) ? 1 : 0,
-                transform: animatedOptions.includes(index) ? 'translateX(0)' : 'translateX(-60px)',
-                minWidth: '0px',
-                height: '100%',
-                margin: 0,
-                borderRight: index < options.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none',
-                cursor: 'pointer',
-                backgroundColor: '#18181b',
-                zIndex: isExpanded ? 10 : 1,
-                willChange: 'flex-grow'
-              }}
-              onClick={() => handleMobileClick(index)}
-            >
-              {/* Background Image Layer */}
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  backgroundImage: `url('${option.image}')`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  transform: isExpanded ? 'scale(1.05)' : 'scale(1)',
-                  filter: activeMobileIndex === null 
-                    ? 'brightness(1) blur(0px)' 
-                    : isExpanded 
-                      ? 'brightness(1) blur(0px)' 
-                      : 'brightness(0.5) blur(1px)',
-                  transition: 'transform 750ms cubic-bezier(0.645, 0.045, 0.355, 1), filter 750ms cubic-bezier(0.645, 0.045, 0.355, 1)',
-                  willChange: 'transform, filter'
-                }}
-              />
-
-              {/* Gradient overlay for text readability */}
-              <div 
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.45) 45%, rgba(0, 0, 0, 0) 100%)',
-                  opacity: isExpanded ? 0.95 : 0,
-                  transition: 'opacity 750ms cubic-bezier(0.645, 0.045, 0.355, 1)',
-                  pointerEvents: 'none'
-                }}
-              />
-              
-              {/* Content Overlay */}
-              <div 
-                style={{
-                  position: 'absolute',
-                  left: '20px',
-                  bottom: '30px',
-                  right: '20px',
-                  zIndex: 10,
-                  pointerEvents: 'none',
-                  opacity: isExpanded ? 1 : 0,
-                  transform: isExpanded ? 'translateY(0)' : 'translateY(20px)',
-                  transition: 'opacity 500ms cubic-bezier(0.645, 0.045, 0.355, 1) 200ms, transform 500ms cubic-bezier(0.645, 0.045, 0.355, 1) 200ms',
-                }}
-              >
-                <h3 className="font-bold text-2xl tracking-wide uppercase text-[#F5F2EC] drop-shadow-md">
-                  {option.title}
-                </h3>
-                <p className="text-xs text-white/90 font-light mt-1.5 leading-relaxed max-w-[95%] line-clamp-3">
-                  {option.description}
-                </p>
-                <div style={{ marginTop: '16px' }}>
-                  <a 
-                    href="#contact"
-                    className="inline-flex items-center gap-1.5 text-[10px] font-semibold tracking-wider text-[#F5F2EC] uppercase pointer-events-auto hover:text-white transition-colors duration-300"
-                    style={{
-                      border: '1px solid rgba(255, 255, 255, 0.35)',
-                      padding: '8px 18px',
-                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                      backdropFilter: 'blur(4px)',
-                      WebkitBackdropFilter: 'blur(4px)'
-                    }}
-                  >
-                    <span>Explore</span>
-                    <span>&rarr;</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      
-      {/* Custom animations */}
+    <div 
+      ref={containerRef} 
+      className="destinations-stack-section"
+      style={{
+        position: 'relative',
+        height: '100vh', // Clean 100vh height for pinning
+        backgroundColor: 'transparent',
+        width: '100%',
+        boxSizing: 'border-box'
+      }}
+    >
       <style>{`
-        @keyframes slideFadeIn {
-          0% {
-            opacity: 0;
-            transform: translateX(-60px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0);
-          }
+        .destinations-sticky-viewport {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          background-color: transparent;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          box-sizing: border-box;
+          padding: 0;
         }
-        
-        @keyframes fadeInFromTop {
-          0% {
-            opacity: 0;
-            transform: translateY(-20px);
+
+        .destinations-grid-bg {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+          background-size: 50px 50px;
+          pointer-events: none;
+          z-index: 0;
+          mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 95%);
+          -webkit-mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 95%);
+        }
+
+        .destinations-cards-container {
+          position: relative;
+          width: 92%;
+          height: 72vh; /* Reduced height by 15-20% for a wider cinematic feel */
+          max-height: 720px;
+          min-height: 520px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 2;
+        }
+
+        /* Redesigned Card Styling matching the editorial reference */
+        .destination-card {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: #050505;
+          border: 1px solid #181818;
+          border-radius: 32px; /* Rounded corners: 32px */
+          box-sizing: border-box;
+          padding: 0; /* Removed overall padding so image can touch edges */
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          overflow: hidden; /* Clip image corners automatically */
+          box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+          will-change: transform;
+        }
+
+        /* LEFT SIDE (45%) */
+        .card-left-panel {
+          width: 45%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          box-sizing: border-box;
+          padding: 40px 0 40px 48px; /* Reduced vertical padding */
+          z-index: 5;
+        }
+
+        .left-panel-content {
+          max-width: 85%; /* Content width limited to 85% */
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+
+        /* RIGHT SIDE (55%) */
+        .card-right-panel {
+          width: 55%;
+          height: 100%;
+          position: relative;
+          overflow: hidden;
+          box-sizing: border-box;
+          z-index: 2;
+        }
+
+        .destination-image-wrapper {
+          width: 100%;
+          height: 100%;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .destination-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          opacity: 1;
+          transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Subtle image hover zoom */
+        .destination-card:hover .destination-img {
+          transform: scale(1.03);
+        }
+
+        /* Typography & Spacing hierarchy */
+        .dest-number-label {
+          font-family: var(--font-sans);
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.35);
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          margin-bottom: 12px; /* Tighter layout spacing */
+        }
+
+        .dest-number-label .red-accent {
+          color: #C1121F;
+          font-weight: 700;
+        }
+
+        .dest-meta-container {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-bottom: 12px; /* Tighter layout spacing */
+        }
+
+        .dest-region-label {
+          font-family: var(--font-sans);
+          font-size: 0.8rem;
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.4);
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+        }
+
+        .dest-country-heading {
+          margin: 0;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          line-height: 1;
+        }
+
+        .dest-country-name-script {
+          font-family: 'Allura', cursive;
+          background: linear-gradient(to bottom, #F5F2EC 20%, #E8A7A7 60%, #C1121F 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          display: inline-block;
+          font-size: 2.2rem;
+          font-weight: 400;
+          letter-spacing: 0.02em;
+          line-height: 1;
+          text-transform: none;
+        }
+
+        .dest-flag-span {
+          font-size: 1.5rem;
+          vertical-align: middle;
+        }
+
+        .dest-editorial-heading {
+          font-family: var(--font-heading); /* Canela */
+          font-size: clamp(2rem, 2.8vw, 3rem); /* Slightly smaller for cinematic ratio */
+          font-weight: 500;
+          line-height: 1.15;
+          color: #F5F2EC;
+          margin: 0 0 16px 0; /* Tighter layout spacing */
+          letter-spacing: 0.01em;
+        }
+
+        .dest-editorial-description {
+          font-family: var(--font-sans);
+          font-size: 0.92rem;
+          line-height: 1.6;
+          color: rgba(245, 242, 236, 0.7);
+          margin: 0 0 20px 0; /* Tighter layout spacing */
+          font-weight: 400;
+        }
+
+        /* Feature Pills Styling */
+        .dest-feature-pills-container {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-bottom: 24px; /* Tighter layout spacing */
+        }
+
+        .dest-feature-pill {
+          display: inline-block;
+          padding: 6px 14px;
+          border: 1px solid #1c1c1c;
+          background-color: #0d0d0d;
+          color: rgba(245, 242, 236, 0.8);
+          font-family: var(--font-sans);
+          font-size: 0.72rem;
+          font-weight: 500;
+          border-radius: 100px;
+          cursor: default;
+          transition: border-color 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .dest-feature-pill:hover {
+          border-color: #C1121F;
+        }
+
+        /* Explore Button Styling */
+        .dest-button-container {
+          display: flex;
+        }
+
+        .dest-explore-button {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          padding: 12px 28px;
+          border: 1px solid #282828;
+          background-color: #000000;
+          color: #F5F2EC;
+          font-family: var(--font-sans);
+          font-size: 0.78rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          border-radius: 100px;
+          cursor: pointer;
+          text-decoration: none;
+          transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .dest-explore-button .btn-arrow {
+          transition: transform 0.3s ease;
+        }
+
+        .dest-explore-button:hover {
+          border-color: #C1121F;
+          box-shadow: 0 0 15px rgba(193, 18, 31, 0.25);
+          color: #FFFFFF;
+        }
+
+        .dest-explore-button:hover .btn-arrow {
+          transform: translateX(4px);
+        }
+
+        /* Responsive Mobile Layout (Tablet and Mobile stack) */
+        @media (max-width: 1023px) {
+          .destinations-cards-container {
+            width: 94%;
+            height: 80vh;
+            min-height: 500px;
+            max-height: auto;
           }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
+
+          .destination-card {
+            flex-direction: column-reverse;
+            padding: 0;
+            border-radius: 24px;
+            justify-content: flex-end;
+            gap: 0;
           }
-        }
-        
-        .animate-fadeInTop {
-          opacity: 0;
-          transform: translateY(-20px);
-          animation: fadeInFromTop 0.8s ease-in-out forwards;
-        }
-        
-        .delay-300 {
-          animation-delay: 0.3s;
-        }
-        
-        .delay-600 {
-          animation-delay: 0.6s;
+
+          .card-left-panel {
+            width: 100%;
+            height: 62%;
+            padding: 16px 20px;
+            justify-content: center;
+          }
+
+          .left-panel-content {
+            max-width: 100%;
+          }
+
+          .card-right-panel {
+            width: 100%;
+            height: 38%;
+            border-radius: 0;
+          }
+
+          .destination-image-wrapper {
+            border-radius: 0;
+          }
+
+          .dest-editorial-heading {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+          }
+
+          .dest-country-heading {
+            font-size: 1.25rem;
+          }
+
+          .dest-country-name-script {
+            font-size: 1.75rem;
+          }
+
+          .dest-editorial-description {
+            font-size: 0.82rem;
+            line-height: 1.45;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+
+          .dest-feature-pills-container {
+            margin-bottom: 12px;
+            gap: 6px;
+          }
+
+          .dest-feature-pill {
+            padding: 4px 10px;
+            font-size: 0.65rem;
+          }
+
+          .dest-explore-button {
+            padding: 8px 20px;
+            font-size: 0.72rem;
+          }
+          
+          .dest-number-label {
+            margin-bottom: 6px;
+          }
+          
+          .dest-meta-container {
+            margin-bottom: 6px;
+            gap: 4px;
+          }
         }
       `}</style>
+
+      {/* Sticky view box */}
+      <div className="destinations-sticky-viewport">
+        {/* Subtle grid background */}
+        <div className="destinations-grid-bg" />
+
+        {/* Floating Stack Container */}
+        <div className="destinations-cards-container">
+          {destinations.map((dest, idx) => {
+            return (
+              <div
+                key={`dest-card-${idx}`}
+                ref={(el) => { cardRefs.current[idx] = el; }}
+                className="destination-card"
+                style={{
+                  zIndex: idx + 1
+                }}
+              >
+                {/* Left textual storytelling column */}
+                <div className="card-left-panel">
+                  <div className="left-panel-content">
+                    <div className="dest-meta-container">
+                      <span className="dest-region-label">{dest.region}</span>
+                      <h4 className="dest-country-heading">
+                        <span className="dest-country-name-script">{dest.countryName}</span>
+                      </h4>
+                    </div>
+
+                    <h3 className="dest-editorial-heading">{dest.heading}</h3>
+                    <p className="dest-editorial-description">{dest.description}</p>
+                    
+                    <div className="dest-feature-pills-container">
+                      {dest.highlights.map((highlight, hidx) => (
+                        <span key={`high-${hidx}`} className="dest-feature-pill">
+                          {highlight}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="dest-button-container">
+                      <a href="#contact" className="dest-explore-button">
+                        Explore Destination <span className="btn-arrow">→</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right photographic cinematic column */}
+                <div className="card-right-panel">
+                  <div className="destination-image-wrapper">
+                    <img
+                      ref={(el) => { imageRefs.current[idx] = el; }}
+                      src={dest.image}
+                      alt={`${dest.title} landscape`}
+                      className="destination-img"
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
-};
-
-export default InteractiveSelector;
+}

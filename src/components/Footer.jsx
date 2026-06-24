@@ -32,7 +32,7 @@ export default function Footer() {
       style={{
         position: 'relative',
         backgroundColor: '#050505',
-        borderTop: '1px solid rgba(245, 242, 236, 0.06)',
+        borderTop: 'none',
         padding: '90px 24px 60px 24px',
         overflow: 'hidden',
         zIndex: 10,
