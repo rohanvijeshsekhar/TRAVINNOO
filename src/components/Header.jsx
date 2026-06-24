@@ -105,18 +105,29 @@ export default function Header() {
       </div>
 
       {/* Desktop Menu Navigation Links (matching screenshot layout) */}
-      <div className="desktop-nav-container">
+      <div 
+        className="desktop-nav-container"
+        style={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          pointerEvents: 'auto'
+        }}
+      >
         <nav 
           style={{ 
             display: 'flex', 
-            gap: '30px', 
+            gap: '26px', 
             alignItems: 'center',
             backgroundColor: 'rgba(255, 255, 255, 0.04)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
             border: '1px solid rgba(255, 255, 255, 0.08)',
             borderRadius: '100px',
-            padding: '8px 28px',
+            padding: '4px 24px',
             boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.25)',
             boxSizing: 'border-box'
           }}
@@ -134,7 +145,7 @@ export default function Header() {
               color: 'var(--text-primary)',
               textDecoration: 'none',
               opacity: 0.8,
-              padding: '6px 0',
+              padding: '4px 0',
               transition: 'all 0.3s ease'
             }}
             onMouseEnter={(e) => {
@@ -153,7 +164,7 @@ export default function Header() {
           <div
             onMouseEnter={() => setHoveredMenu('company')}
             onMouseLeave={() => setHoveredMenu(null)}
-            style={{ position: 'relative', paddingTop: '8px', paddingBottom: '8px' }}
+            style={{ position: 'relative', paddingTop: '4px', paddingBottom: '4px' }}
           >
             <a
               href="#about"
@@ -167,7 +178,7 @@ export default function Header() {
                 color: hoveredMenu === 'company' ? 'var(--accent-red)' : 'var(--text-primary)',
                 textDecoration: 'none',
                 opacity: hoveredMenu === 'company' ? 1 : 0.8,
-                padding: '6px 0',
+                padding: '4px 0',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
@@ -243,7 +254,7 @@ export default function Header() {
           <div
             onMouseEnter={() => setHoveredMenu('destinations')}
             onMouseLeave={() => setHoveredMenu(null)}
-            style={{ position: 'relative', paddingTop: '8px', paddingBottom: '8px' }}
+            style={{ position: 'relative', paddingTop: '4px', paddingBottom: '4px' }}
           >
             <a
               href="#destinations"
@@ -257,7 +268,7 @@ export default function Header() {
                 color: hoveredMenu === 'destinations' ? 'var(--accent-red)' : 'var(--text-primary)',
                 textDecoration: 'none',
                 opacity: hoveredMenu === 'destinations' ? 1 : 0.8,
-                padding: '6px 0',
+                padding: '4px 0',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
@@ -342,7 +353,7 @@ export default function Header() {
               color: 'var(--text-primary)',
               textDecoration: 'none',
               opacity: 0.8,
-              padding: '6px 0',
+              padding: '4px 0',
               transition: 'all 0.3s ease'
             }}
             onMouseEnter={(e) => {
