@@ -147,8 +147,8 @@ export default function InteractiveSelector() {
         scrollTrigger: {
           trigger: container,
           start: "top top",
-          end: "+=500vh", // Shorter and much more responsive desktop scroll length
-          scrub: 1,
+          end: "+=700vh", // Longer scroll distance to make card transitions slower and more controllable
+          scrub: 1.2,     // Softer ease-catchup for a more luxurious feel
           pin: true,
           anticipatePin: 1, // Smooths pinning on touch devices
           onUpdate: (self) => {
@@ -159,26 +159,33 @@ export default function InteractiveSelector() {
         }
       });
 
-      // Animate Card Stacking Transitions
+      // Animate Card Stacking Transitions with smooth easing and resting zones (0.6 duration transition, 0.4 resting)
+      const transitionDuration = 0.6;
       for (let i = 1; i < 7; i++) {
         const position = i - 1; // absolute start position in timeline
 
-        // 1. Outgoing Card (i-1) - moves up slightly, scales down slightly, remains fully opaque
+        // 1. Outgoing Card (i-1) - moves up slightly, scales down slightly
         if (cards[i - 1]) {
           tl.to(cards[i - 1], {
             y: "-30px",
             opacity: 1,
             scale: 0.97,
-            duration: 1,
-            ease: "none"
+            duration: transitionDuration,
+            ease: "power2.inOut" // Soft ease in/out curve
           }, position);
         }
 
-        // 2. Incoming Card (i) - slides up, remains fully opaque
+        // 2. Incoming Card (i) - slides up
         if (cards[i]) {
           tl.fromTo(cards[i],
             { y: "100vh", opacity: 1, scale: 1 },
-            { y: "0px", opacity: 1, scale: 1, duration: 1, ease: "none" },
+            { 
+              y: "0px", 
+              opacity: 1, 
+              scale: 1, 
+              duration: transitionDuration, 
+              ease: "power2.inOut" // Soft ease in/out curve
+            },
             position
           );
         }
