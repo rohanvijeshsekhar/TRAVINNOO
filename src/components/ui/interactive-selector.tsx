@@ -131,15 +131,6 @@ export default function InteractiveSelector() {
 
     const cards = cardRefs.current;
 
-    // Check if we are on mobile/tablet viewports
-    if (window.innerWidth < 1024) {
-      // Clear any GSAP styles to let CSS flexbox handle layout natively
-      cards.forEach((card) => {
-        if (card) gsap.set(card, { clearProps: "all" });
-      });
-      return;
-    }
-
     // Set up GSAP context for proper lifecycle cleanup in React
     const ctx = gsap.context(() => {
       // Reset initial card styles programmatically
@@ -159,6 +150,7 @@ export default function InteractiveSelector() {
           end: "+=500vh", // Shorter and much more responsive desktop scroll length
           scrub: 1,
           pin: true,
+          anticipatePin: 1, // Smooths pinning on touch devices
           onUpdate: (self) => {
             const progress = self.progress;
             const targetIdx = Math.min(6, Math.max(0, Math.round(progress * 6)));
@@ -467,58 +459,50 @@ export default function InteractiveSelector() {
         /* Responsive Mobile Layout (Tablet and Mobile stack) */
         @media (max-width: 1023px) {
           .destinations-stack-section {
-            height: auto !important;
-            padding: 40px 0 !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            padding: 0 !important;
           }
 
           .destinations-sticky-viewport {
-            position: relative !important;
-            height: auto !important;
-            overflow: visible !important;
-            display: block !important;
+            position: absolute !important;
+            height: 100% !important;
+            overflow: hidden !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
             padding: 0 !important;
           }
 
           .destinations-cards-container {
-            width: 100% !important;
-            height: auto !important;
-            min-height: auto !important;
-            max-height: none !important;
+            width: 90% !important;
+            height: 75vh !important;
+            height: 75dvh !important;
+            max-height: 640px !important;
+            min-height: 480px !important;
             display: flex !important;
-            flex-direction: row !important;
-            overflow-x: auto !important;
-            overflow-y: hidden !important;
-            scroll-snap-type: x mandatory !important;
-            gap: 20px !important;
-            padding: 10px 24px 30px 24px !important;
-            justify-content: flex-start !important;
-            align-items: stretch !important;
+            justify-content: center !important;
+            align-items: center !important;
+            position: relative !important;
+            gap: 0 !important;
+            padding: 0 !important;
             box-sizing: border-box !important;
-            scrollbar-width: none; /* Hide scrollbar for clean UI */
-          }
-          
-          .destinations-cards-container::-webkit-scrollbar {
-            display: none; /* Hide scrollbar for Safari/Chrome */
           }
 
           .destination-card {
-            position: relative !important;
-            width: 85vw !important;
-            max-width: 340px !important;
-            height: 520px !important;
-            flex-shrink: 0 !important;
-            scroll-snap-align: center !important;
+            position: absolute !important;
+            width: 100% !important;
+            height: 100% !important;
             flex-direction: column-reverse !important;
             border-radius: 24px !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
-            opacity: 1 !important;
-            transform: none !important;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7) !important;
+            will-change: transform;
           }
 
           .card-left-panel {
             width: 100% !important;
             height: 60% !important;
-            padding: 20px !important;
+            padding: 24px 20px !important;
             justify-content: flex-start !important;
             z-index: 5;
           }
