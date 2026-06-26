@@ -721,7 +721,7 @@ Error generating stack: `+e.message+`
             display: flex !important;
             justify-content: center !important;
             align-items: flex-start !important;
-            padding-top: 24px !important;
+            padding-top: 96px !important;
             box-sizing: border-box !important;
           }
 
