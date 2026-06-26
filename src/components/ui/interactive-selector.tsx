@@ -156,7 +156,7 @@ export default function InteractiveSelector() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: container,
-          start: () => window.innerWidth < 1024 ? "top 80px" : "top top", // Stops card exactly under the mobile navbar
+          start: "top top",
           end: "+=1400vh", // Increased container height for longer scroll distance
           pin: true,
           anticipatePin: 1, // Smooths pinning on touch/mobile devices
@@ -523,8 +523,9 @@ export default function InteractiveSelector() {
             overflow: hidden !important;
             display: flex !important;
             justify-content: center !important;
-            align-items: center !important;
-            padding: 0 !important;
+            align-items: flex-start !important;
+            padding-top: 92px !important;
+            box-sizing: border-box !important;
           }
 
           .destinations-cards-container {
