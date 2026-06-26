@@ -110,11 +110,18 @@ export default function InteractiveSelector() {
   const titleRefs = useRef<(HTMLDivElement | null)[]>([]);
   const ctaRefs = useRef<(HTMLDivElement | null)[]>([]);
   const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
-  const targetProgressRef = useRef(0);
-  const isInitializedRef = useRef(false);
+  const currentActiveRef = useRef(0);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Preload all destination images on mount to prevent layout/network lag during scrolling
+  useEffect(() => {
+    destinations.forEach((dest) => {
+      const img = new Image();
+      img.src = dest.image;
+    });
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -133,56 +140,6 @@ export default function InteractiveSelector() {
 
     const cards = cardRefs.current;
 
-    let tl: gsap.core.Timeline;
-    let st: ScrollTrigger;
-    let currentProgress = 0;
-    const lerpFactor = 0.12; // Increased for faster catch-up (eliminates auto-slide lag)
-    const maxDelta = 0.025;  // Higher speed limit so swipe inputs react immediately
-
-    const updateAnimation = () => {
-      const target = targetProgressRef.current;
-
-      // Instantly initialize to correct scroll position on first tick (prevents jump on load)
-      if (!isInitializedRef.current) {
-        currentProgress = target;
-        if (tl) tl.progress(currentProgress);
-        const t = currentProgress * 5.0;
-        let activeIdx = 0;
-        if (t < 0.5) activeIdx = 0;
-        else if (t < 1.3) activeIdx = 1;
-        else if (t < 2.1) activeIdx = 2;
-        else if (t < 2.9) activeIdx = 3;
-        else if (t < 3.7) activeIdx = 4;
-        else if (t < 4.5) activeIdx = 5;
-        else activeIdx = 6;
-        setActiveIndex(activeIdx);
-        isInitializedRef.current = true;
-        return;
-      }
-
-      const diff = target - currentProgress;
-      if (Math.abs(diff) > 0.0001) {
-        const step = diff * lerpFactor;
-        const clampedStep = gsap.utils.clamp(-maxDelta, maxDelta, step);
-        currentProgress += clampedStep;
-        currentProgress = gsap.utils.clamp(0, 1, currentProgress);
-
-        if (tl) tl.progress(currentProgress);
-
-        const t = currentProgress * 5.0;
-        let activeIdx = 0;
-        if (t < 0.5) activeIdx = 0;
-        else if (t < 1.3) activeIdx = 1;
-        else if (t < 2.1) activeIdx = 2;
-        else if (t < 2.9) activeIdx = 3;
-        else if (t < 3.7) activeIdx = 4;
-        else if (t < 4.5) activeIdx = 5;
-        else activeIdx = 6;
-        
-        setActiveIndex(activeIdx);
-      }
-    };
-
     // Set up GSAP context for proper lifecycle cleanup in React
     const ctx = gsap.context(() => {
       // Reset initial card styles programmatically
@@ -195,23 +152,64 @@ export default function InteractiveSelector() {
         }
       });
 
-      tl = gsap.timeline({ paused: true });
+      // Define timeline bound directly to ScrollTrigger scrub (Apple-grade smoothness)
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: container,
+          start: "top top",
+          end: "+=1400vh", // Increased container height for longer scroll distance
+          pin: true,
+          anticipatePin: 1, // Smooths pinning on touch/mobile devices
+          scrub: 1, // Smooth catch-up delay
+          invalidateOnRefresh: true, // Recalculate on refresh
+          onUpdate: (self) => {
+            const progress = self.progress;
+            const t = progress * 5.0; // Mapped to the total timeline transitions
+            
+            // Determine active index based on timeline boundary thresholds
+            let activeIdx = 0;
+            if (t < 0.5) activeIdx = 0;
+            else if (t < 1.3) activeIdx = 1;
+            else if (t < 2.1) activeIdx = 2;
+            else if (t < 2.9) activeIdx = 3;
+            else if (t < 3.7) activeIdx = 4;
+            else if (t < 4.5) activeIdx = 5;
+            else activeIdx = 6;
+
+            // React State Gating: ONLY trigger state updates when active card index changes (6 times total)
+            if (activeIdx !== currentActiveRef.current) {
+              currentActiveRef.current = activeIdx;
+              setActiveIndex(activeIdx);
+            }
+          }
+        }
+      });
 
       // Overlapping transitions (step = 0.8, duration = 1.0)
       const transitionDuration = 1.0;
       const step = 0.8;
+      const checkMobile = window.innerWidth < 1024;
 
       for (let i = 1; i < 7; i++) {
         const startPos = (i - 1) * step;
 
         // 1. Outgoing Card (i-1) - moves up slightly, scales down slightly
         if (cards[i - 1]) {
-          tl.to(cards[i - 1], {
-            y: "-30px",
-            scale: 0.97,
-            duration: transitionDuration,
-            ease: "power1.inOut"
-          }, startPos);
+          if (checkMobile) {
+            // Simplify outgoing card transformations on mobile to save GPU cycles
+            tl.to(cards[i - 1], {
+              opacity: 0.1,
+              duration: transitionDuration,
+              ease: "power1.inOut"
+            }, startPos);
+          } else {
+            tl.to(cards[i - 1], {
+              y: "-30px",
+              scale: 0.97,
+              duration: transitionDuration,
+              ease: "power1.inOut"
+            }, startPos);
+          }
         }
 
         // 2. Incoming Card (i) - slides up to 0px
@@ -222,47 +220,23 @@ export default function InteractiveSelector() {
               y: "0px", 
               scale: 1, 
               duration: transitionDuration, 
-              ease: "power1.inOut"
+              ease: "power1.inOut",
+              force3D: true // Promote layer to GPU compositor
             },
             startPos
           );
         }
       }
-
-      st = ScrollTrigger.create({
-        trigger: container,
-        start: "top top",
-        end: "+=1400vh", // Increased scroll distance
-        pin: true,
-        anticipatePin: 1,
-        scrub: 2, // approximately 2
-        onUpdate: (self) => {
-          let progress = self.progress;
-          // Synchronize ScrollTrigger with Lenis
-          const anyWindow = window as any;
-          if (anyWindow.lenis) {
-            const start = self.start;
-            const end = self.end;
-            const diffRange = end - start;
-            if (diffRange > 0 && typeof anyWindow.lenis.scroll === 'number') {
-              const lenisScroll = anyWindow.lenis.scroll;
-              progress = (lenisScroll - start) / diffRange;
-            }
-          }
-          if (!isNaN(progress)) {
-            targetProgressRef.current = gsap.utils.clamp(0, 1, progress);
-          }
-        }
-      });
     }, containerRef);
 
-    // Register ticker update
-    gsap.ticker.add(updateAnimation);
+    // Refresh ScrollTrigger to ensure position parameters are exact
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
 
     return () => {
-      gsap.ticker.remove(updateAnimation);
-      ctx.revert(); // Automatically reverts timelines and kills ScrollTrigger st
-      isInitializedRef.current = false;
+      ctx.revert(); // Reverts timelines and kills ScrollTriggers
+      currentActiveRef.current = 0;
     };
   }, []);
 
@@ -337,7 +311,11 @@ export default function InteractiveSelector() {
           justify-content: space-between;
           overflow: hidden; /* Clip image corners automatically */
           box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
-          will-change: transform;
+          will-change: transform, opacity;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+          transform: translate3d(0, 0, 0);
+          transform-style: preserve-3d;
         }
 
         /* LEFT SIDE (45%) */
@@ -572,7 +550,11 @@ export default function InteractiveSelector() {
             flex-direction: column-reverse !important;
             border-radius: 24px !important;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7) !important;
-            will-change: transform;
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform: translate3d(0, 0, 0);
+            transform-style: preserve-3d;
           }
 
           .card-left-panel {
