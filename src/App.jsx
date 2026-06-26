@@ -88,6 +88,11 @@ function App() {
   }, [isLockedMode]);
 
   useEffect(() => {
+    // Only register mousemove listener on desktop/pointer devices to avoid performance lag on mobile
+    if (!window.matchMedia('(hover: hover)').matches) {
+      return;
+    }
+
     const handleMouseMove = (e) => {
       document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
       document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);

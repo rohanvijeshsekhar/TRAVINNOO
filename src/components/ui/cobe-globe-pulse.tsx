@@ -81,6 +81,16 @@ export function GlobePulse({
     let animationId: number
     let phi = 0
     let currentWidth = canvas.offsetWidth
+    let isVisible = false
+
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0]
+      if (entry) {
+        isVisible = entry.isIntersecting
+      }
+    }, { threshold: 0.05 })
+    
+    observer.observe(canvas)
 
     function init(initialWidth: number) {
       if (globe) return
@@ -111,13 +121,15 @@ export function GlobePulse({
       })
 
       function animate() {
-        if (!isPausedRef.current) phi += speed
-        globe!.update({
-          width: currentWidth,
-          height: currentWidth,
-          phi: phi + phiOffsetRef.current + dragOffset.current.phi,
-          theta: 0.2 + thetaOffsetRef.current + dragOffset.current.theta,
-        })
+        if (isVisible && !isPausedRef.current) {
+          phi += speed
+          globe!.update({
+            width: currentWidth,
+            height: currentWidth,
+            phi: phi + phiOffsetRef.current + dragOffset.current.phi,
+            theta: 0.2 + thetaOffsetRef.current + dragOffset.current.theta,
+          })
+        }
         animationId = requestAnimationFrame(animate)
       }
       animate()
@@ -141,6 +153,7 @@ export function GlobePulse({
       if (animationId) cancelAnimationFrame(animationId)
       if (globe) globe.destroy()
       ro.disconnect()
+      observer.disconnect()
     }
   }, [markers, speed])
 

@@ -6,7 +6,7 @@ import gsap from 'gsap';
 function useMagnetic(ref) {
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || !window.matchMedia('(hover: hover)').matches) return;
 
     const handleMouseMove = (e) => {
       const rect = el.getBoundingClientRect();
