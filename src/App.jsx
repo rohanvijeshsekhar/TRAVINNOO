@@ -110,6 +110,7 @@ function App() {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
+    window.lenis = lenis;
 
     // Update ScrollTrigger on Lenis scroll
     lenis.on('scroll', ScrollTrigger.update);
@@ -127,6 +128,7 @@ function App() {
     return () => {
       gsap.ticker.remove(tickerUpdate);
       lenis.destroy();
+      window.lenis = null;
       ctx.revert();
     };
   }, [currentView, showLoader]);

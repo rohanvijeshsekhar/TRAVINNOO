@@ -110,6 +110,8 @@ export default function InteractiveSelector() {
   const titleRefs = useRef<(HTMLDivElement | null)[]>([]);
   const ctaRefs = useRef<(HTMLDivElement | null)[]>([]);
   const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
+  const targetProgressRef = useRef(0);
+  const isInitializedRef = useRef(false);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -131,6 +133,56 @@ export default function InteractiveSelector() {
 
     const cards = cardRefs.current;
 
+    let tl: gsap.core.Timeline;
+    let st: ScrollTrigger;
+    let currentProgress = 0;
+    const lerpFactor = 0.04;
+    const maxDelta = 0.005; // speed limit per frame to prevent skipping cards during momentum scrolls
+
+    const updateAnimation = () => {
+      const target = targetProgressRef.current;
+
+      // Instantly initialize to correct scroll position on first tick (prevents jump on load)
+      if (!isInitializedRef.current) {
+        currentProgress = target;
+        if (tl) tl.progress(currentProgress);
+        const t = currentProgress * 5.0;
+        let activeIdx = 0;
+        if (t < 0.5) activeIdx = 0;
+        else if (t < 1.3) activeIdx = 1;
+        else if (t < 2.1) activeIdx = 2;
+        else if (t < 2.9) activeIdx = 3;
+        else if (t < 3.7) activeIdx = 4;
+        else if (t < 4.5) activeIdx = 5;
+        else activeIdx = 6;
+        setActiveIndex(activeIdx);
+        isInitializedRef.current = true;
+        return;
+      }
+
+      const diff = target - currentProgress;
+      if (Math.abs(diff) > 0.0001) {
+        const step = diff * lerpFactor;
+        const clampedStep = gsap.utils.clamp(-maxDelta, maxDelta, step);
+        currentProgress += clampedStep;
+        currentProgress = gsap.utils.clamp(0, 1, currentProgress);
+
+        if (tl) tl.progress(currentProgress);
+
+        const t = currentProgress * 5.0;
+        let activeIdx = 0;
+        if (t < 0.5) activeIdx = 0;
+        else if (t < 1.3) activeIdx = 1;
+        else if (t < 2.1) activeIdx = 2;
+        else if (t < 2.9) activeIdx = 3;
+        else if (t < 3.7) activeIdx = 4;
+        else if (t < 4.5) activeIdx = 5;
+        else activeIdx = 6;
+        
+        setActiveIndex(activeIdx);
+      }
+    };
+
     // Set up GSAP context for proper lifecycle cleanup in React
     const ctx = gsap.context(() => {
       // Reset initial card styles programmatically
@@ -143,57 +195,69 @@ export default function InteractiveSelector() {
         }
       });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: container,
-          start: "top top",
-          end: "+=700vh", // Longer scroll distance to make card transitions slower and more controllable
-          scrub: 1.2,     // Softer ease-catchup for a more luxurious feel
-          pin: true,
-          anticipatePin: 1, // Smooths pinning on touch devices
-          onUpdate: (self) => {
-            const progress = self.progress;
-            const targetIdx = Math.min(6, Math.max(0, Math.round(progress * 6)));
-            setActiveIndex(targetIdx);
-          }
-        }
-      });
+      tl = gsap.timeline({ paused: true });
 
-      // Animate Card Stacking Transitions with smooth easing and resting zones (0.6 duration transition, 0.4 resting)
-      const transitionDuration = 0.6;
+      // Overlapping transitions (step = 0.8, duration = 1.0)
+      const transitionDuration = 1.0;
+      const step = 0.8;
+
       for (let i = 1; i < 7; i++) {
-        const position = i - 1; // absolute start position in timeline
+        const startPos = (i - 1) * step;
 
         // 1. Outgoing Card (i-1) - moves up slightly, scales down slightly
         if (cards[i - 1]) {
           tl.to(cards[i - 1], {
             y: "-30px",
-            opacity: 1,
             scale: 0.97,
             duration: transitionDuration,
-            ease: "power2.inOut" // Soft ease in/out curve
-          }, position);
+            ease: "power1.inOut"
+          }, startPos);
         }
 
-        // 2. Incoming Card (i) - slides up
+        // 2. Incoming Card (i) - slides up to 0px
         if (cards[i]) {
           tl.fromTo(cards[i],
-            { y: "100vh", opacity: 1, scale: 1 },
+            { y: "100vh", scale: 1 },
             { 
               y: "0px", 
-              opacity: 1, 
               scale: 1, 
               duration: transitionDuration, 
-              ease: "power2.inOut" // Soft ease in/out curve
+              ease: "power1.inOut"
             },
-            position
+            startPos
           );
         }
       }
+
+      st = ScrollTrigger.create({
+        trigger: container,
+        start: "top top",
+        end: "+=1400vh", // Increased scroll distance
+        pin: true,
+        anticipatePin: 1,
+        scrub: 2, // approximately 2
+        onUpdate: (self) => {
+          let progress = self.progress;
+          // Synchronize ScrollTrigger with Lenis
+          const anyWindow = window as any;
+          if (anyWindow.lenis) {
+            const start = self.start;
+            const end = self.end;
+            const lenisScroll = anyWindow.lenis.scroll;
+            progress = (lenisScroll - start) / (end - start);
+          }
+          targetProgressRef.current = gsap.utils.clamp(0, 1, progress);
+        }
+      });
     }, containerRef);
 
+    // Register ticker update
+    gsap.ticker.add(updateAnimation);
+
     return () => {
-      ctx.revert(); // Automatically reverts all timelines and kills ScrollTriggers
+      gsap.ticker.remove(updateAnimation);
+      ctx.revert(); // Automatically reverts timelines and kills ScrollTrigger st
+      isInitializedRef.current = false;
     };
   }, []);
 
