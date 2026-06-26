@@ -11,5 +11,5 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  base: '/demo/',
+  base: (process.env.GITHUB_ACTIONS || process.env.npm_lifecycle_event === 'deploy' || process.env.npm_lifecycle_event === 'predeploy') ? '/TRAVINNO/' : '/demo/',
 })

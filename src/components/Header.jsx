@@ -163,7 +163,7 @@ export default function Header() {
       {/* Brand Logo */}
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <a
-          href="/demo/"
+          href={import.meta.env.BASE_URL}
           aria-label="Go to Travinno Homepage"
           style={{
             display: 'flex',
@@ -220,7 +220,7 @@ export default function Header() {
 
           {/* Link: Home */}
           <a
-            href="/demo/"
+            href={import.meta.env.BASE_URL}
             style={{
               fontFamily: 'var(--font-sans)',
               fontSize: '0.75rem',
