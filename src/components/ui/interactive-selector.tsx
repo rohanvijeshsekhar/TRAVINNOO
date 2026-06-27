@@ -201,10 +201,11 @@ export default function InteractiveSelector() {
         // 1. Outgoing Card (i-1) - moves up slightly, scales down slightly
         if (cards[i - 1]) {
           if (checkMobile) {
-            // Keep the outgoing card fully visible and stationary on mobile (prevents rushing/flashing)
+            // Fade out the outgoing card on mobile as the new card slides in to prevent overlapping
             tl.to(cards[i - 1], {
-              opacity: 1,
+              opacity: 0,
               duration: transitionDuration,
+              ease: "power1.inOut"
             }, startPos);
           } else {
             tl.to(cards[i - 1], {
@@ -534,9 +535,6 @@ export default function InteractiveSelector() {
           }
 
           .destinations-sticky-viewport {
-            position: absolute !important;
-            height: 100% !important;
-            overflow: hidden !important;
             display: flex !important;
             justify-content: center !important;
             align-items: flex-start !important;
@@ -546,10 +544,10 @@ export default function InteractiveSelector() {
 
           .destinations-cards-container {
             width: 90% !important;
-            height: 75vh !important;
-            height: 75dvh !important;
+            height: 64vh !important;
+            height: 64dvh !important;
             max-height: 640px !important;
-            min-height: 480px !important;
+            min-height: 380px !important;
             display: flex !important;
             justify-content: center !important;
             align-items: center !important;
@@ -575,8 +573,8 @@ export default function InteractiveSelector() {
 
           .card-left-panel {
             width: 100% !important;
-            height: 60% !important;
-            padding: 24px 20px !important;
+            height: 62% !important;
+            padding: 16px 16px !important;
             justify-content: flex-start !important;
             z-index: 5;
           }
@@ -587,7 +585,7 @@ export default function InteractiveSelector() {
 
           .card-right-panel {
             width: 100% !important;
-            height: 40% !important;
+            height: 38% !important;
             border-radius: 0;
           }
 
@@ -606,13 +604,13 @@ export default function InteractiveSelector() {
           }
 
           .dest-country-name-script {
-            font-size: 1.75rem !important;
+             font-size: 1.75rem !important;
           }
 
           .dest-editorial-description {
             font-size: 0.82rem !important;
             line-height: 1.45 !important;
-            margin-bottom: 8px !important;
+            margin-bottom: 6px !important;
             display: -webkit-box !important;
             -webkit-line-clamp: 2 !important;
             -webkit-box-orient: vertical !important;
@@ -620,7 +618,7 @@ export default function InteractiveSelector() {
           }
 
           .dest-feature-pills-container {
-            margin-bottom: 12px !important;
+            margin-bottom: 8px !important;
             gap: 6px !important;
           }
 
