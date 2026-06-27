@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+
+const IS_TOUCH = typeof window !== 'undefined'
+  ? window.matchMedia('(hover: none) and (pointer: coarse)').matches
+  : false;
 
 function StarryBackground() {
   const [stars, setStars] = useState([]);
-  
+  const containerRef = useRef(null);
+
   useEffect(() => {
-    const starArray = Array.from({ length: 40 }).map((_, i) => ({
+    const count = IS_TOUCH ? 18 : 40;
+    const starArray = Array.from({ length: count }).map((_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
@@ -18,8 +24,25 @@ function StarryBackground() {
     setStars(starArray);
   }, []);
 
+  // Pause animations when section is off-screen
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const spans = el.querySelectorAll('.animate-star-move');
+        const state = entry.isIntersecting ? 'running' : 'paused';
+        spans.forEach(s => { s.style.animationPlayState = state; });
+      },
+      { rootMargin: '200px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [stars]);
+
   return (
     <div 
+      ref={containerRef}
       style={{
         position: 'absolute',
         top: 0,
@@ -77,7 +100,7 @@ function StarryBackground() {
   );
 }
 
-export default function ContactCTA() {
+function ContactCTA() {
   return (
     <section
       id="contact"
@@ -133,32 +156,37 @@ export default function ContactCTA() {
           zIndex: 2
         }}
       />
-      <div 
-        style={{
-          position: 'absolute',
-          bottom: '-120px',
-          left: '12%',
-          width: '45%',
-          height: '280px',
-          background: 'radial-gradient(circle, rgba(193, 18, 31, 0.45) 0%, transparent 70%)',
-          filter: 'blur(80px)',
-          pointerEvents: 'none',
-          zIndex: 2
-        }}
-      />
-      <div 
-        style={{
-          position: 'absolute',
-          bottom: '-120px',
-          right: '12%',
-          width: '45%',
-          height: '280px',
-          background: 'radial-gradient(circle, rgba(247, 127, 0, 0.4) 0%, transparent 70%)',
-          filter: 'blur(80px)',
-          pointerEvents: 'none',
-          zIndex: 2
-        }}
-      />
+      {/* Glow orbs: blur(80px) is GPU-expensive — skip on mobile, use CSS gradient only */}
+      {!IS_TOUCH && (
+        <>
+          <div 
+            style={{
+              position: 'absolute',
+              bottom: '-120px',
+              left: '12%',
+              width: '45%',
+              height: '280px',
+              background: 'radial-gradient(circle, rgba(193, 18, 31, 0.45) 0%, transparent 70%)',
+              filter: 'blur(80px)',
+              pointerEvents: 'none',
+              zIndex: 2
+            }}
+          />
+          <div 
+            style={{
+              position: 'absolute',
+              bottom: '-120px',
+              right: '12%',
+              width: '45%',
+              height: '280px',
+              background: 'radial-gradient(circle, rgba(247, 127, 0, 0.4) 0%, transparent 70%)',
+              filter: 'blur(80px)',
+              pointerEvents: 'none',
+              zIndex: 2
+            }}
+          />
+        </>
+      )}
 
       {/* Smooth bottom blend overlay */}
       <div 
@@ -354,3 +382,4 @@ export default function ContactCTA() {
     </section>
   );
 }
+export default React.memo(ContactCTA);

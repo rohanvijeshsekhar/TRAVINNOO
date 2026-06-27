@@ -32,7 +32,7 @@ function CountUp({ to, suffix = "", duration = 1.8 }) {
 }
 
 
-export default function EditorialSection() {
+function EditorialSection() {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -485,3 +485,4 @@ export default function EditorialSection() {
     </section>
   );
 }
+export default React.memo(EditorialSection);

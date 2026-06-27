@@ -41,7 +41,12 @@ export function ParallaxComponent() {
       });
     }
 
-    const lenis = new Lenis();
+    const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    const lenis = new Lenis({
+      smoothWheel: !isTouchDevice,
+      smoothTouch: false,
+      syncTouch: false,
+    });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);

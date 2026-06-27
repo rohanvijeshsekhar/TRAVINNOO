@@ -5,13 +5,18 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const IS_MOBILE = typeof window !== 'undefined'
+  ? window.matchMedia('(hover: none) and (pointer: coarse)').matches
+  : false;
+const IMG_WIDTH = IS_MOBILE ? 800 : 1200;
+
 const DESTINATIONS_DATA = [
   {
     code: 'DXB',
     name: 'Dubai',
     quote: 'Where luxury meets innovation.',
     date: 'APR 12, 2026',
-    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1200&auto=format&fit=crop',
+    image: `https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
     description: 'Discover soaring skyscrapers, pristine beaches, and desert dining.',
     notes: 'The view from the Burj at sunset is surreal. Golden light bounces off steel and glass, stretching all the way to the desert horizon. Tonight we dine at a private camp in the dunes under the stars.',
     coordinates: '25.2048° N / 55.2708° E',
@@ -22,7 +27,7 @@ const DESTINATIONS_DATA = [
     name: 'Kenya',
     quote: 'Experience the heart of African wilderness.',
     date: 'MAY 04, 2026',
-    image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200&auto=format&fit=crop',
+    image: `https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
     description: 'Immerse your groups in wildlife safaris and premium savanna camps.',
     notes: 'Woke up at 5 AM to the call of the wild. Watched a pride of lions move silhouetted against the rising blood-orange sun. The air is crisp, carrying the scent of red earth and dry savanna.',
     coordinates: '1.2921° S / 36.8219° E',
@@ -33,7 +38,7 @@ const DESTINATIONS_DATA = [
     name: 'Thailand',
     quote: 'A perfect blend of culture and tropical beauty.',
     date: 'OCT 18, 2026',
-    image: 'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?q=80&w=1200&auto=format&fit=crop',
+    image: `https://images.unsplash.com/photo-1504214208698-ea1916a2195a?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
     description: 'Vibrant floating markets and white-sand retreats.',
     notes: 'The scent of jasmine and street food fills the humid night air. Visited Wat Arun at dusk; the spires look like ancient porcelain lace. A longtail boat ride down Chao Phraya river completes a magical day.',
     coordinates: '13.7563° N / 100.5018° E',
@@ -44,7 +49,7 @@ const DESTINATIONS_DATA = [
     name: 'Vietnam',
     quote: 'Timeless traditions with modern energy.',
     date: 'NOV 23, 2026',
-    image: 'https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop',
+    image: `https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
     description: 'Cruise through limestone pillars and lantern-lit ancient trading towns.',
     notes: 'Old Quarter is a maze of sensory wonders. Sipped strong egg coffee in a quiet colonial courtyard while rain fell on tiles. Tomorrow we board the junk boat into the emerald maze of Ha Long Bay.',
     coordinates: '21.0285° N / 105.8542° E',
@@ -55,7 +60,7 @@ const DESTINATIONS_DATA = [
     name: 'Singapore',
     quote: "The world's most refined urban destination.",
     date: 'DEC 09, 2026',
-    image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=1200&auto=format&fit=crop',
+    image: `https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
     description: 'Lush gardens under bio-domes and high-end culinary stages.',
     notes: 'Felt like stepping into the future at Gardens by the Bay. Giant bio-domes house rare orchids under massive glass vaults. The city runs like clockwork, yet feels lush, green, and completely alive.',
     coordinates: '1.3521° N / 103.8198° E',
@@ -66,7 +71,7 @@ const DESTINATIONS_DATA = [
     name: 'Malaysia',
     quote: 'Nature, culture and cosmopolitan elegance.',
     date: 'JAN 15, 2027',
-    image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=1200&auto=format&fit=crop',
+    image: `https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
     description: 'Historic rainforest walks and the sleek Twin Towers skyline.',
     notes: 'Walked the skybridge between the twin giants today. The contrast between ancient rainforests and hyper-modern towers defines this place. Visited Batu Caves; the steps are a rainbow under massive cliffs.',
     coordinates: '3.1390° N / 101.6869° E',
@@ -77,7 +82,7 @@ const DESTINATIONS_DATA = [
     name: 'Bali',
     quote: 'The island where every journey becomes unforgettable.',
     date: 'MAR 02, 2027',
-    image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200&auto=format&fit=crop',
+    image: `https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
     description: 'Emerald terraced valleys and private luxury wellness sanctuaries.',
     notes: 'Woke to the sound of temple bells in Ubud. Emerald rice fields ripple in the breeze. Ubud feels like a sanctuary where time stands still and the spirit heals. Dinner by the river was candlelight and water flow.',
     coordinates: '8.4095° S / 115.1889° E',
@@ -500,7 +505,7 @@ export default function DestinationShowcase() {
                   <div className="photo-corner bottom-left" />
                   <div className="photo-corner bottom-right" />
                   <div className="image-viewport">
-                    <img src={DESTINATIONS_DATA[0].image} alt={getDestinationAltText(DESTINATIONS_DATA[0].name)} className="page-destination-image" />
+                    <img src={DESTINATIONS_DATA[0].image} alt={getDestinationAltText(DESTINATIONS_DATA[0].name)} loading="lazy" decoding="async" className="page-destination-image" />
                   </div>
                 </div>
 
@@ -608,7 +613,7 @@ export default function DestinationShowcase() {
                           <div className="photo-corner bottom-left" />
                           <div className="photo-corner bottom-right" />
                           <div className="image-viewport">
-                            <img src={nextDest.image} alt={getDestinationAltText(nextDest.name)} className="page-destination-image" />
+                            <img src={nextDest.image} alt={getDestinationAltText(nextDest.name)} loading="lazy" decoding="async" className="page-destination-image" />
                           </div>
                         </div>
 

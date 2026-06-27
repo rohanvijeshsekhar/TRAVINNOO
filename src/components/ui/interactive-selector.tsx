@@ -12,6 +12,11 @@ interface Destination {
   image: string;       // Image URL
 }
 
+const IS_MOBILE = typeof window !== 'undefined'
+  ? window.matchMedia('(hover: none) and (pointer: coarse)').matches
+  : false;
+const IMG_WIDTH = IS_MOBILE ? 800 : 1200;
+
 const destinations: Destination[] = [
   {
     title: "Dubai",
@@ -20,7 +25,7 @@ const destinations: Destination[] = [
     heading: "Modern Skylines & Desert Safaris",
     description: "Experience a world where futuristic glass skyscrapers rise directly from ancient desert sands, curating the ultimate heights of luxury leisure and private safaris.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1200&auto=format&fit=crop"
+    image: `https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
   },
   {
     title: "Malaysia",
@@ -29,7 +34,7 @@ const destinations: Destination[] = [
     heading: "Vibrant Cultures & Rainforest Escapes",
     description: "Discover a rich tapestry of history, modern capital luxury, and pristine ancient rainforest canopies home to unique biodiversity.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=1200&auto=format&fit=crop"
+    image: `https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
   },
   {
     title: "Thailand",
@@ -38,7 +43,7 @@ const destinations: Destination[] = [
     heading: "Golden Temples & Tropical Islands",
     description: "Immerse yourself in the warm hospitality of golden temple cities and white sand archipelago islands with tailored beachfront luxury.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: "https://images.unsplash.com/photo-1504214208698-ea1916a2195a?q=80&w=1200&auto=format&fit=crop"
+    image: `https://images.unsplash.com/photo-1504214208698-ea1916a2195a?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
   },
   {
     title: "Singapore",
@@ -47,7 +52,7 @@ const destinations: Destination[] = [
     heading: "Futuristic Gardens & Cosmopolitan Charm",
     description: "Walk through the world's most advanced architectural nature displays, leading Michelin-starred dining, and premium lifestyle ports.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=1200&auto=format&fit=crop"
+    image: `https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
   },
   {
     title: "Bali",
@@ -56,7 +61,7 @@ const destinations: Destination[] = [
     heading: "Sacred Temples & Pristine Beaches",
     description: "Reconnect in the spiritual capital of volcanic lake vistas, iconic terraced valleys, and private pool luxury villas.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200&auto=format&fit=crop"
+    image: `https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
   },
   {
     title: "Kenya",
@@ -65,7 +70,7 @@ const destinations: Destination[] = [
     heading: "Untamed Wildlife & Savannah Reserves",
     description: "Witness the great wilderness migration on the plains of Masai Mara, pairing raw nature with five-star luxury tented camp reserves.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: "https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200&auto=format&fit=crop"
+    image: `https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
   },
   {
     title: "Vietnam",
@@ -74,7 +79,7 @@ const destinations: Destination[] = [
     heading: "Historic Cities & Dramatic Karst Bays",
     description: "Cruise the emerald waters of Ha Long Bay and explore French colonial cities, combining rich historic heritage with luxury maritime travel.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop"
+    image: `https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
   }
 ];
 
@@ -693,6 +698,8 @@ export default function InteractiveSelector() {
                       ref={(el) => { imageRefs.current[idx] = el; }}
                       src={dest.image}
                       alt={getDestinationAltText(dest.title)}
+                      loading="lazy"
+                      decoding="async"
                       className="destination-img"
                     />
                   </div>

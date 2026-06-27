@@ -1,60 +1,66 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 
+// Use smaller Unsplash images on mobile — 2400px originals are ~400 KB each
+const IS_MOBILE = typeof window !== 'undefined'
+  ? window.matchMedia('(hover: none) and (pointer: coarse)').matches
+  : false;
+const IMG_WIDTH = IS_MOBILE ? 800 : 2400;
+
 const DESTINATIONS = [
   {
     name: 'Dubai',
     duration: 4.0,
-    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2400&auto=format&fit=crop',
+    image: `${import.meta.env.BASE_URL}images/hero/uae.webp`,
     // Push-in zoom (scale 1.05 to 1.11, centered)
     effect: { scaleStart: 1.05, scaleEnd: 1.11, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 }
   },
   {
     name: 'Kenya',
     duration: 3.6,
-    image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=2400&auto=format&fit=crop',
+    image: `${import.meta.env.BASE_URL}images/hero/kenya.webp`,
     // Pull-back zoom (scale 1.11 to 1.05, centered)
     effect: { scaleStart: 1.11, scaleEnd: 1.05, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 }
   },
   {
     name: 'Thailand',
     duration: 4.2,
-    image: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=2400&auto=format&fit=crop',
+    image: `${import.meta.env.BASE_URL}images/hero/thailand.webp`,
     // Horizontal drift (xPercent -3% to +3% to prevent edges leakage under scale 1.10)
     effect: { scaleStart: 1.10, scaleEnd: 1.16, xStart: -3, xEnd: 3, yStart: 0, yEnd: 0 }
   },
   {
     name: 'Malaysia',
     duration: 3.8,
-    image: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=80&w=2400&auto=format&fit=crop',
+    image: `${import.meta.env.BASE_URL}images/hero/malaysia.webp`,
     // Vertical drift (yPercent -3% to +3% under scale 1.10)
     effect: { scaleStart: 1.10, scaleEnd: 1.16, xStart: 0, xEnd: 0, yStart: -3, yEnd: 3 }
   },
   {
     name: 'Singapore',
     duration: 4.4,
-    image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=2400&auto=format&fit=crop',
+    image: `${import.meta.env.BASE_URL}images/hero/singapore.webp`,
     // Diagonal push (scale 1.08 to 1.14, x -2% to 2%, y -2% to 2%)
     effect: { scaleStart: 1.08, scaleEnd: 1.14, xStart: -2, xEnd: 2, yStart: -2, yEnd: 2 }
   },
   {
     name: 'Vietnam',
     duration: 3.7,
-    image: 'https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=2400&auto=format&fit=crop',
+    image: `${import.meta.env.BASE_URL}images/hero/vietnam.webp`,
     // Pull-back horizontal drift (scale 1.14 to 1.08, x 2% to -2%)
     effect: { scaleStart: 1.14, scaleEnd: 1.08, xStart: 2, xEnd: -2, yStart: 0, yEnd: 0 }
   },
   {
     name: 'Bali',
     duration: 5.0,
-    image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=2400&auto=format&fit=crop',
+    image: `${import.meta.env.BASE_URL}images/hero/bali.webp`,
     // Diagonal drift (scale 1.10 static, x -2% to 2%, y 2% to -2%)
     effect: { scaleStart: 1.10, scaleEnd: 1.10, xStart: -2, xEnd: 2, yStart: 2, yEnd: -2 }
   },
   {
     name: 'Dubai Duplicate',
     duration: 1.8, // Duration of the transition block
-    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2400&auto=format&fit=crop',
+    image: `${import.meta.env.BASE_URL}images/hero/uae.webp`,
     // First slide start condition at loop wrap (scale starts at 1.05 and ends at scale after 1.8s, which is 1.0686)
     effect: { scaleStart: 1.05, scaleEnd: 1.0686, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 }
   }
@@ -80,6 +86,29 @@ export default function CinematicHero() {
   const imageRefs = useRef([]);
   const textRefs = useRef([]);
   const timelineRef = useRef(null);
+  const rootRef = useRef(null);
+
+  // Pause timeline when off-screen to save CPU/GPU resources
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || !imagesLoaded) return;
+    
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (timelineRef.current) {
+          if (entry.isIntersecting) {
+            timelineRef.current.play();
+          } else {
+            timelineRef.current.pause();
+          }
+        }
+      },
+      { threshold: 0.05 }
+    );
+    
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [imagesLoaded]);
 
   // Setup DOM arrays
   slideRefs.current = [];
@@ -90,28 +119,18 @@ export default function CinematicHero() {
   const addToImageRefs = (el) => { if (el && !imageRefs.current.includes(el)) imageRefs.current.push(el); };
   const addToTextRefs = (el) => { if (el && !textRefs.current.includes(el)) textRefs.current.push(el); };
 
-  // Progressive Preloading of all 16:9 widescreen photos
+  // Preload only the first hero image; lazy-load the remaining ones
   useEffect(() => {
-    let loadedCount = 0;
-    const imageUrls = [...new Set(DESTINATIONS.map(dest => dest.image))];
-
-    imageUrls.forEach((url) => {
-      const imgObj = new Image();
-      imgObj.src = url;
-      imgObj.onload = () => {
-        loadedCount++;
-        if (loadedCount === imageUrls.length) {
-          setImagesLoaded(true);
-        }
-      };
-      imgObj.onerror = () => {
-        // Fallback progress
-        loadedCount++;
-        if (loadedCount === imageUrls.length) {
-          setImagesLoaded(true);
-        }
-      };
-    });
+    const firstImageUrl = DESTINATIONS[0].image;
+    const imgObj = new Image();
+    imgObj.src = firstImageUrl;
+    
+    const onLoaded = () => {
+      setImagesLoaded(true);
+    };
+    
+    imgObj.onload = onLoaded;
+    imgObj.onerror = onLoaded;
   }, []);
 
   // GSAP Coordinated Loop Timeline
@@ -242,6 +261,7 @@ export default function CinematicHero() {
 
   return (
     <div
+      ref={rootRef}
       style={{
         position: 'absolute',
         top: 0,
@@ -274,6 +294,8 @@ export default function CinematicHero() {
               ref={addToImageRefs}
               src={dest.image}
               alt={getDestinationAltText(dest.name)}
+              loading={idx === 0 ? "eager" : "lazy"}
+              {...(idx === 0 ? { fetchpriority: "high" } : { decoding: "async" })}
               style={{
                 width: '100%',
                 height: '100%',
@@ -281,7 +303,8 @@ export default function CinematicHero() {
                 transformOrigin: 'center center',
                 willChange: 'transform',
                 // Cinematic colour grading treatment: slightly increased contrast, slightly reduced saturation
-                filter: 'contrast(1.08) saturate(0.88)'
+                // Skip multi-property filter on mobile — 8 simultaneous GPU texture blits
+                filter: IS_MOBILE ? 'none' : 'contrast(1.08) saturate(0.88)'
               }}
             />
           </div>

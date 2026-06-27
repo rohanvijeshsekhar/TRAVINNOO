@@ -82,11 +82,39 @@ export function GlobePulse({
     let phi = 0
     let currentWidth = canvas.offsetWidth
     let isVisible = false
+    let isLoopRunning = false
+
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    const currentSpeed = isMobile ? speed * 2.5 : speed;
+
+    function animate() {
+      if (!isVisible) {
+        isLoopRunning = false
+        return
+      }
+      isLoopRunning = true
+      if (!isPausedRef.current && globe) {
+        phi += currentSpeed
+        globe.update({
+          width: currentWidth,
+          height: currentWidth,
+          phi: phi + phiOffsetRef.current + dragOffset.current.phi,
+          theta: 0.2 + thetaOffsetRef.current + dragOffset.current.theta,
+        })
+      }
+      animationId = requestAnimationFrame(animate)
+    }
 
     const observer = new IntersectionObserver((entries) => {
       const entry = entries[0]
       if (entry) {
-        isVisible = entry.isIntersecting
+        const nextVisible = entry.isIntersecting
+        if (nextVisible !== isVisible) {
+          isVisible = nextVisible
+          if (isVisible && !isLoopRunning && globe) {
+            animate()
+          }
+        }
       }
     }, { threshold: 0.05 })
     
@@ -95,9 +123,7 @@ export function GlobePulse({
     function init(initialWidth: number) {
       if (globe) return
 
-      const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
       const mapSamples = isMobile ? 6000 : 12000;
-      const currentSpeed = isMobile ? speed * 2.5 : speed;
 
       globe = createGlobe(canvas, {
         devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
@@ -121,19 +147,9 @@ export function GlobePulse({
         opacity: 0.8,
       })
 
-      function animate() {
-        if (isVisible && !isPausedRef.current) {
-          phi += currentSpeed
-          globe!.update({
-            width: currentWidth,
-            height: currentWidth,
-            phi: phi + phiOffsetRef.current + dragOffset.current.phi,
-            theta: 0.2 + thetaOffsetRef.current + dragOffset.current.theta,
-          })
-        }
-        animationId = requestAnimationFrame(animate)
+      if (isVisible && !isLoopRunning) {
+        animate()
       }
-      animate()
       setTimeout(() => canvas && (canvas.style.opacity = "1"))
     }
 

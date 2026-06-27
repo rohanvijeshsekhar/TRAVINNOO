@@ -8,7 +8,7 @@ const LEADERS = [
     name: 'Prinu Santhappan',
     position: 'Managing Director',
     bio: 'With over two decades of experience in the travel and hospitality industry, I am proud to lead a team of passionate professionals who are united by a shared vision of excellence, innovation, and genuine customer satisfaction.\n\nOur journey has been defined by strong partnerships – built on trust, mutual growth, and a commitment to delivering exceptional value. We believe that success is not achieved alone; it is the result of meaningful collaborations with our clients, partners, and stakeholders.\n\nAs we move forward, we remain dedicated to fostering these relationships, adapting to industry changes, and crafting innovative, affordable travel solutions that exceed expectations. Together, let’s continue to explore new horizons and create unforgettable experiences.\n\nThank you for your continued trust and support. We look forward to many more successful partnerships ahead.',
-    image: import.meta.env.BASE_URL + 'images/founder.png',
+    image: import.meta.env.BASE_URL + 'images/founder.webp',
     objectPosition: '50% 0%'
   }
 ];
@@ -17,55 +17,55 @@ const TEAM_MEMBERS = [
   {
     name: 'Geetha Biju',
     position: 'Sr. Manager (Finance)',
-    image: import.meta.env.BASE_URL + 'images/specialist_1.png',
+    image: import.meta.env.BASE_URL + 'images/specialist_1.webp',
     height: '420px'
   },
   {
     name: 'Manu Prasad',
     position: 'Head of Operations',
-    image: import.meta.env.BASE_URL + 'images/specialist_2.png',
+    image: import.meta.env.BASE_URL + 'images/specialist_2.webp',
     height: '300px'
   },
   {
     name: 'Anuraj VS',
     position: 'Business Development Head (India)',
-    image: import.meta.env.BASE_URL + 'images/specialist_3.png',
+    image: import.meta.env.BASE_URL + 'images/specialist_3.webp',
     height: '450px'
   },
   {
     name: 'Kavitha Prinu',
     position: 'Manager Sales (Group)',
-    image: import.meta.env.BASE_URL + 'images/specialist_4.png',
+    image: import.meta.env.BASE_URL + 'images/specialist_4.webp',
     height: '380px'
   },
   {
     name: 'Neethu Dilver',
     position: 'Manager FIT (Indian Operations)',
-    image: import.meta.env.BASE_URL + 'images/specialist_5.png',
+    image: import.meta.env.BASE_URL + 'images/specialist_5.webp',
     height: '280px'
   },
   {
     name: 'Sree Rekha M',
     position: 'Asst. Manager (Product & Contracting)',
-    image: import.meta.env.BASE_URL + 'images/specialist_6.png',
+    image: import.meta.env.BASE_URL + 'images/specialist_6.webp',
     height: '400px'
   },
   {
     name: 'Godson KJ',
     position: 'Asst. Manager - Groups',
-    image: import.meta.env.BASE_URL + 'images/specialist_7.png',
+    image: import.meta.env.BASE_URL + 'images/specialist_7.webp',
     height: '360px'
   },
   {
     name: 'Vishnu VB',
     position: 'Visa Department Head',
-    image: import.meta.env.BASE_URL + 'images/specialist_8.png',
+    image: import.meta.env.BASE_URL + 'images/specialist_8.webp',
     height: '420px'
   },
   {
     name: 'Violah Cherotich',
     position: 'Business Development Manager (Africa)',
-    image: import.meta.env.BASE_URL + 'images/specialist_9.png',
+    image: import.meta.env.BASE_URL + 'images/specialist_9.webp',
     height: '320px'
   }
 ];
@@ -369,6 +369,7 @@ export default function TeamPage() {
                 <img 
                   src={leader.image} 
                   alt={`${leader.name} – ${leader.position} at Travinno Trusted DMC`} 
+                  loading="lazy"
                   style={{
                     width: '100%',
                     height: '560px',
@@ -506,6 +507,7 @@ export default function TeamPage() {
                   <img 
                     src={member.image} 
                     alt={`${member.name} – ${member.position} at Travinno Trusted DMC`} 
+                    loading="lazy"
                     style={{
                       width: '100%',
                       height: member.height,

@@ -1,26 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import BackgroundVideo from './components/BackgroundVideo';
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import Header from './components/Header';
-import ContentSection from './components/ContentSection';
 import ScrollIndicator from './components/ScrollIndicator';
-import EditorialSection from './components/EditorialSection';
-import OurJourney from './components/OurJourney';
-import ExpertiseSection from './components/ExpertiseSection';
-import WhyTravinno from './components/WhyTravinno';
-import { DemoOne } from './components/ui/demo';
-import LogoCloudSection from './components/LogoCloudSection';
-import ParallaxDemo from './demos/default';
-import Loader from './components/Loader';
-import TeamPage from './components/TeamPage';
-import ServicesPage from './components/ServicesPage';
 import CinematicHero from './components/CinematicHero';
-import ContactCTA from './components/ContactCTA';
-import Footer from './components/Footer';
+import Loader from './components/Loader';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from '@studio-freight/lenis';
 
+const EditorialSection = lazy(() => import('./components/EditorialSection'));
+const ExpertiseSection = lazy(() => import('./components/ExpertiseSection'));
+const DemoOneWrapper   = lazy(() => import('./components/ui/demo').then(m => ({ default: m.DemoOne })));
+const OurJourney       = lazy(() => import('./components/OurJourney'));
+const LogoCloudSection = lazy(() => import('./components/LogoCloudSection'));
+const WhyTravinno      = lazy(() => import('./components/WhyTravinno'));
+const ContactCTA       = lazy(() => import('./components/ContactCTA'));
+const Footer           = lazy(() => import('./components/Footer'));
+const ParallaxDemo     = lazy(() => import('./demos/default'));
+const TeamPage         = lazy(() => import('./components/TeamPage'));
+const ServicesPage     = lazy(() => import('./components/ServicesPage'));
 
+
+
+// Detect touch/mobile once at module level (stable, no re-detection needed)
+const IS_TOUCH_DEVICE = typeof window !== 'undefined'
+  ? window.matchMedia('(hover: none) and (pointer: coarse)').matches
+  : false;
 
 function App() {
   const [currentView, setCurrentView] = useState('home');
@@ -29,17 +33,37 @@ function App() {
   // Lock logic: disabled to allow full access when hosted
   const isLockedMode = false;
 
-  // Starry sky background movement state
-  const [stars] = useState(() =>
-    Array.from({ length: 45 }).map((_, i) => ({
+  const starsContainerRef = useRef(null);
+
+  // Starry sky background movement state — fewer stars on mobile
+  const [stars] = useState(() => {
+    const count = IS_TOUCH_DEVICE ? 20 : 45;
+    return Array.from({ length: count }).map((_, i) => ({
       id: i,
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
       size: Math.random() * 1.5 + 1.2,
       delay: `${Math.random() * 6}s`,
       duration: `${Math.random() * 8 + 5}s`
-    }))
-  );
+    }));
+  });
+
+  // Pause star animations when the destinations section is scrolled off-screen
+  useEffect(() => {
+    const container = starsContainerRef.current;
+    if (!container) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        container.style.display = entry.isIntersecting ? 'block' : 'none';
+        const stars = container.querySelectorAll('.drifting-twinkle-star');
+        const state = entry.isIntersecting ? 'running' : 'paused';
+        stars.forEach(s => { s.style.animationPlayState = state; });
+      },
+      { rootMargin: '200px 0px' }
+    );
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -110,13 +134,18 @@ function App() {
     gsap.registerPlugin(ScrollTrigger);
     ScrollTrigger.config({ ignoreMobileResize: true });
 
+    // Detect real touch/mobile device (not desktop Chrome DevTools)
+    const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
     // Initialize Lenis smooth scroll
+    // smoothTouch and syncTouch are DISABLED on real mobile — they intercept native
+    // momentum scrolling and run JS-driven scroll on the main thread, causing severe jank.
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      smoothTouch: true, // Enable touch smoothing on mobile
-      syncTouch: true,   // Synchronize touch scroll physics
+      smoothWheel: !isTouchDevice,
+      smoothTouch: false,
+      syncTouch: false,
     });
     window.lenis = lenis;
 
@@ -161,18 +190,18 @@ function App() {
       {/* Floating Transparent Navigation Header */}
       <Header />
 
-      {/* Animated Film Grain Overlay */}
+      {/* Animated Film Grain Overlay — hidden on mobile via CSS */}
       <div className="film-grain" />
 
-      {/* Cursor-following spotlight */}
-      <div className="cursor-glow" />
+      {/* Cursor-following spotlight — desktop only (mousemove already gated, but skip DOM on mobile) */}
+      {!IS_TOUCH_DEVICE && <div className="cursor-glow" />}
 
       {currentView === 'about' ? (
-        <ParallaxDemo />
+        <Suspense fallback={null}><ParallaxDemo /></Suspense>
       ) : currentView === 'team' ? (
-        <TeamPage />
+        <Suspense fallback={null}><TeamPage /></Suspense>
       ) : currentView === 'services' ? (
-        <ServicesPage />
+        <Suspense fallback={null}><ServicesPage /></Suspense>
       ) : (
         <>
           {/* Hero Section Container (100% Viewport Height) */}
@@ -208,12 +237,12 @@ function App() {
 
           {/* Minimalist Editorial Section */}
           <div className="home-editorial-fade-wrap">
-            <EditorialSection />
+            <Suspense fallback={null}><EditorialSection /></Suspense>
           </div>
 
           {/* Our Expertise Section */}
           <div id="services" className="home-services-fade-wrap">
-            <ExpertiseSection />
+            <Suspense fallback={null}><ExpertiseSection /></Suspense>
           </div>
 
           {/* Destinations Showcase Section */}
@@ -244,8 +273,9 @@ function App() {
               }}
             />
 
-            {/* Twinkling & Drifting Stars */}
+            {/* Twinkling & Drifting Stars — paused via IntersectionObserver when off-screen */}
             <div 
+              ref={starsContainerRef}
               style={{ 
                 position: 'absolute', 
                 inset: 0, 
@@ -371,34 +401,34 @@ function App() {
               </h2>
             </div>
             <div className="destinations-cards-wrapper" style={{ position: 'relative', zIndex: 10 }}>
-              <DemoOne />
+              <Suspense fallback={null}><DemoOneWrapper /></Suspense>
             </div>
           </div>
 
 
           {/* Our Journey Section */}
           <div className="home-journey-fade-wrap">
-            <OurJourney />
+            <Suspense fallback={null}><OurJourney /></Suspense>
           </div>
 
 
           {/* Partner Section */}
           <div className="home-contact-fade-wrap">
-            <LogoCloudSection />
+            <Suspense fallback={null}><LogoCloudSection /></Suspense>
           </div>
 
           {/* Why Travinno Grid Section */}
           <div className="home-why-fade-wrap">
-            <WhyTravinno />
+            <Suspense fallback={null}><WhyTravinno /></Suspense>
           </div>
 
           {/* Contact CTA Section */}
           <div className="home-contact-cta-fade-wrap">
-            <ContactCTA />
+            <Suspense fallback={null}><ContactCTA /></Suspense>
           </div>
 
           {/* Footer Section */}
-          <Footer />
+          <Suspense fallback={null}><Footer /></Suspense>
         </>
       )}
     </div>

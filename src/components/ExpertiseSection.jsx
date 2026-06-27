@@ -385,7 +385,7 @@ const BackgroundIllustrations = () => {
   );
 };
 
-export default function ExpertiseSection() {
+function ExpertiseSection() {
   return (
     <section className="expertise-section">
       <BackgroundIllustrations />
@@ -436,3 +436,4 @@ export default function ExpertiseSection() {
     </section>
   );
 }
+export default React.memo(ExpertiseSection);

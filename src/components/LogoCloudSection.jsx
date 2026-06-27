@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 // Travinno location pin coordinates from scratch_logo_paths.json
@@ -21,12 +21,12 @@ const PARTNER_NAMES = [
   "Belmond Train Services", "Orient Express"
 ];
 
-// Generate list of 52 partners pointing to the user's PNG assets in public/partners
+// Generate list of 52 partners pointing to the user's WebP assets in public/partners
 const PARTNERS_DATA = Array.from({ length: 52 }, (_, i) => {
   const num = i + 1;
   return {
     id: num,
-    src: `${import.meta.env.BASE_URL}partners/partner-${num}.png`,
+    src: `${import.meta.env.BASE_URL}partners/partner-${num}.webp`,
     alt: PARTNER_NAMES[i] || `Luxury Travel Partner ${num}`
   };
 });
@@ -40,6 +40,7 @@ const PartnerLogo = ({ partner }) => {
         alt={partner.alt} 
         className="partner-logo-img animate-fade-in"
         loading="lazy"
+        decoding="async"
       />
     </div>
   );
@@ -134,7 +135,26 @@ const BackgroundIllustrations = () => {
   );
 };
 
-export default function LogoCloudSection() {
+function LogoCloudSection() {
+  const marqueeRef = useRef(null);
+
+  // Pause the CSS marquee animation when the section is off-screen
+  useEffect(() => {
+    const el = marqueeRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const track = el.querySelector('.partners-marquee-track');
+        if (track) {
+          track.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+        }
+      },
+      { rootMargin: '200px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   // Pre-generate loop elements with dividers placed dynamically every 7 logos
   const marqueeItems = [];
   PARTNERS_DATA.forEach((partner, idx) => {
@@ -149,7 +169,7 @@ export default function LogoCloudSection() {
   const loopTrack = [...marqueeItems, ...marqueeItems];
 
   return (
-    <section className="logo-cloud-section">
+    <section ref={marqueeRef} className="logo-cloud-section">
       {/* Editorial subtle grid blend overlay */}
       <div className="section-blend-overlay blend-to-05" style={{ pointerEvents: 'none' }} />
 
@@ -235,3 +255,4 @@ export default function LogoCloudSection() {
     </section>
   );
 }
+export default React.memo(LogoCloudSection);

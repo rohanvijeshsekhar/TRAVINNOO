@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import logoImg from '../assets/logo.png';
+import logoImg from '../assets/logo.webp';
 
 const milestones = [
   { step: 'MILESTONE 01', year: 'APR 2017', title: 'FOUNDED', action: 'Free Zone Inception', desc: 'Started with a Free Zone license as a solo venture.' },
@@ -762,6 +762,7 @@ export default function OurJourney() {
                     src={logoImg}
                     alt=""
                     aria-hidden="true"
+                    loading="lazy"
                     style={{
                       position: 'absolute',
                       left: `${(activeIndex / 6) * 100}%`,
@@ -848,6 +849,7 @@ export default function OurJourney() {
                           src={logoImg}
                           alt=""
                           aria-hidden="true"
+                          loading="lazy"
                           style={{
                             position: 'absolute',
                             left: '-24px',

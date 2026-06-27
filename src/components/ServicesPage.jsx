@@ -5,6 +5,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import BackgroundVideo from './BackgroundVideo';
 import ScrollIndicator from './ScrollIndicator';
 
+const IS_MOBILE = typeof window !== 'undefined'
+  ? window.matchMedia('(hover: none) and (pointer: coarse)').matches
+  : false;
+const IMG_WIDTH = IS_MOBILE ? 800 : 1600;
+
 // Curated high-resolution luxury travel editorial photography
 const SERVICES_DATA = [
   {
@@ -17,7 +22,7 @@ const SERVICES_DATA = [
       'Honeymoons',
       'Family vacations'
     ],
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop',
+    image: `https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
     cta: 'Explore Leisure Travel'
   },
   {
@@ -30,7 +35,7 @@ const SERVICES_DATA = [
       'Dedicated coordinators',
       'Flexible itineraries'
     ],
-    image: 'https://images.unsplash.com/photo-1539635278303-d4002c07eae3?q=80&w=1600&auto=format&fit=crop',
+    image: `https://images.unsplash.com/photo-1539635278303-d4002c07eae3?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
     cta: 'Explore Group Tours'
   },
   {
@@ -43,7 +48,7 @@ const SERVICES_DATA = [
       'Incentive travel',
       'Event logistics'
     ],
-    image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1600&auto=format&fit=crop',
+    image: `https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
     cta: 'Explore MICE & Events'
   },
   {
@@ -56,7 +61,7 @@ const SERVICES_DATA = [
       'Accommodation',
       'Transfers'
     ],
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1600&auto=format&fit=crop',
+    image: `https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
     cta: 'Explore Corporate Travel'
   },
   {
@@ -69,7 +74,7 @@ const SERVICES_DATA = [
       'Transportation',
       'Operations support'
     ],
-    image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1600&auto=format&fit=crop',
+    image: `https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
     cta: 'Explore Ground Handling'
   },
   {
@@ -82,7 +87,7 @@ const SERVICES_DATA = [
       'Fine dining',
       'Bespoke experiences'
     ],
-    image: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=1600&auto=format&fit=crop',
+    image: `https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
     cta: 'Explore Luxury Experiences'
   }
 ];
@@ -192,6 +197,8 @@ function ServiceChapter({ service, idx }) {
           <img
             src={service.image}
             alt={getServiceAltText(service.title)}
+            loading="lazy"
+            decoding="async"
             style={{
               width: '100%',
               height: '100%',
@@ -375,6 +382,23 @@ function EditorialDivider({ text }) {
 
 export default function ServicesPage() {
   const marqueeContainerRef = useRef(null);
+
+  // Pause the CSS marquee animation when the section is off-screen
+  useEffect(() => {
+    const el = marqueeContainerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const track = el.querySelector('.marquee-content-container');
+        if (track) {
+          track.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+        }
+      },
+      { rootMargin: '200px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // Initialize GSAP register ScrollTrigger
   useEffect(() => {

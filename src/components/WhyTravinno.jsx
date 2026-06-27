@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 // --- Animated SVG Visual Components ---
@@ -134,13 +134,20 @@ function TrustedPartnershipsVisual({ isHovered }) {
   );
 }
 
-function SupportVisual({ isHovered }) {
+function SupportVisual({ isHovered, sectionVisible }) {
   const [time, setTime] = useState(0);
+  const visibleRef = useRef(sectionVisible);
+
+  useEffect(() => {
+    visibleRef.current = sectionVisible;
+  }, [sectionVisible]);
 
   useEffect(() => {
     let frameId;
     const tick = () => {
-      setTime(prev => prev + (isHovered ? 0.25 : 0.22));
+      if (visibleRef.current) {
+        setTime(prev => prev + (isHovered ? 0.25 : 0.22));
+      }
       frameId = requestAnimationFrame(tick);
     };
     frameId = requestAnimationFrame(tick);
@@ -347,10 +354,10 @@ function OperationalExcellenceVisual({ isHovered }) {
         
         {/* Wheels */}
         <circle cx="35" cy="70" r="14" fill="#050505" stroke="rgba(255,255,255,0.12)" strokeWidth="1.2" />
-        <circle cx="35" cy="70" r="6" stroke="#C1121F" stroke="0.8" />
+        <circle cx="35" cy="70" r="6" stroke="#C1121F" strokeWidth="0.8" />
         
         <circle cx="145" cy="70" r="14" fill="#050505" stroke="rgba(255,255,255,0.12)" strokeWidth="1.2" />
-        <circle cx="145" cy="70" r="6" stroke="#C1121F" stroke="0.8" />
+        <circle cx="145" cy="70" r="6" stroke="#C1121F" strokeWidth="0.8" />
 
         {/* Headlight illumination */}
         <path d="M 10 60 L -15 60 L -30 65 L -15 70 Z" fill="rgba(193, 18, 31, 0.12)" opacity={isHovered ? 1 : 0.4} className="transition-opacity duration-300" />
@@ -488,14 +495,27 @@ const whyData = [
   }
 ];
 
-export default function WhyTravinno() {
+function WhyTravinno() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [sectionVisible, setSectionVisible] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setSectionVisible(entry.isIntersecting),
+      { rootMargin: '200px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const getVisualComponent = (index, isHovered) => {
     switch (index) {
       case 0: return <LocalExpertiseVisual isHovered={isHovered} />;
       case 1: return <TrustedPartnershipsVisual isHovered={isHovered} />;
-      case 2: return <SupportVisual isHovered={isHovered} />;
+      case 2: return <SupportVisual isHovered={isHovered} sectionVisible={sectionVisible} />;
       case 3: return <GlobalNetworkVisual isHovered={isHovered} />;
       case 4: return <OperationalExcellenceVisual isHovered={isHovered} />;
       case 5: return <ProvenExperienceVisual isHovered={isHovered} />;
@@ -504,7 +524,7 @@ export default function WhyTravinno() {
   };
 
   return (
-    <section className="why-section relative overflow-hidden">
+    <section ref={sectionRef} className="why-section relative overflow-hidden">
       {/* Inline styles for keyframe animations self-containment */}
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes spin {
@@ -604,4 +624,5 @@ export default function WhyTravinno() {
     </section>
   );
 }
+export default React.memo(WhyTravinno);
 
