@@ -9,6 +9,7 @@ import Lenis from '@studio-freight/lenis';
 
 import EditorialSection from './components/EditorialSection';
 import ExpertiseSection from './components/ExpertiseSection';
+import FlyHigherV2 from './components/FlyHigherV2';
 import OurJourney from './components/OurJourney';
 import LogoCloudSection from './components/LogoCloudSection';
 import WhyTravinno from './components/WhyTravinno';
@@ -214,8 +215,8 @@ function App() {
             <ExpertiseSection />
           </div>
 
-          {/* Destinations Showcase Section Placeholder */}
-          <section id="destinations-placeholder" style={{ minHeight: '100px', backgroundColor: '#050505' }} />
+          {/* Destinations Showcase Section */}
+          <FlyHigherV2 />
 
 
           {/* Our Journey Section */}
