@@ -1,4 +1,4 @@
-import{a as e}from"./rolldown-runtime-Cyuzqnbw.js";import{_t as t,yt as n}from"./vendor-BeahlPft.js";import{n as r,t as i}from"./vendor-gsap-B2JeSRMT.js";var a=e(n(),1),o=t(),s=typeof window<`u`&&window.matchMedia(`(hover: none) and (pointer: coarse)`).matches?800:1200,c=[{title:`Dubai`,region:`Middle East`,countryName:`United Arab Emirates`,heading:`Modern Skylines & Desert Safaris`,description:`Experience a world where futuristic glass skyscrapers rise directly from ancient desert sands, curating the ultimate heights of luxury leisure and private safaris.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=${s}&auto=format&fit=crop`},{title:`Malaysia`,region:`Southeast Asia`,countryName:`Malaysia`,heading:`Vibrant Cultures & Rainforest Escapes`,description:`Discover a rich tapestry of history, modern capital luxury, and pristine ancient rainforest canopies home to unique biodiversity.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=${s}&auto=format&fit=crop`},{title:`Thailand`,region:`Southeast Asia`,countryName:`Thailand`,heading:`Golden Temples & Tropical Islands`,description:`Immerse yourself in the warm hospitality of golden temple cities and white sand archipelago islands with tailored beachfront luxury.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1504214208698-ea1916a2195a?q=80&w=${s}&auto=format&fit=crop`},{title:`Singapore`,region:`Southeast Asia`,countryName:`Singapore`,heading:`Futuristic Gardens & Cosmopolitan Charm`,description:`Walk through the world's most advanced architectural nature displays, leading Michelin-starred dining, and premium lifestyle ports.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=${s}&auto=format&fit=crop`},{title:`Bali`,region:`Southeast Asia`,countryName:`Bali`,heading:`Sacred Temples & Pristine Beaches`,description:`Reconnect in the spiritual capital of volcanic lake vistas, iconic terraced valleys, and private pool luxury villas.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=${s}&auto=format&fit=crop`},{title:`Kenya`,region:`East Africa`,countryName:`Kenya`,heading:`Untamed Wildlife & Savannah Reserves`,description:`Witness the great wilderness migration on the plains of Masai Mara, pairing raw nature with five-star luxury tented camp reserves.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=${s}&auto=format&fit=crop`},{title:`Vietnam`,region:`Southeast Asia`,countryName:`Vietnam`,heading:`Historic Cities & Dramatic Karst Bays`,description:`Cruise the emerald waters of Ha Long Bay and explore French colonial cities, combining rich historic heritage with luxury maritime travel.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=${s}&auto=format&fit=crop`}],l=e=>({Dubai:`Luxury travel in Dubai with Travinno Trusted DMC`,Kenya:`Kenya safari destination managed by Travinno Trusted DMC`,Thailand:`Premium Thailand holiday experiences by Travinno Trusted DMC`,Vietnam:`Bespoke Vietnam tours and luxury cruises with Travinno Trusted DMC`,Singapore:`Singapore destination management services by Travinno Trusted DMC`,Malaysia:`Destination management services in Malaysia with Travinno Trusted DMC`,Bali:`Luxury holidays in Bali by Travinno Trusted DMC`})[e]||`Premium travel experiences in ${e} by Travinno Trusted DMC`;function u(){let e=(0,a.useRef)(null),t=(0,a.useRef)([]);(0,a.useRef)([]),(0,a.useRef)([]);let n=(0,a.useRef)([]),s=(0,a.useRef)(0),[u,d]=(0,a.useState)(0),[f,p]=(0,a.useState)(!1),m=(0,a.useRef)(0);return(0,a.useEffect)(()=>{c.forEach(e=>{let t=new Image;t.src=e.image})},[]),(0,a.useEffect)(()=>{let e=()=>{p(window.innerWidth<1024)};return e(),window.addEventListener(`resize`,e),()=>window.removeEventListener(`resize`,e)},[]),(0,a.useEffect)(()=>{r.registerPlugin(i);let n=e.current;if(!n)return;let a=t.current,o=r.context(()=>{if(f){a.forEach(e=>{e&&r.set(e,{clearProps:`all`})});return}a.forEach((e,t)=>{e&&(t===0?r.set(e,{y:`0px`,opacity:1,scale:1}):r.set(e,{y:`100vh`,opacity:1,scale:1}))});let e=r.timeline({scrollTrigger:{trigger:n,start:`top top`,end:`+=1400vh`,pin:!0,anticipatePin:1,scrub:1.5,invalidateOnRefresh:!0,onUpdate:e=>{let t=e.progress*5.8,n=0;n=t<.5?0:t<1.3?1:t<2.1?2:t<2.9?3:t<3.7?4:t<4.5?5:6,n!==s.current&&(s.current=n,d(n))}}}),t=window.innerWidth<1024;for(let n=1;n<7;n++){let r=(n-1)*.8;a[n-1]&&(t?e.to(a[n-1],{opacity:1,duration:1},r):e.to(a[n-1],{y:`-30px`,scale:.97,duration:1,ease:`power1.inOut`},r)),a[n]&&e.fromTo(a[n],{y:`100vh`,scale:1},{y:`0px`,scale:1,duration:1,ease:`power1.inOut`,force3D:!0},r)}e.to({},{duration:.8})},e);return setTimeout(()=>{i.refresh()},100),()=>{o.revert(),s.current=0}},[f]),(0,o.jsxs)(`div`,{ref:e,className:`destinations-stack-section`,style:{position:`relative`,height:`100vh`,backgroundColor:`transparent`,width:`100%`,boxSizing:`border-box`},children:[(0,o.jsx)(`style`,{children:`
+import{a as e}from"./rolldown-runtime-Cyuzqnbw.js";import{_t as t,yt as n}from"./vendor-BeahlPft.js";import{n as r,t as i}from"./vendor-gsap-B2JeSRMT.js";var a=e(n(),1),o=t(),s=typeof window<`u`&&window.matchMedia(`(hover: none) and (pointer: coarse)`).matches?800:1200,c=[{title:`Dubai`,region:`Middle East`,countryName:`United Arab Emirates`,heading:`Modern Skylines & Desert Safaris`,description:`Experience a world where futuristic glass skyscrapers rise directly from ancient desert sands, curating the ultimate heights of luxury leisure and private safaris.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=${s}&auto=format&fit=crop`},{title:`Malaysia`,region:`Southeast Asia`,countryName:`Malaysia`,heading:`Vibrant Cultures & Rainforest Escapes`,description:`Discover a rich tapestry of history, modern capital luxury, and pristine ancient rainforest canopies home to unique biodiversity.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=${s}&auto=format&fit=crop`},{title:`Thailand`,region:`Southeast Asia`,countryName:`Thailand`,heading:`Golden Temples & Tropical Islands`,description:`Immerse yourself in the warm hospitality of golden temple cities and white sand archipelago islands with tailored beachfront luxury.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1504214208698-ea1916a2195a?q=80&w=${s}&auto=format&fit=crop`},{title:`Singapore`,region:`Southeast Asia`,countryName:`Singapore`,heading:`Futuristic Gardens & Cosmopolitan Charm`,description:`Walk through the world's most advanced architectural nature displays, leading Michelin-starred dining, and premium lifestyle ports.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=${s}&auto=format&fit=crop`},{title:`Bali`,region:`Southeast Asia`,countryName:`Bali`,heading:`Sacred Temples & Pristine Beaches`,description:`Reconnect in the spiritual capital of volcanic lake vistas, iconic terraced valleys, and private pool luxury villas.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=${s}&auto=format&fit=crop`},{title:`Kenya`,region:`East Africa`,countryName:`Kenya`,heading:`Untamed Wildlife & Savannah Reserves`,description:`Witness the great wilderness migration on the plains of Masai Mara, pairing raw nature with five-star luxury tented camp reserves.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=${s}&auto=format&fit=crop`},{title:`Vietnam`,region:`Southeast Asia`,countryName:`Vietnam`,heading:`Historic Cities & Dramatic Karst Bays`,description:`Cruise the emerald waters of Ha Long Bay and explore French colonial cities, combining rich historic heritage with luxury maritime travel.`,highlights:[`Luxury Travel`,`MICE`,`Corporate`,`Leisure`,`Adventure`],image:`https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=${s}&auto=format&fit=crop`}],l=e=>({Dubai:`Luxury travel in Dubai with Travinno Trusted DMC`,Kenya:`Kenya safari destination managed by Travinno Trusted DMC`,Thailand:`Premium Thailand holiday experiences by Travinno Trusted DMC`,Vietnam:`Bespoke Vietnam tours and luxury cruises with Travinno Trusted DMC`,Singapore:`Singapore destination management services by Travinno Trusted DMC`,Malaysia:`Destination management services in Malaysia with Travinno Trusted DMC`,Bali:`Luxury holidays in Bali by Travinno Trusted DMC`})[e]||`Premium travel experiences in ${e} by Travinno Trusted DMC`;function u(){let e=(0,a.useRef)(null),t=(0,a.useRef)([]);(0,a.useRef)([]),(0,a.useRef)([]);let n=(0,a.useRef)([]),s=(0,a.useRef)(0),[u,d]=(0,a.useState)(0),[f,p]=(0,a.useState)(!1);return(0,a.useEffect)(()=>{c.forEach(e=>{let t=new Image;t.src=e.image})},[]),(0,a.useEffect)(()=>{let e=()=>{p(window.innerWidth<1024)};return e(),window.addEventListener(`resize`,e),()=>window.removeEventListener(`resize`,e)},[]),(0,a.useEffect)(()=>{r.registerPlugin(i),i.config({ignoreMobileResize:!0});let n=e.current;if(!n)return;let a=t.current,o=r.context(()=>{a.forEach((e,t)=>{e&&(t===0?r.set(e,{y:`0px`,opacity:1,scale:1}):r.set(e,{y:`100vh`,opacity:1,scale:1}))});let e=r.timeline({scrollTrigger:{trigger:n,start:`top top`,end:`+=1400vh`,pin:!0,anticipatePin:1,scrub:1.5,invalidateOnRefresh:!0,onUpdate:e=>{let t=e.progress*5.8,n=0;n=t<.5?0:t<1.3?1:t<2.1?2:t<2.9?3:t<3.7?4:t<4.5?5:6,n!==s.current&&(s.current=n,d(n))}}}),t=window.innerWidth<1024;for(let n=1;n<7;n++){let r=(n-1)*.8;a[n-1]&&(t?e.to(a[n-1],{opacity:1,duration:1},r):e.to(a[n-1],{y:`-30px`,scale:.97,duration:1,ease:`power1.inOut`},r)),a[n]&&e.fromTo(a[n],{y:`100vh`,scale:1},{y:`0px`,scale:1,duration:1,ease:`power1.inOut`,force3D:!0},r)}e.to({},{duration:.8})},e);return setTimeout(()=>{i.refresh()},100),()=>{o.revert(),s.current=0}},[]),(0,o.jsxs)(`div`,{ref:e,className:`destinations-stack-section`,style:{position:`relative`,height:`100vh`,backgroundColor:`transparent`,width:`100%`,boxSizing:`border-box`},children:[(0,o.jsx)(`style`,{children:`
         .destinations-sticky-viewport {
           position: absolute;
           top: 0;
@@ -267,27 +267,28 @@ import{a as e}from"./rolldown-runtime-Cyuzqnbw.js";import{_t as t,yt as n}from".
           }
 
           .destinations-stack-section {
-            height: auto !important;
-            padding: 20px 0 60px 0 !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            padding: 0 !important;
           }
 
           .destinations-sticky-viewport {
+            position: absolute;
+            height: 100%;
+            overflow: hidden;
             display: flex !important;
             justify-content: center !important;
             align-items: flex-start !important;
-            padding-top: 10px !important;
+            padding-top: 80px !important;
             box-sizing: border-box !important;
-            position: relative !important;
-            height: auto !important;
-            width: 100% !important;
           }
 
           .destinations-cards-container {
             width: 90% !important;
-            height: 64vh !important;
-            height: 64dvh !important;
+            height: 66vh !important;
+            height: 66dvh !important;
             max-height: 520px !important;
-            min-height: 400px !important;
+            min-height: 380px !important;
             display: flex !important;
             justify-content: center !important;
             align-items: center !important;
@@ -381,68 +382,5 @@ import{a as e}from"./rolldown-runtime-Cyuzqnbw.js";import{_t as t,yt as n}from".
             gap: 4px !important;
           }
 
-          /* Mobile Swipe Slider Navigation Styling */
-          .mobile-nav-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(13, 13, 13, 0.85);
-            border: 1px solid #282828;
-            color: #F5F2EC;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            cursor: pointer;
-            z-index: 100;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(4px);
-            outline: none;
-          }
-          
-          .mobile-arrow-left {
-            left: -16px;
-          }
-          
-          .mobile-arrow-right {
-            right: -16px;
-          }
-          
-          .mobile-nav-arrow:active {
-            border-color: #C1121F;
-            background: #C1121F;
-            color: #FFFFFF;
-          }
-          
-          .mobile-dots-indicator {
-            position: absolute;
-            bottom: -32px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-            z-index: 100;
-          }
-          
-          .mobile-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            padding: 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            outline: none;
-          }
-          
-          .mobile-dot.active {
-            background: #C1121F;
-            width: 16px;
-            border-radius: 3px;
-          }
         }
-      `}),(0,o.jsxs)(`div`,{className:`destinations-sticky-viewport`,children:[(0,o.jsx)(`div`,{className:`destinations-grid-bg`}),(0,o.jsxs)(`div`,{className:`destinations-cards-container`,onTouchStart:e=>{m.current=e.touches[0].clientX},onTouchEnd:e=>{let t=e.changedTouches[0].clientX,n=m.current-t;n>60?d(e=>Math.min(c.length-1,e+1)):n<-60&&d(e=>Math.max(0,e-1))},children:[c.map((e,r)=>(0,o.jsxs)(`div`,{ref:e=>{t.current[r]=e},className:`destination-card`,style:f?{zIndex:u===r?10:r+1,opacity:+(u===r),transform:u===r?`translate3d(0, 0, 0) scale(1)`:r<u?`translate3d(-30px, 0, 0) scale(0.96)`:`translate3d(30px, 0, 0) scale(0.96)`,pointerEvents:u===r?`auto`:`none`,transition:`transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1)`}:{zIndex:r+1},children:[(0,o.jsx)(`div`,{className:`card-left-panel`,children:(0,o.jsxs)(`div`,{className:`left-panel-content`,children:[(0,o.jsxs)(`div`,{className:`dest-meta-container`,children:[(0,o.jsx)(`span`,{className:`dest-region-label`,children:e.region}),(0,o.jsx)(`h4`,{className:`dest-country-heading`,children:(0,o.jsx)(`span`,{className:`dest-country-name-script`,children:e.countryName})})]}),(0,o.jsx)(`h3`,{className:`dest-editorial-heading`,children:e.heading}),(0,o.jsx)(`p`,{className:`dest-editorial-description`,children:e.description}),(0,o.jsx)(`div`,{className:`dest-feature-pills-container`,children:e.highlights.map((e,t)=>(0,o.jsx)(`span`,{className:`dest-feature-pill`,children:e},`high-${t}`))}),(0,o.jsx)(`div`,{className:`dest-button-container`,children:(0,o.jsxs)(`a`,{href:`#contact`,className:`dest-explore-button`,children:[`Explore Destination `,(0,o.jsx)(`span`,{className:`btn-arrow`,children:`→`})]})})]})}),(0,o.jsx)(`div`,{className:`card-right-panel`,children:(0,o.jsx)(`div`,{className:`destination-image-wrapper`,children:(0,o.jsx)(`img`,{ref:e=>{n.current[r]=e},src:e.image,alt:l(e.title),loading:`lazy`,decoding:`async`,className:`destination-img`})})})]},`dest-card-${r}`)),f&&(0,o.jsxs)(o.Fragment,{children:[u>0&&(0,o.jsx)(`button`,{onClick:()=>d(e=>Math.max(0,e-1)),className:`mobile-nav-arrow mobile-arrow-left`,"aria-label":`Previous destination`,children:`←`}),u<c.length-1&&(0,o.jsx)(`button`,{onClick:()=>d(e=>Math.min(c.length-1,e+1)),className:`mobile-nav-arrow mobile-arrow-right`,"aria-label":`Next destination`,children:`→`}),(0,o.jsx)(`div`,{className:`mobile-dots-indicator`,children:c.map((e,t)=>(0,o.jsx)(`button`,{onClick:()=>d(t),className:`mobile-dot ${u===t?`active`:``}`,"aria-label":`Go to slide ${t+1}`},`dot-${t}`))})]})]})]})]})}var d=()=>(0,o.jsx)(`div`,{className:`w-full h-min-screen`,children:(0,o.jsx)(u,{})});export{d as DemoOne};
+      `}),(0,o.jsxs)(`div`,{className:`destinations-sticky-viewport`,children:[(0,o.jsx)(`div`,{className:`destinations-grid-bg`}),(0,o.jsx)(`div`,{className:`destinations-cards-container`,children:c.map((e,r)=>(0,o.jsxs)(`div`,{ref:e=>{t.current[r]=e},className:`destination-card`,style:{zIndex:r+1},children:[(0,o.jsx)(`div`,{className:`card-left-panel`,children:(0,o.jsxs)(`div`,{className:`left-panel-content`,children:[(0,o.jsxs)(`div`,{className:`dest-meta-container`,children:[(0,o.jsx)(`span`,{className:`dest-region-label`,children:e.region}),(0,o.jsx)(`h4`,{className:`dest-country-heading`,children:(0,o.jsx)(`span`,{className:`dest-country-name-script`,children:e.countryName})})]}),(0,o.jsx)(`h3`,{className:`dest-editorial-heading`,children:e.heading}),(0,o.jsx)(`p`,{className:`dest-editorial-description`,children:e.description}),(0,o.jsx)(`div`,{className:`dest-feature-pills-container`,children:e.highlights.map((e,t)=>(0,o.jsx)(`span`,{className:`dest-feature-pill`,children:e},`high-${t}`))}),(0,o.jsx)(`div`,{className:`dest-button-container`,children:(0,o.jsxs)(`a`,{href:`#contact`,className:`dest-explore-button`,children:[`Explore Destination `,(0,o.jsx)(`span`,{className:`btn-arrow`,children:`→`})]})})]})}),(0,o.jsx)(`div`,{className:`card-right-panel`,children:(0,o.jsx)(`div`,{className:`destination-image-wrapper`,children:(0,o.jsx)(`img`,{ref:e=>{n.current[r]=e},src:e.image,alt:l(e.title),loading:`lazy`,decoding:`async`,className:`destination-img`})})})]},`dest-card-${r}`))})]})]})}var d=()=>(0,o.jsx)(`div`,{className:`w-full h-min-screen`,children:(0,o.jsx)(u,{})});export{d as DemoOne};
