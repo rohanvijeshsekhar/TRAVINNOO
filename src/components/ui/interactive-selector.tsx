@@ -492,8 +492,8 @@ export default function InteractiveSelector() {
             overflow: hidden;
             display: flex !important;
             justify-content: center !important;
-            align-items: flex-start !important;
-            padding-top: 80px !important;
+            align-items: center !important;
+            padding-top: 0 !important;
             box-sizing: border-box !important;
           }
 
