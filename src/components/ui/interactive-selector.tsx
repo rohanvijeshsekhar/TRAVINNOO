@@ -128,21 +128,51 @@ export default function InteractiveSelector() {
       card.style.transform = 'none';
     });
 
-    const getVH = () => window.innerHeight;
+    // Stable viewport dimensions to bypass iOS Safari address bar resizing height shifts.
+    // We cache the initial measurements and only update them on significant layout shifts
+    // (such as screen width resize or device orientation changes).
+    let cachedVH = window.innerHeight;
+    let cachedWidth = window.innerWidth;
+
+    const getVH = () => {
+      const currentWidth = window.innerWidth;
+      const currentHeight = window.innerHeight;
+      
+      // If width changed, or height changed significantly (e.g. orientation swap), update cache.
+      // Ignores minor changes (<= 150px) caused by mobile address bar slide-ins.
+      if (Math.abs(currentWidth - cachedWidth) > 10 || Math.abs(currentHeight - cachedVH) > 150) {
+        cachedVH = currentHeight;
+        cachedWidth = currentWidth;
+      }
+      return cachedVH;
+    };
 
     const transitionDuration = 1.0;
     const step = 0.8;
     const holdBuffer = 0.8;
-    const totalTimelineUnits = (cards.length - 1) * step + transitionDuration + holdBuffer;
+    // Mathematically calculates the exact timeline duration.
+    // Index i goes 1 to 6. Start positions are (i-1) * step, so last starts at 5 * 0.8 = 4.0.
+    // Last transition takes 1.0, ending at 5.0. Hold buffer tween adds 0.8. Total timeline is 5.8 units.
+    const totalTimelineUnits = (cards.length - 2) * step + transitionDuration + holdBuffer;
     
-    // We scroll 1.4 * VH per timeline unit of animation.
-    const getScrollDistance = () => totalTimelineUnits * (getVH() * 1.4);
+    // We scroll 1.5 * visual viewport height per timeline unit of animation.
+    const getScrollDistance = () => totalTimelineUnits * (getVH() * 1.5);
 
     // Update layout height dynamically on resize / orientation change.
     const updateLayoutHeight = () => {
       const vh = getVH();
       const scrollDistance = getScrollDistance();
-      container.style.height = `${vh + scrollDistance}px`;
+      
+      // Force parent container scrollable height using inline styles with !important keyword.
+      // This overrides any stylesheet !important media query rules.
+      container.style.setProperty('height', `${vh + scrollDistance}px`, 'important');
+      
+      // Force sticky viewport to match measured visual viewport height exactly.
+      // This prevents the element from dynamically expanding during scrolling, which causes early pin release.
+      const stickyViewport = container.querySelector('.destinations-sticky-viewport') as HTMLDivElement;
+      if (stickyViewport) {
+        stickyViewport.style.setProperty('height', `${vh}px`, 'important');
+      }
     };
 
     // Initially configure the height and listen to refreshInit to update it on resize.
