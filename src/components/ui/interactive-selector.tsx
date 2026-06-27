@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -119,33 +119,13 @@ export default function InteractiveSelector() {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
 
-  // Wait for all destination images to load completely to establish a deterministic layout height
-  useLayoutEffect(() => {
-    let active = true;
-    const imagePromises = destinations.map((dest) => {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.src = dest.image;
-        if (img.complete) {
-          resolve(null);
-        } else {
-          img.onload = () => resolve(null);
-          img.onerror = () => resolve(null);
-        }
-      });
+  // Preload all destination images on mount to prevent layout/network lag during scrolling
+  useEffect(() => {
+    destinations.forEach((dest) => {
+      const img = new Image();
+      img.src = dest.image;
     });
-
-    Promise.all(imagePromises).then(() => {
-      if (active) {
-        setImagesLoaded(true);
-      }
-    });
-
-    return () => {
-      active = false;
-    };
   }, []);
 
   useEffect(() => {
@@ -157,11 +137,8 @@ export default function InteractiveSelector() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  useLayoutEffect(() => {
-    if (!imagesLoaded) return;
-
+  useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    ScrollTrigger.config({ ignoreMobileResize: true });
 
     const container = containerRef.current;
     if (!container) return;
@@ -260,13 +237,15 @@ export default function InteractiveSelector() {
     }, containerRef);
 
     // Refresh ScrollTrigger to ensure position parameters are exact
-    ScrollTrigger.refresh(true);
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
 
     return () => {
       ctx.revert(); // Reverts timelines and kills ScrollTriggers
       currentActiveRef.current = 0;
     };
-  }, [imagesLoaded]);
+  }, []);
 
   return (
     <div
