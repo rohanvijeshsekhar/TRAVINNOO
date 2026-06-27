@@ -228,14 +228,22 @@ export default function FlyHigherV2() {
 
   return (
     <div
+      ref={containerRef}
       id="destinations"
       className="home-destinations-fade-wrap destinations-section"
       style={{
         backgroundColor: '#050505',
-        padding: '100px 24px 0 24px',
         position: 'relative',
         zIndex: 5,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        height: '100vh',
+        height: '100dvh',
+        width: '100%',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        padding: '80px 24px 40px 24px'
       }}
     >
       {/* Background Reddish-Orange-Black Gradient with Static Check Pattern */}
@@ -380,27 +388,25 @@ export default function FlyHigherV2() {
         </h2>
       </div>
 
-      <div className="destinations-cards-wrapper" style={{ position: 'relative', zIndex: 10 }}>
+      <div className="destinations-cards-wrapper" style={{ position: 'relative', zIndex: 10, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: '10px' }}>
         <div
-          ref={containerRef}
           className="destinations-stack-section"
           style={{
             position: 'relative',
-            height: '100vh',
-            height: '100dvh',
-            backgroundColor: 'transparent',
             width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'transparent',
             boxSizing: 'border-box'
           }}
         >
           <style>{`
             .destinations-sticky-viewport {
-              position: absolute;
-              top: 0;
-              left: 0;
+              position: relative;
               width: 100%;
-              height: 100%;
-              overflow: hidden;
+              height: auto;
+              overflow: visible;
               background-color: transparent;
               display: flex;
               justify-content: center;
@@ -646,27 +652,35 @@ export default function FlyHigherV2() {
 
             @media (max-width: 1023px) {
               .destinations-section {
-                padding-top: 40px !important;
+                height: 100vh !important;
+                height: 100dvh !important;
+                padding: 60px 16px 20px 16px !important;
+                box-sizing: border-box !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
               }
 
               .destinations-cards-wrapper {
-                margin-top: -70px !important;
+                margin-top: 0 !important;
+                flex: 1 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
               }
 
               .destinations-stack-section {
-                height: 100vh !important;
-                height: 100dvh !important;
                 padding: 0 !important;
               }
 
               .destinations-sticky-viewport {
-                position: absolute !important;
-                height: 100% !important;
-                overflow: hidden !important;
+                position: relative !important;
+                height: auto !important;
+                overflow: visible !important;
                 display: flex !important;
                 justify-content: center !important;
-                align-items: flex-start !important;
-                padding-top: 96px !important;
+                align-items: center !important;
+                padding-top: 0 !important;
                 box-sizing: border-box !important;
               }
 
