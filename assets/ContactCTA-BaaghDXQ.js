@@ -33,4 +33,4 @@ import{a as e}from"./rolldown-runtime-Cyuzqnbw.js";import{_t as t,yt as n}from".
           background-color: rgba(255, 255, 255, 0.06) !important;
           transform: translateY(-2px);
         }
-      `})]})}export{c as default};
+      `})]})}var l=i.memo(c);export{l as default};
