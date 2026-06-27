@@ -180,7 +180,7 @@ function App() {
         // overflow-y:auto and creates a new containing block for position:fixed),
         // 'clip' does NOT establish a scroll container, so GSAP's position:fixed
         // pin correctly anchors to the viewport — not this wrapper.
-        overflow: 'clip'
+        overflowX: 'clip'
       }}
     >
       {/* Fullscreen Loading Experience */}
