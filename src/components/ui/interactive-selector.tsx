@@ -178,7 +178,7 @@ export default function InteractiveSelector() {
       // unit of timeline time. We want each card transition to feel like
       // scrolling ~200px at scrub:1.5, matching original 1400vh/7cards feel
       // but computed from the measured visual viewport.
-      const SCROLL_PER_UNIT = () => getVH() * 1.4;
+      const SCROLL_PER_UNIT = () => getVH() * 0.7;
 
       const tl = gsap.timeline({
         scrollTrigger: {
