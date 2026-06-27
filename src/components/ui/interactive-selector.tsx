@@ -12,11 +12,6 @@ interface Destination {
   image: string;       // Image URL
 }
 
-const IS_MOBILE = typeof window !== 'undefined'
-  ? window.matchMedia('(hover: none) and (pointer: coarse)').matches
-  : false;
-const IMG_WIDTH = IS_MOBILE ? 800 : 1200;
-
 const destinations: Destination[] = [
   {
     title: "Dubai",
@@ -25,7 +20,7 @@ const destinations: Destination[] = [
     heading: "Modern Skylines & Desert Safaris",
     description: "Experience a world where futuristic glass skyscrapers rise directly from ancient desert sands, curating the ultimate heights of luxury leisure and private safaris.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: `https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
+    image: "/images/destinations/dubai.webp"
   },
   {
     title: "Malaysia",
@@ -34,7 +29,7 @@ const destinations: Destination[] = [
     heading: "Vibrant Cultures & Rainforest Escapes",
     description: "Discover a rich tapestry of history, modern capital luxury, and pristine ancient rainforest canopies home to unique biodiversity.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: `https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
+    image: "/images/destinations/malaysia.webp"
   },
   {
     title: "Thailand",
@@ -43,7 +38,7 @@ const destinations: Destination[] = [
     heading: "Golden Temples & Tropical Islands",
     description: "Immerse yourself in the warm hospitality of golden temple cities and white sand archipelago islands with tailored beachfront luxury.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: `https://images.unsplash.com/photo-1504214208698-ea1916a2195a?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
+    image: "/images/destinations/thailand.webp"
   },
   {
     title: "Singapore",
@@ -52,7 +47,7 @@ const destinations: Destination[] = [
     heading: "Futuristic Gardens & Cosmopolitan Charm",
     description: "Walk through the world's most advanced architectural nature displays, leading Michelin-starred dining, and premium lifestyle ports.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: `https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
+    image: "/images/destinations/singapore.webp"
   },
   {
     title: "Bali",
@@ -61,7 +56,7 @@ const destinations: Destination[] = [
     heading: "Sacred Temples & Pristine Beaches",
     description: "Reconnect in the spiritual capital of volcanic lake vistas, iconic terraced valleys, and private pool luxury villas.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: `https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
+    image: "/images/destinations/bali.webp"
   },
   {
     title: "Kenya",
@@ -70,7 +65,7 @@ const destinations: Destination[] = [
     heading: "Untamed Wildlife & Savannah Reserves",
     description: "Witness the great wilderness migration on the plains of Masai Mara, pairing raw nature with five-star luxury tented camp reserves.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: `https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
+    image: "/images/destinations/kenya.webp"
   },
   {
     title: "Vietnam",
@@ -79,7 +74,7 @@ const destinations: Destination[] = [
     heading: "Historic Cities & Dramatic Karst Bays",
     description: "Cruise the emerald waters of Ha Long Bay and explore French colonial cities, combining rich historic heritage with luxury maritime travel.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: `https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`
+    image: "/images/destinations/vietnam.webp"
   }
 ];
 
@@ -128,13 +123,16 @@ export default function InteractiveSelector() {
 
     // Build within GSAP context for proper cleanup/react lifecycle safety
     const ctx = gsap.context(() => {
-      // Programmatically set initial deck coordinates
+      // Use pixel functions instead of vh strings.
+      // On iOS Safari, `100vh` = layout viewport (includes URL bar chrome) which
+      // differs from window.innerHeight (visual viewport). Using a function ensures
+      // invalidateOnRefresh always gets the current visual viewport height.
       cards.forEach((card, idx) => {
-        if (idx === 0) {
-          gsap.set(card, { y: "0px", opacity: 1, scale: 1 });
-        } else {
-          gsap.set(card, { y: "100vh", opacity: 1, scale: 1 });
-        }
+        gsap.set(card, {
+          y: idx === 0 ? 0 : () => window.innerHeight,
+          opacity: 1,
+          scale: 1
+        });
       });
 
       // Construct exactly ONE timeline linked to exactly ONE ScrollTrigger instance
@@ -142,12 +140,20 @@ export default function InteractiveSelector() {
         scrollTrigger: {
           trigger: container,
           start: "top top",
-          end: "+=1400vh",
+          // Pixel-based end: avoids iOS vh unit inaccuracy.
+          // Equivalent to "+=1400vh" but uses actual visual viewport pixels.
+          // Function form ensures invalidateOnRefresh recalculates on resize/rotation.
+          end: () => `+=${14 * window.innerHeight}`,
           pin: true,
           pinSpacing: true,
-          anticipatePin: 1,
+          // "transform" pinning avoids position:fixed which breaks on iOS Safari
+          // whenever any ancestor has overflow set to a non-visible value
+          // (the App root has overflowX:hidden, the hero section has overflow:hidden).
+          pinType: "transform",
           scrub: 1.5,
           invalidateOnRefresh: true
+          // anticipatePin removed: iOS native momentum scroll has different velocity
+          // characteristics; anticipatePin fires the pin too early on WebKit.
         }
       });
 
@@ -166,7 +172,7 @@ export default function InteractiveSelector() {
           }, startPos);
         } else {
           tl.to(cards[i - 1], {
-            y: "-30px",
+            y: -30,
             scale: 0.97,
             duration: transitionDuration,
             ease: "power1.inOut"
@@ -174,10 +180,11 @@ export default function InteractiveSelector() {
         }
 
         // Slide up incoming deck item (i)
+        // Function form for fromValue so invalidateOnRefresh recalculates correctly.
         tl.fromTo(cards[i],
-          { y: "100vh", scale: 1 },
+          { y: () => window.innerHeight, scale: 1 },
           {
-            y: "0px",
+            y: 0,
             scale: 1,
             duration: transitionDuration,
             ease: "power1.inOut",
@@ -187,18 +194,23 @@ export default function InteractiveSelector() {
         );
       }
 
-      // Add final holding buffer for Vietnam slide
+      // Add final holding buffer for last slide
       tl.to({}, { duration: 0.8 });
     }, containerRef);
 
-    // Defer ScrollTrigger.refresh() to after the first browser paint so all
-    // images and layout are fully resolved before offsets are cached.
-    const rafId = requestAnimationFrame(() => {
-      ScrollTrigger.refresh(true);
+    // Two nested rAFs: first ensures layout is committed, second ensures paint is
+    // complete. iOS Safari requires both before ScrollTrigger can cache correct
+    // element offsets. A single rAF is not sufficient on WebKit.
+    let rafId2 = 0;
+    const rafId1 = requestAnimationFrame(() => {
+      rafId2 = requestAnimationFrame(() => {
+        ScrollTrigger.refresh(true);
+      });
     });
 
     return () => {
-      cancelAnimationFrame(rafId);
+      cancelAnimationFrame(rafId1);
+      cancelAnimationFrame(rafId2);
       ctx.revert();
     };
   }, []);
@@ -209,7 +221,15 @@ export default function InteractiveSelector() {
       className="destinations-stack-section"
       style={{
         position: 'relative',
-        height: '100vh', // Clean 100vh height for pinning
+        // Use 100svh on iOS (small viewport height = visible area without chrome).
+        // 100dvh is fine on most modern browsers but 100svh is the safest for pinning
+        // since it matches the most conservative (smallest) viewport measurement.
+        // The @supports fallback ensures older iOS Safari falls back to 100vh.
+        height: typeof CSS !== 'undefined' && CSS.supports('height', '100svh')
+          ? '100svh'
+          : typeof CSS !== 'undefined' && CSS.supports('height', '100dvh')
+          ? '100dvh'
+          : '100vh',
         backgroundColor: 'transparent',
         width: '100%',
         boxSizing: 'border-box'
@@ -225,8 +245,10 @@ export default function InteractiveSelector() {
           overflow: hidden;
           background-color: transparent;
           display: flex;
+          flex-direction: column;
           justify-content: center;
           align-items: center;
+          gap: 24px;
           box-sizing: border-box;
           padding: 0;
         }
@@ -278,7 +300,8 @@ export default function InteractiveSelector() {
           backface-visibility: hidden;
           -webkit-backface-visibility: hidden;
           transform: translate3d(0, 0, 0);
-          transform-style: preserve-3d;
+          /* transform-style: preserve-3d removed — creates a 3D compositing context
+             that conflicts with GSAP transform-based pinning on iOS WebKit. */
         }
 
         /* LEFT SIDE (45%) */
@@ -479,13 +502,9 @@ export default function InteractiveSelector() {
             padding-top: 40px !important;
           }
 
-          .destinations-cards-wrapper {
-            margin-top: -70px !important;
-          }
-
           .destinations-stack-section {
             height: 100vh !important;
-            height: 100dvh !important;
+            height: 100svh !important; /* small viewport: most conservative, avoids chrome overlap */
             padding: 0 !important;
           }
 
@@ -494,9 +513,11 @@ export default function InteractiveSelector() {
             height: 100%;
             overflow: hidden;
             display: flex !important;
+            flex-direction: column !important;
             justify-content: center !important;
-            align-items: flex-start !important;
-            padding-top: 80px !important;
+            align-items: center !important;
+            padding-top: 0 !important;
+            gap: 16px !important;
             box-sizing: border-box !important;
           }
 
@@ -526,7 +547,7 @@ export default function InteractiveSelector() {
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             transform: translate3d(0, 0, 0);
-            transform-style: preserve-3d;
+            /* transform-style: preserve-3d removed — iOS WebKit 3D context fix */
           }
 
           .card-left-panel {
@@ -606,6 +627,73 @@ export default function InteractiveSelector() {
       <div className="destinations-sticky-viewport">
         {/* Subtle grid background */}
         <div className="destinations-grid-bg" />
+
+        {/* Fly Higher heading — flex child above cards, stays visible while cards animate */}
+        <div
+          className="destinations-heading-container"
+          style={{
+            maxWidth: '1300px',
+            width: '100%',
+            textAlign: 'center',
+            boxSizing: 'border-box',
+            padding: '0 8px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            position: 'relative',
+            zIndex: 10,
+            flexShrink: 0
+          }}
+        >
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 10px',
+              border: '1px solid rgba(193, 18, 31, 0.15)',
+              borderRadius: '100px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.72rem',
+              fontWeight: 500,
+              letterSpacing: '0.05em',
+              color: 'rgba(255, 255, 255, 0.85)',
+              marginBottom: '12px',
+              background: 'rgba(193, 18, 31, 0.05)',
+              backdropFilter: 'blur(4px)',
+              WebkitBackdropFilter: 'blur(4px)'
+            }}
+          >
+            <span
+              style={{
+                width: '6px',
+                height: '6px',
+                backgroundColor: '#C1121F',
+                borderRadius: '50%',
+                display: 'inline-block'
+              }}
+            />
+            Fly Higher
+          </span>
+          <h2
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'clamp(2rem, 3.8vw, 3.2rem)',
+              fontWeight: 500,
+              lineHeight: 1.15,
+              letterSpacing: '0.02em',
+              color: '#F5F2EC',
+              margin: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center'
+            }}
+          >
+            <span>Beyond Every</span>
+            <span className="journey-allura-text" style={{ marginTop: '4px' }}>Borders</span>
+          </h2>
+        </div>
 
         {/* Floating Stack Container */}
         <div className="destinations-cards-container">
