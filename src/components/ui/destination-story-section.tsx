@@ -165,18 +165,16 @@ export default function DestinationStorySection() {
         // Loop cards to create smooth sequential cinematic card stack transitions
         for (let i = 1; i < cards.length; i++) {
           const startPos = (i - 1) * totalDurationPerCard;
+          const yOffset = isMobile ? 24 : 40; // Maintain 8-12% visible margin responsive to screen height
 
-          // Outgoing card (i-1) shifts slightly up and scales down on desktop; remains static on mobile
-          if (isMobile) {
-            tl.to(cards[i - 1], {
-              opacity: 1, // keep visible
-              duration: transitionDuration,
-              ease: "power2.inOut"
-            }, startPos);
-          } else {
-            tl.to(cards[i - 1], {
-              y: -20,
-              scale: 0.98,
+          // Shift all previously stacked cards upward to build a layered editorial deck
+          for (let j = 0; j < i; j++) {
+            const finalY = -(i - j) * yOffset;
+            const finalScale = 1 - (i - j) * 0.02;
+
+            tl.to(cards[j], {
+              y: finalY,
+              scale: finalScale,
               duration: transitionDuration,
               ease: "power2.inOut"
             }, startPos);
