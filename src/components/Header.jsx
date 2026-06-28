@@ -570,8 +570,112 @@ export default function Header() {
                 msOverflowStyle: 'none'
               }}
             >
-              {/* Top Section (Header & Links) */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {/* Background Graphic Illustration (matching Footer style) */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                overflow: 'hidden',
+                pointerEvents: 'none',
+                zIndex: 0,
+                opacity: 0.65
+              }}
+            >
+              {/* Glow Wash */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '-10%',
+                  right: '-10%',
+                  width: '250px',
+                  height: '250px',
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, rgba(193, 18, 31, 0.05) 0%, rgba(234, 28, 41, 0.01) 50%, transparent 100%)',
+                  filter: 'blur(40px)',
+                  pointerEvents: 'none'
+                }}
+              />
+
+              <svg
+                viewBox="0 0 360 800"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  display: 'block',
+                  pointerEvents: 'none'
+                }}
+              >
+                {/* 1. Fine Dotted World Grid Lines */}
+                <g stroke="rgba(245, 242, 236, 0.05)" strokeWidth="0.5" strokeDasharray="1.5 8" fill="none">
+                  {/* Latitudes */}
+                  <line x1="10" y1="100" x2="350" y2="100" />
+                  <line x1="10" y1="220" x2="350" y2="220" />
+                  <line x1="10" y1="340" x2="350" y2="340" />
+                  <line x1="10" y1="460" x2="350" y2="460" />
+                  <line x1="10" y1="580" x2="350" y2="580" />
+                  <line x1="10" y1="700" x2="350" y2="700" />
+                  {/* Longitudes */}
+                  <line x1="60" y1="20" x2="60" y2="780" />
+                  <line x1="180" y1="20" x2="180" y2="780" />
+                  <line x1="300" y1="20" x2="300" y2="780" />
+                </g>
+
+                {/* 2. Star Constellations */}
+                <g stroke="rgba(245, 242, 236, 0.08)" strokeWidth="0.5" fill="none">
+                  <polyline points="40,150 70,135 100,155" />
+                  <circle cx="40" cy="150" r="1.2" fill="rgba(245, 242, 236, 0.3)" />
+                  <circle cx="70" cy="135" r="2" fill="#C82D2D" fillOpacity="0.4" />
+                  <circle cx="100" cy="155" r="1" fill="rgba(245, 242, 236, 0.2)" />
+                </g>
+
+                {/* 3. Compass Outline in Background (Bottom Right) */}
+                <g transform="translate(280, 680)">
+                  <circle cx="0" cy="0" r="90" stroke="rgba(245, 242, 236, 0.12)" strokeWidth="0.6" fill="none" />
+                  <circle cx="0" cy="0" r="80" stroke="rgba(245, 242, 236, 0.08)" strokeWidth="0.5" strokeDasharray="2 2" fill="none" />
+                  <circle cx="0" cy="0" r="50" stroke="rgba(245, 242, 236, 0.08)" strokeWidth="0.5" fill="none" />
+                  
+                  {/* Compass needle */}
+                  <path d="M 0,-60 L 3,0 L 0,8 L -3,0 Z" fill="none" stroke="rgba(200, 45, 45, 0.2)" strokeWidth="0.6" />
+                  <path d="M 0,60 L 3,0 L 0,-8 L -3,0 Z" fill="none" stroke="rgba(245, 242, 236, 0.1)" strokeWidth="0.6" />
+                  
+                  {/* Cardinal Points */}
+                  <text x="0" y="-68" textAnchor="middle" fontSize="6.5" fill="rgba(245, 242, 236, 0.3)" stroke="none" fontFamily="var(--font-sans)">N</text>
+                  <text x="0" y="74" textAnchor="middle" fontSize="6.5" fill="rgba(245, 242, 236, 0.3)" stroke="none" fontFamily="var(--font-sans)">S</text>
+                </g>
+
+                {/* 4. Luxury Passport stamp */}
+                <g transform="translate(110, 620) rotate(-10)" opacity="0.1" stroke="rgba(245, 242, 236, 0.8)" strokeWidth="0.5" fill="none">
+                  <circle cx="0" cy="0" r="22" />
+                  <circle cx="0" cy="0" r="19" strokeDasharray="1 1.5" />
+                  <text x="0" y="-6" textAnchor="middle" fontSize="4.2" fill="#F5F2EC" stroke="none" fontFamily="var(--font-sans)">TRAVINNO</text>
+                  <text x="0" y="2" textAnchor="middle" fontSize="3.5" fill="#C82D2D" stroke="none" fontFamily="var(--font-sans)">★ DXB ★</text>
+                  <text x="0" y="8" textAnchor="middle" fontSize="3.5" fill="#F5F2EC" stroke="none" fontFamily="var(--font-mono)">ENTRY 2026</text>
+                </g>
+
+                {/* 5. Flowing Route line */}
+                <path
+                  d="M 60,180 C 120,240 100,320 200,380 C 300,440 220,540 280,680"
+                  fill="none"
+                  stroke="rgba(245, 242, 236, 0.15)"
+                  strokeWidth="0.6"
+                  strokeDasharray="3 4"
+                />
+                
+                {/* Route airplane icon */}
+                <g transform="translate(130, 310) rotate(35) scale(0.7) translate(-12, -12)" stroke="rgba(245, 242, 236, 0.18)" strokeWidth="0.7" fill="none">
+                  <path d="M 12,2 L 14,9 L 22,12 L 14,15 L 12,22 L 10,15 L 2,12 L 10,9 Z" />
+                </g>
+              </svg>
+            </div>
+
+            {/* Top Section (Header & Links) */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', position: 'relative', zIndex: 2 }}>
                 {/* Header: Logo + Close Button */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   {/* Logo (Travinno SVG logo pin) */}
@@ -921,7 +1025,7 @@ export default function Header() {
               </div>
 
               {/* Bottom Section (CTA + Utilities) */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center', position: 'relative', zIndex: 2 }}>
                 {/* CTA Button "Get in Touch" */}
                 {isLockedMode ? (
                   <a
