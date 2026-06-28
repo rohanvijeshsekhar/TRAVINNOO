@@ -266,7 +266,7 @@ export default function DestinationStorySection() {
       style={{
         position: 'relative',
         width: '100%',
-        backgroundColor: '#050505',
+        backgroundColor: 'transparent',
         boxSizing: 'border-box'
       }}
     >
