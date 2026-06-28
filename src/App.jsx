@@ -198,7 +198,7 @@ function App() {
       )}
 
       {/* Floating Transparent Navigation Header */}
-      {/* <Header /> */}
+      <Header />
 
       {/* Animated Film Grain Overlay — hidden on mobile via CSS */}
       <div className="film-grain" />
@@ -214,7 +214,8 @@ function App() {
         <Suspense fallback={null}><ServicesPage /></Suspense>
       ) : (
         <>
-          {/* Hero Section Container (100% Viewport Height) */}
+          {/* Temporarily disabled Hero Section Container */}
+          {/*
           <div
             className="home-hero-fade"
             style={{
@@ -224,10 +225,8 @@ function App() {
               overflow: 'hidden'
             }}
           >
-            {/* Cinematic Living Photograph Experience */}
             <CinematicHero />
 
-            {/* Smooth bottom blend overlay to fade images into the page background */}
             <div
               style={{
                 position: 'absolute',
@@ -241,9 +240,9 @@ function App() {
               }}
             />
 
-            {/* Minimal Scroll Indicator */}
             <ScrollIndicator />
           </div>
+          */}
 
           {/* Minimalist Editorial Section */}
           <div className="home-editorial-fade-wrap">
