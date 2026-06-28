@@ -142,24 +142,29 @@ export default function Header() {
       <motion.header
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1.0, ease: 'easeOut', delay: 0.1 }}
-      className="header-container"
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        padding: '24px 6%',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        zIndex: 1000,
-        pointerEvents: 'auto',
-        background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)',
-        border: 'none',
-        boxShadow: 'none'
-      }}
-    >
+        transition={{ duration: 1.0, ease: 'easeOut', delay: 0.1 }}
+        className="header-container"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          padding: '24px 6%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          zIndex: 1000,
+          pointerEvents: 'auto',
+          background: isMobileMenuOpen 
+            ? 'rgba(0, 0, 0, 0.4)' 
+            : 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)',
+          backdropFilter: isMobileMenuOpen ? 'blur(4px)' : 'none',
+          WebkitBackdropFilter: isMobileMenuOpen ? 'blur(4px)' : 'none',
+          border: 'none',
+          boxShadow: 'none',
+          transition: 'background 0.3s ease, backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease'
+        }}
+      >
       {/* Brand Logo */}
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <a
