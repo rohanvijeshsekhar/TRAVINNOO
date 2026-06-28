@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+const BASE = import.meta.env.BASE_URL;
 
 export default function StickyCardsTest() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -87,20 +88,21 @@ export default function StickyCardsTest() {
             position: 'absolute',
             width: '80%',
             height: '80%',
-            backgroundColor: '#C1121F',
             borderRadius: '24px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            color: '#F7F5F2',
-            fontFamily: 'sans-serif',
-            fontSize: '3rem',
-            fontWeight: 'bold',
+            overflow: 'hidden',
             zIndex: 1,
-            boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
+            boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+            border: '1px solid #181818'
           }}
         >
-          Card 1
+          <img
+            src={`${BASE}images/destinations/dubai.webp`}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 1 }}
+            alt="Dubai"
+          />
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#F7F5F2', fontFamily: 'sans-serif', fontSize: '3rem', fontWeight: 'bold', zIndex: 2, background: 'rgba(0,0,0,0.3)' }}>
+            Card 1
+          </div>
         </div>
 
         {/* Card 2 */}
@@ -110,20 +112,21 @@ export default function StickyCardsTest() {
             position: 'absolute',
             width: '80%',
             height: '80%',
-            backgroundColor: '#005f73',
             borderRadius: '24px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            color: '#F7F5F2',
-            fontFamily: 'sans-serif',
-            fontSize: '3rem',
-            fontWeight: 'bold',
+            overflow: 'hidden',
             zIndex: 2,
-            boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
+            boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+            border: '1px solid #181818'
           }}
         >
-          Card 2
+          <img
+            src={`${BASE}images/destinations/malaysia.webp`}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 1 }}
+            alt="Malaysia"
+          />
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#F7F5F2', fontFamily: 'sans-serif', fontSize: '3rem', fontWeight: 'bold', zIndex: 2, background: 'rgba(0,0,0,0.3)' }}>
+            Card 2
+          </div>
         </div>
 
         {/* Card 3 */}
@@ -133,20 +136,21 @@ export default function StickyCardsTest() {
             position: 'absolute',
             width: '80%',
             height: '80%',
-            backgroundColor: '#0a9396',
             borderRadius: '24px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            color: '#F7F5F2',
-            fontFamily: 'sans-serif',
-            fontSize: '3rem',
-            fontWeight: 'bold',
+            overflow: 'hidden',
             zIndex: 3,
-            boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
+            boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+            border: '1px solid #181818'
           }}
         >
-          Card 3
+          <img
+            src={`${BASE}images/destinations/thailand.webp`}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 1 }}
+            alt="Thailand"
+          />
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#F7F5F2', fontFamily: 'sans-serif', fontSize: '3rem', fontWeight: 'bold', zIndex: 2, background: 'rgba(0,0,0,0.3)' }}>
+            Card 3
+          </div>
         </div>
       </div>
     </div>

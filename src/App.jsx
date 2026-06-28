@@ -214,8 +214,7 @@ function App() {
         <Suspense fallback={null}><ServicesPage /></Suspense>
       ) : (
         <>
-          {/* Temporarily disabled Hero Section Container */}
-          {/*
+          {/* Hero Section Container (100% Viewport Height) */}
           <div
             className="home-hero-fade"
             style={{
@@ -225,8 +224,10 @@ function App() {
               overflow: 'hidden'
             }}
           >
+            {/* Cinematic Living Photograph Experience */}
             <CinematicHero />
 
+            {/* Smooth bottom blend overlay to fade images into the page background */}
             <div
               style={{
                 position: 'absolute',
@@ -240,9 +241,9 @@ function App() {
               }}
             />
 
+            {/* Minimal Scroll Indicator */}
             <ScrollIndicator />
           </div>
-          */}
 
           {/* Minimalist Editorial Section */}
           <div className="home-editorial-fade-wrap">
