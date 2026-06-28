@@ -3087,3 +3087,107 @@ html.lenis body {
   }
 }
 
+/* ==========================================================================
+   PERFORMANCE OPTIMIZATIONS — Mobile GPU / Main Thread
+   ========================================================================== */
+
+/* 1. Remove stale will-change from section wrappers — they do NOT animate
+      continuously and holding a compositing layer wastes GPU memory. */
+.home-hero-fade,
+.home-editorial-fade-wrap,
+.home-services-fade-wrap,
+.home-journey-fade-wrap,
+.home-contact-fade-wrap,
+.home-why-fade-wrap {
+  will-change: auto;
+}
+
+/* 2. Film-grain: fixed, 200%×200%, animated SVG filter — catastrophic on
+      mobile GPU. Hide it entirely on touch devices. */
+@media (hover: none) and (pointer: coarse) {
+  .film-grain {
+    display: none !important;
+  }
+}
+
+/* 3. backdrop-filter on .why-card (6 simultaneous blurs) — each one forces
+      a separate GPU compositing layer. Strip on mobile. The solid-dark
+      background already makes the cards readable. */
+@media (hover: none) and (pointer: coarse) {
+  .why-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* 4. backdrop-filter on .catalogue-frame — same issue, one large blurring
+      layer covering most of the viewport. Remove on mobile. */
+@media (hover: none) and (pointer: coarse) {
+  .catalogue-frame {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* 5. backdrop-filter on pill elements — small but still extra GPU layers.
+      Remove on mobile. The background colour provides enough contrast. */
+@media (hover: none) and (pointer: coarse) {
+  .expertise-pill,
+  .logo-cloud-title,
+  .why-title,
+  .catalogue-pre-title,
+  .destinations-pill,
+  .glassmorphic-panel {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* 6. backdrop-filter on mobile header is necessary for readability; keep it
+      but drop blur radius from 20px to 12px to halve GPU work. */
+@media (max-width: 767px) {
+  .header-container {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+}
+
+/* 7. Pause the marquee animation when the JS IntersectionObserver sets
+      the data attribute, and always pause on reduced-motion. */
+@media (prefers-reduced-motion: reduce) {
+  .partners-marquee-track,
+  .new-testimonials-col-track {
+    animation: none !important;
+  }
+}
+
+/*
+.home-editorial-fade-wrap,
+.home-services-fade-wrap,
+.home-journey-fade-wrap,
+.home-contact-fade-wrap,
+.home-why-fade-wrap,
+.home-contact-cta-fade-wrap {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 800px;
+}
+*/
+
+/* 9. partner-logo-img: the CSS filter brightness(0) invert(1) is applied
+      to every logo on every frame during marquee scroll.
+      Promote each image to its own compositing layer so the filter is
+      cached, and the marquee translate3d moves only a single layer. */
+.partner-logo-img {
+  will-change: auto;
+  transform: translateZ(0);
+}
+
+/* 10. Remove expensive filter from .catalogue-destination-img on mobile —
+       brightness + contrast + saturate forces per-frame GPU texture blit. */
+@media (hover: none) and (pointer: coarse) {
+  .catalogue-destination-img {
+    filter: brightness(0.82);
+  }
+}
+
+
