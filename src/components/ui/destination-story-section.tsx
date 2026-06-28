@@ -554,11 +554,6 @@ export default function DestinationStorySection() {
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7) !important;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            transform: translate3d(0, 100vh, 0) !important;
-          }
-
-          .destinations-story-card:first-child {
-            transform: translate3d(0, 0, 0) !important;
           }
 
           .card-left-panel {
