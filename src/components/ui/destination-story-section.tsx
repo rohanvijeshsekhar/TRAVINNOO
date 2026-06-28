@@ -331,6 +331,7 @@ export default function DestinationStorySection() {
           backface-visibility: hidden;
           -webkit-backface-visibility: hidden;
           transform: translate3d(0, 100vh, 0);
+          -webkit-mask-image: -webkit-radial-gradient(white, black);
         }
 
         .destinations-story-card:first-child {
@@ -554,6 +555,7 @@ export default function DestinationStorySection() {
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7) !important;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
+            -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
           }
 
           .card-left-panel {
