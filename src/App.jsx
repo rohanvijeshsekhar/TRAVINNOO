@@ -198,7 +198,7 @@ function App() {
       )}
 
       {/* Floating Transparent Navigation Header */}
-      <Header />
+      {/* <Header /> */}
 
       {/* Animated Film Grain Overlay — hidden on mobile via CSS */}
       <div className="film-grain" />
