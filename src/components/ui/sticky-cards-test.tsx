@@ -18,10 +18,10 @@ export default function StickyCardsTest() {
     const cards = cardRefs.current.filter((c): c is HTMLDivElement => c !== null);
     if (cards.length === 0) return;
 
-    // Set initial positions: Card 1 and 2 start translated fully down
-    gsap.set(cards[0], { y: 0 });
-    gsap.set(cards[1], { y: window.innerHeight });
-    gsap.set(cards[2], { y: window.innerHeight });
+    // Set initial positions: Card 1 and 2 start translated fully down with force3D enabled
+    gsap.set(cards[0], { y: 0, force3D: true });
+    gsap.set(cards[1], { y: window.innerHeight, force3D: true });
+    gsap.set(cards[2], { y: window.innerHeight, force3D: true });
 
     // Single ScrollTrigger + timeline
     const tl = gsap.timeline({
@@ -36,18 +36,20 @@ export default function StickyCardsTest() {
       }
     });
 
-    // Card 2 slides up and overlaps Card 1
+    // Card 2 slides up and overlaps Card 1 with force3D
     tl.to(cards[1], {
       y: 0,
       duration: 1,
-      ease: "none"
+      ease: "none",
+      force3D: true
     });
 
-    // Card 3 slides up and overlaps Card 2
+    // Card 3 slides up and overlaps Card 2 with force3D
     tl.to(cards[2], {
       y: 0,
       duration: 1,
-      ease: "none"
+      ease: "none",
+      force3D: true
     });
 
     return () => {
@@ -102,7 +104,9 @@ export default function StickyCardsTest() {
             color: '#F7F5F2',
             fontFamily: 'sans-serif',
             fontSize: '3rem',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden'
           }}
         >
           Card 1
@@ -129,7 +133,9 @@ export default function StickyCardsTest() {
             color: '#F7F5F2',
             fontFamily: 'sans-serif',
             fontSize: '3rem',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden'
           }}
         >
           Card 2
@@ -156,7 +162,9 @@ export default function StickyCardsTest() {
             color: '#F7F5F2',
             fontFamily: 'sans-serif',
             fontSize: '3rem',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden'
           }}
         >
           Card 3
