@@ -246,11 +246,6 @@ function App() {
             <EditorialSection />
           </div>
 
-          {/* Our Expertise Section */}
-          <div id="services" className="home-services-fade-wrap">
-            <ExpertiseSection />
-          </div>
-
           {/* Destinations Showcase Section */}
           <div
             id="destinations"
@@ -406,6 +401,11 @@ function App() {
             <div className="destinations-cards-wrapper" style={{ position: 'relative', zIndex: 10 }}>
               <DestinationStorySection />
             </div>
+          </div>
+
+          {/* Our Expertise Section */}
+          <div id="services" className="home-services-fade-wrap">
+            <ExpertiseSection />
           </div>
 
 
