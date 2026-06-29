@@ -489,7 +489,7 @@ export default function AboutJourney() {
           fontFamily: 'var(--font-journal-serif)',
           fontSize: '0.72rem',
           color: 'rgba(43, 31, 29, 0.55)',
-          marginBottom: '6px',
+          marginBottom: '4px',
           textTransform: 'uppercase',
           letterSpacing: '0.5px',
           zIndex: 2
@@ -499,8 +499,8 @@ export default function AboutJourney() {
 
         <div className="vintage-photo-container" style={{
           width: '100%',
-          height: '110px',
-          margin: '0 0 8px 0',
+          height: '95px',
+          margin: '0 0 6px 0',
           borderRadius: '8px',
           overflow: 'hidden',
           position: 'relative',
@@ -553,10 +553,10 @@ export default function AboutJourney() {
 
         <p style={{
           fontFamily: 'var(--font-journal-serif)',
-          fontSize: '0.75rem',
-          lineHeight: '1.45',
+          fontSize: '0.72rem',
+          lineHeight: '1.4',
           color: '#3b2c29',
-          margin: '0 0 8px 0',
+          margin: '0 0 6px 0',
           textAlign: 'justify',
           zIndex: 2
         }}>
@@ -1492,7 +1492,7 @@ export default function AboutJourney() {
         .mobile-paper-stack-container {
           position: relative;
           width: min(350px, 90vw);
-          height: min(480px, 65vh);
+          height: min(400px, 58vh);
           margin: 0 auto;
           perspective: 1000px;
           z-index: 2;
@@ -1500,8 +1500,9 @@ export default function AboutJourney() {
 
         @media (max-width: 1023px) {
           .journal-sticky-viewport {
-            padding-top: 95px !important;
-            padding-bottom: 35px !important;
+            padding-top: 80px !important;
+            padding-bottom: 20px !important;
+            align-items: flex-start !important;
             box-sizing: border-box;
           }
         }
@@ -1514,7 +1515,7 @@ export default function AboutJourney() {
           border-radius: 16px;
           border: 1px solid rgba(0, 0, 0, 0.05);
           box-sizing: border-box;
-          padding: 22px 18px;
+          padding: 18px 16px;
           display: flex;
           flex-direction: column;
           color: #2b1f1d;
