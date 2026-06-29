@@ -283,10 +283,31 @@ export default function AboutPurpose() {
               </p>
             </FadeInContainer>
           </div>
-          <ParallaxImage 
-            src="https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1200&q=80" 
-            alt="Luxury longtail boat on turquoise water in Thailand"
-          />
+          <FadeInContainer delay={0.15}>
+            <div 
+              className="editorial-image-container"
+              style={{
+                width: '100%',
+                aspectRatio: '4/3',
+                borderRadius: '16px',
+                overflow: 'hidden',
+                position: 'relative',
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)'
+              }}
+            >
+              <img 
+                src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=80" 
+                alt="Detailed travel map and curation tools, representing Travinno's mission"
+                loading="lazy"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  filter: 'grayscale(1) contrast(1.25) brightness(0.9)'
+                }}
+              />
+            </div>
+          </FadeInContainer>
         </section>
 
         {/* SECTION 3: Our Vision */}
