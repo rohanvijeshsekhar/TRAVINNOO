@@ -182,16 +182,20 @@ export default function DestinationStorySection() {
               startPos
             );
           } else {
-            // Desktop: Restore original cover behavior where Card i completely covers Card i-1
-            // Outgoing card (i-1) shifts slightly up and scales down slightly
-            tl.to(cards[i - 1], {
-              y: -20,
-              scale: 0.98,
-              duration: transitionDuration,
-              ease: "power2.inOut"
-            }, startPos);
+            // Desktop: Shift all previously stacked cards upward by yOffset
+            for (let j = 0; j < i; j++) {
+              const finalY = -(i - j) * yOffset;
+              const finalScale = 1 - (i - j) * 0.02;
 
-            // Incoming card (i) slides from bottom to center (y: 0)
+              tl.to(cards[j], {
+                y: finalY,
+                scale: finalScale,
+                duration: transitionDuration,
+                ease: "power2.inOut"
+              }, startPos);
+            }
+
+            // Incoming card (i) slides to y: 0
             tl.fromTo(cards[i],
               { y: () => getVH(), scale: 1, opacity: 1 },
               {
