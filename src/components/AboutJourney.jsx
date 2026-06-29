@@ -502,21 +502,23 @@ export default function AboutJourney() {
           <span>Stories that</span>
           <span className="about-inspire-cursive" style={{ marginTop: '2px' }}>Inspire</span>
         </h2>
-        <p
-          style={{
-            fontFamily: 'var(--font-sans)',
-            fontSize: isMobile ? '0.88rem' : '1rem',
-            color: 'rgba(245, 242, 236, 0.55)',
-            lineHeight: 1.6,
-            margin: '12px 0 0 0',
-            maxWidth: '480px',
-            textAlign: 'center',
-            letterSpacing: '0.01em'
-          }}
-        >
-          Seven chapters of passion, purpose and discovery —<br />
-          the story of Travinno, told one destination at a time.
-        </p>
+        {!isMobile && (
+          <p
+            style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: '1rem',
+              color: 'rgba(245, 242, 236, 0.55)',
+              lineHeight: 1.7,
+              margin: '18px 0 0 0',
+              maxWidth: '480px',
+              textAlign: 'center',
+              letterSpacing: '0.01em'
+            }}
+          >
+            Seven chapters of passion, purpose and discovery —<br />
+            the story of Travinno, told one destination at a time.
+          </p>
+        )}
       </div>
     );
   };
@@ -1564,7 +1566,7 @@ export default function AboutJourney() {
 
         @media (max-width: 1023px) {
           .journal-sticky-viewport {
-            padding-top: 80px !important;
+            padding-top: 68px !important;
             padding-bottom: 20px !important;
             flex-direction: column !important;
             justify-content: flex-start !important;
@@ -1729,7 +1731,7 @@ export default function AboutJourney() {
           /* MOBILE MODE: Stack of premium travel journal paper sheets */
           <>
             {renderHeadingSection()}
-            <div className="mobile-paper-stack-container" style={{ margin: '15px auto 0 auto' }}>
+            <div className="mobile-paper-stack-container" style={{ margin: '8px auto 0 auto' }}>
               {/* Static background collage sheets (Paper 4) */}
               <div 
                 className="mobile-paper-card"
