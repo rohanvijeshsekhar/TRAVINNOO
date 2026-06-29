@@ -209,7 +209,7 @@ export default function AboutJourney() {
         scrub: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
-        snap: {
+        snap: window.innerWidth < 1024 ? false : {
           snapTo: snapPoints,
           duration: { min: 0.25, max: 0.5 },
           ease: "power1.out",
@@ -485,12 +485,11 @@ export default function AboutJourney() {
           </div>
         </div>
 
-        {/* Location sub */}
         <div style={{
           fontFamily: 'var(--font-journal-serif)',
           fontSize: '0.72rem',
           color: 'rgba(43, 31, 29, 0.55)',
-          marginBottom: '12px',
+          marginBottom: '6px',
           textTransform: 'uppercase',
           letterSpacing: '0.5px',
           zIndex: 2
@@ -498,11 +497,10 @@ export default function AboutJourney() {
           {data.city} <span style={{ color: '#c1121f', margin: '0 4px' }}>•</span> {data.country}
         </div>
 
-        {/* Photograph Container */}
         <div className="vintage-photo-container" style={{
           width: '100%',
           height: '110px',
-          margin: '0 0 12px 0',
+          margin: '0 0 8px 0',
           borderRadius: '8px',
           overflow: 'hidden',
           position: 'relative',
@@ -522,13 +520,12 @@ export default function AboutJourney() {
           />
         </div>
 
-        {/* Title & Understrike */}
         <h3 style={{
           fontFamily: 'var(--font-journal-serif)',
           fontSize: '1.15rem',
           fontWeight: 700,
           color: '#1a0f0d',
-          margin: '0 0 2px 0',
+          margin: '0',
           textTransform: 'uppercase',
           lineHeight: 1.2,
           zIndex: 2
@@ -539,7 +536,7 @@ export default function AboutJourney() {
           width: '32px',
           height: '1px',
           backgroundColor: '#c1121f',
-          marginBottom: '6px',
+          marginBottom: '4px',
           zIndex: 2
         }} />
 
@@ -548,19 +545,18 @@ export default function AboutJourney() {
           fontFamily: 'var(--font-journal-hand)',
           fontSize: '0.82rem',
           color: 'rgba(43, 31, 29, 0.65)',
-          marginBottom: '8px',
+          marginBottom: '4px',
           zIndex: 2
         }}>
           {data.action}
         </div>
 
-        {/* Description body */}
         <p style={{
           fontFamily: 'var(--font-journal-serif)',
           fontSize: '0.75rem',
           lineHeight: '1.45',
           color: '#3b2c29',
-          margin: '0 0 14px 0',
+          margin: '0 0 8px 0',
           textAlign: 'justify',
           zIndex: 2
         }}>
