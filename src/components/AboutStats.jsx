@@ -182,6 +182,7 @@ export default function AboutStats() {
           -webkit-text-fill-color: transparent;
           background-clip: text;
           margin: 0 4px;
+          padding-right: 12px;
         }
 
         .about-stats-grid {
