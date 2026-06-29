@@ -562,11 +562,10 @@ export default function AboutJourney() {
           width: '100%',
           backgroundColor: '#000000',
           backgroundImage: `
-            radial-gradient(circle at 50% 0%, rgba(193, 18, 31, 0.12) 0%, transparent 70%),
             linear-gradient(rgba(245, 242, 236, 0.045) 1px, transparent 1px),
             linear-gradient(90deg, rgba(245, 242, 236, 0.045) 1px, transparent 1px)
           `,
-          backgroundSize: '100% 100%, 40px 40px, 40px 40px',
+          backgroundSize: '40px 40px, 40px 40px',
           padding: isMobile ? '20px 24px 0px 24px' : '24px 24px 0px 24px',
           boxSizing: 'border-box',
           display: 'flex',
