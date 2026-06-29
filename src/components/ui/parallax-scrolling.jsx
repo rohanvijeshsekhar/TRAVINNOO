@@ -5,6 +5,196 @@ import AboutJourney from '../AboutJourney';
 import AboutStats from '../AboutStats';
 import AboutPurpose from '../AboutPurpose';
 
+function AboutIntroBackground() {
+  const bgRef = useRef(null);
+
+  useEffect(() => {
+    const bgElement = bgRef.current;
+    if (bgElement) {
+      gsap.to(bgElement, {
+        scrollTrigger: {
+          trigger: bgElement.parentElement,
+          start: "top top",
+          end: "bottom top",
+          scrub: true
+        },
+        yPercent: -12,
+        ease: "none"
+      });
+    }
+  }, []);
+
+  return (
+    <div 
+      ref={bgRef}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '115%',
+        overflow: 'hidden',
+        pointerEvents: 'none',
+        zIndex: 1,
+        backgroundColor: '#000000'
+      }}
+    >
+      <style>{`
+        @keyframes pulseRoute {
+          0% {
+            stroke-dashoffset: 0;
+          }
+          100% {
+            stroke-dashoffset: -40;
+          }
+        }
+        @keyframes blinkPoint {
+          0%, 100% { opacity: 0.3; transform: scale(0.9); }
+          50% { opacity: 0.95; transform: scale(1.2); }
+        }
+        @keyframes bgStarDrift {
+          0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0.15; }
+          50% { transform: translateY(-30px) translateX(15px) scale(1.1); opacity: 0.45; }
+          100% { transform: translateY(-60px) translateX(30px) scale(0.8); opacity: 0.15; }
+        }
+      `}</style>
+
+      <svg 
+        width="100%" 
+        height="100%" 
+        viewBox="0 0 1920 1080" 
+        preserveAspectRatio="xMidYMid slice" 
+        fill="none" 
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ opacity: 0.85 }}
+      >
+        {/* World map landmass contours */}
+        <path 
+          d="M 300,200 Q 320,350 400,420 T 480,600 Q 520,700 480,850 Q 550,900 620,800 T 680,600 Q 640,400 750,300 T 680,100 Z" 
+          stroke="rgba(245, 242, 236, 0.022)" 
+          strokeWidth="1.2" 
+          fill="none" 
+        />
+        <path 
+          d="M 750,300 Q 850,200 1000,150 T 1300,100 Q 1450,150 1550,300 T 1600,600 Q 1500,750 1350,700 T 1000,800 Q 900,900 800,850 T 700,750 Z" 
+          stroke="rgba(245, 242, 236, 0.022)" 
+          strokeWidth="1.2" 
+          fill="none" 
+        />
+
+        {/* Global contour loops */}
+        <circle cx="100" cy="150" r="180" stroke="rgba(245, 242, 236, 0.015)" strokeWidth="0.8" />
+        <circle cx="100" cy="150" r="240" stroke="rgba(245, 242, 236, 0.015)" strokeWidth="0.8" />
+        <circle cx="100" cy="150" r="300" stroke="rgba(245, 242, 236, 0.015)" strokeWidth="0.8" />
+
+        <circle cx="1800" cy="200" r="220" stroke="rgba(245, 242, 236, 0.015)" strokeWidth="0.8" />
+        <circle cx="1800" cy="200" r="300" stroke="rgba(245, 242, 236, 0.015)" strokeWidth="0.8" />
+        <circle cx="1800" cy="200" r="380" stroke="rgba(245, 242, 236, 0.015)" strokeWidth="0.8" />
+
+        {/* Travel lines */}
+        <path 
+          d="M 200,450 Q 550,550 900,820" 
+          stroke="rgba(245, 242, 236, 0.03)" 
+          strokeWidth="1" 
+          fill="none" 
+        />
+        <path 
+          d="M 200,450 Q 900,300 1760,895" 
+          stroke="rgba(245, 242, 236, 0.035)" 
+          strokeWidth="1" 
+          fill="none" 
+        />
+
+        {/* Active flight paths */}
+        <path 
+          d="M 200,450 Q 700,500 1510,580" 
+          stroke="rgba(193, 18, 31, 0.22)" 
+          strokeWidth="1.2" 
+          strokeDasharray="6, 12" 
+          fill="none"
+          style={{ animation: 'pulseRoute 4s infinite linear' }}
+        />
+        <path 
+          d="M 900,820 Q 1200,750 1760,895" 
+          stroke="rgba(193, 18, 31, 0.18)" 
+          strokeWidth="1.2" 
+          strokeDasharray="6, 12" 
+          fill="none"
+          style={{ animation: 'pulseRoute 5s infinite linear' }}
+        />
+
+        {/* DUBAI SKYLINE */}
+        <path 
+          d="M 10,1080 L 80,1080 L 80,980 L 95,980 L 95,1080 M 110,1080 L 110,950 L 130,950 L 130,1080 M 140,1080 L 140,890 L 160,890 L 160,1080 M 175,1080 L 175,930 L 195,930 L 195,850 L 205,850 L 205,730 L 212,730 L 212,560 L 215,500 L 218,560 L 218,730 L 225,730 L 225,850 L 235,850 L 235,930 L 255,930 L 255,1080 M 270,1080 L 270,960 L 290,960 L 290,1080 M 310,1080 L 310,1020 L 330,1020 L 330,1080 Z" 
+          stroke="rgba(245, 242, 236, 0.055)" 
+          strokeWidth="1" 
+          fill="none" 
+        />
+        <circle 
+          cx="216.5" 
+          cy="500" 
+          r="2.5" 
+          fill="#C1121F" 
+          style={{ animation: 'blinkPoint 1.8s infinite ease-in-out', transformOrigin: '216.5px 500px' }} 
+        />
+
+        {/* PETRONAS TOWERS & MBS SINGAPORE */}
+        <path 
+          d="M 1480,1080 L 1480,820 L 1490,820 L 1490,750 L 1500,750 L 1500,680 L 1508,680 L 1508,580 L 1510,580 L 1510,680 L 1518,680 L 1518,750 L 1528,750 L 1528,820 L 1538,820 L 1538,1080 M 1578,1080 L 1578,820 L 1588,820 L 1588,750 L 1598,750 L 1598,680 L 1606,680 L 1606,580 L 1608,580 L 1608,680 L 1616,680 L 1616,750 L 1626,750 L 1626,820 L 1636,820 L 1636,1080 M 1528,800 L 1578,800 M 1528,790 L 1578,790" 
+          stroke="rgba(245, 242, 236, 0.055)" 
+          strokeWidth="1" 
+          fill="none" 
+        />
+        <circle cx="1509" cy="580" r="2.5" fill="#C1121F" style={{ animation: 'blinkPoint 2.2s infinite ease-in-out', transformOrigin: '1509px 580px' }} />
+        <circle cx="1607" cy="580" r="2.5" fill="#C1121F" style={{ animation: 'blinkPoint 2.2s infinite ease-in-out', transformOrigin: '1607px 580px' }} />
+
+        <path 
+          d="M 1680,1080 L 1680,900 L 1715,900 L 1715,1080 M 1740,1080 L 1740,900 L 1775,900 L 1775,1080 M 1800,1080 L 1800,900 L 1835,900 L 1835,1080 M 1660,895 L 1855,895 L 1835,880 L 1680,880 Z" 
+          stroke="rgba(245, 242, 236, 0.055)" 
+          strokeWidth="1" 
+          fill="none" 
+        />
+        <circle cx="1840" cy="890" r="2" fill="#C1121F" style={{ animation: 'blinkPoint 2.5s infinite ease-in-out', transformOrigin: '1840px 890px' }} />
+
+        {/* Abstract Travel Coordinates */}
+        <text x="50" y="80" fill="rgba(245, 242, 236, 0.18)" fontFamily="monospace" fontSize="10" letterSpacing="1">25.2048° N, 55.2708° E</text>
+        <text x="50" y="100" fill="rgba(245, 242, 236, 0.18)" fontFamily="monospace" fontSize="10" letterSpacing="1">DXB / INBOUND</text>
+
+        <text x="1650" y="80" fill="rgba(245, 242, 236, 0.18)" fontFamily="monospace" fontSize="10" letterSpacing="1">1.3521° N, 103.8198° E</text>
+        <text x="1650" y="100" fill="rgba(245, 242, 236, 0.18)" fontFamily="monospace" fontSize="10" letterSpacing="1">SIN / OUTBOUND</text>
+      </svg>
+
+      {/* Particles */}
+      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+        {[...Array(12)].map((_, i) => {
+          const size = Math.random() * 1.5 + 1.2;
+          const left = `${Math.random() * 95}%`;
+          const top = `${Math.random() * 95}%`;
+          const duration = `${Math.random() * 12 + 8}s`;
+          const delay = `${Math.random() * 5}s`;
+          return (
+            <div 
+              key={i}
+              style={{
+                position: 'absolute',
+                left,
+                top,
+                width: `${size}px`,
+                height: `${size}px`,
+                backgroundColor: 'rgba(245, 242, 236, 0.45)',
+                borderRadius: '50%',
+                boxShadow: '0 0 4px rgba(255, 255, 255, 0.5)',
+                animation: `bgStarDrift ${duration} infinite ease-in-out`,
+                animationDelay: delay
+              }}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function ParallaxComponent() {
   const parallaxRef = useRef(null);
 
@@ -97,6 +287,7 @@ export function ParallaxComponent() {
 
       {/* Editorial Content under header */}
       <section className="parallax__content">
+        <AboutIntroBackground />
         <div style={{
           maxWidth: '800px',
           width: '100%',

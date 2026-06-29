@@ -3234,3 +3234,56 @@ footer {
   padding-top: var(--section-gap) !important;
   margin-top: 0 !important;
 }
+
+/* Parallax Editorial text styling for center alignment on desktop and justified on mobile */
+.parallax-editorial-wrapper {
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+  padding: 0 24px;
+  color: #FFFFFF;
+  z-index: 10;
+}
+
+.parallax-editorial-title {
+  font-family: 'Satoshi', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 500;
+  margin-bottom: 40px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.parallax-editorial-body {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.parallax-editorial-body p {
+  text-align: center;
+}
+
+@media (max-width: 1023px) {
+  .parallax__content {
+    padding: 60px 20px 40px 20px !important;
+    min-height: auto !important;
+  }
+  .parallax-editorial-wrapper {
+    padding: 0;
+  }
+  .parallax-editorial-title {
+    margin-bottom: 24px;
+  }
+  .parallax-editorial-body {
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .parallax-editorial-body p {
+    text-align: justify !important;
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+  }
+}
