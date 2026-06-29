@@ -1576,6 +1576,6 @@ export default function AboutJourney() {
         )}
       </div>
     </div>
-  </>)
+  </>
   );
 }
