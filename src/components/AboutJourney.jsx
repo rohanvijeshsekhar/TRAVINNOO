@@ -571,6 +571,13 @@ export default function AboutJourney() {
           zIndex: 5
         }}
       >
+        {/* Separator line */}
+        <div style={{
+          width: '100%',
+          height: '1px',
+          background: 'linear-gradient(to right, transparent, rgba(245, 242, 236, 0.15), transparent)',
+          marginBottom: '24px'
+        }} />
         <span
           style={{
             display: 'inline-flex',
@@ -634,6 +641,20 @@ export default function AboutJourney() {
           Seven chapters of passion, purpose and discovery —<br />
           the story of Travinno, told one destination at a time.
         </p>
+
+        {/* Bottom fade blend into book section */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '100%',
+            height: '80px',
+            background: 'linear-gradient(to bottom, transparent 0%, #050505 100%)',
+            pointerEvents: 'none',
+            zIndex: 10
+          }}
+        />
       </div>
 
       <div 
