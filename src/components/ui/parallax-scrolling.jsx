@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from '@studio-freight/lenis';
 import AboutJourney from '../AboutJourney';
+import AboutStats from '../AboutStats';
 
 export function ParallaxComponent() {
   const parallaxRef = useRef(null);
@@ -166,6 +167,9 @@ export function ParallaxComponent() {
       
       {/* Scroll-Linked Vertical Journey Timeline */}
       <AboutJourney />
+
+      {/* Brand statistics & value proposition section */}
+      <AboutStats />
     </div>
   );
 }
