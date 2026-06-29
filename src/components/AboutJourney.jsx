@@ -680,8 +680,6 @@ export default function AboutJourney() {
           background-size: 40px 40px;
           pointer-events: none;
           z-index: 1;
-          mask-image: linear-gradient(to bottom, transparent 0%, black 120px);
-          -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 120px);
         }
 
         .about-inspire-cursive {

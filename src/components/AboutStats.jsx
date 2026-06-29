@@ -142,8 +142,6 @@ export default function AboutStats() {
           background-size: 40px 40px;
           pointer-events: none;
           z-index: 0;
-          mask-image: linear-gradient(to bottom, transparent 0%, black 60px, black calc(100% - 80px), transparent 100%);
-          -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 60px, black calc(100% - 80px), transparent 100%);
         }
 
         .about-stats-container {
