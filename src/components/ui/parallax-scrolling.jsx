@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from '@studio-freight/lenis';
 import AboutJourney from '../AboutJourney';
 import AboutStats from '../AboutStats';
+import AboutPurpose from '../AboutPurpose';
 
 export function ParallaxComponent() {
   const parallaxRef = useRef(null);
@@ -170,6 +171,9 @@ export function ParallaxComponent() {
 
       {/* Brand statistics & value proposition section */}
       <AboutStats />
+
+      {/* Editorial Purpose, Mission & Vision section */}
+      <AboutPurpose />
     </div>
   );
 }
