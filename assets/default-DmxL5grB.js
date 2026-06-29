@@ -760,7 +760,7 @@ import{a as e}from"./rolldown-runtime-Cyuzqnbw.js";import{_t as t,yt as n}from".
         .mobile-paper-stack-container {
           position: relative;
           width: min(350px, 90vw);
-          height: min(400px, 58vh);
+          height: min(460px, 66vh);
           margin: 0 auto;
           perspective: 1000px;
           z-index: 2;
@@ -783,13 +783,12 @@ import{a as e}from"./rolldown-runtime-Cyuzqnbw.js";import{_t as t,yt as n}from".
           border-radius: 16px;
           border: 1px solid rgba(0, 0, 0, 0.05);
           box-sizing: border-box;
-          padding: 18px 16px;
+          padding: 20px 16px;
           display: flex;
           flex-direction: column;
           color: #2b1f1d;
           transform-style: preserve-3d;
           will-change: transform, opacity;
-          overflow: hidden;
         }
 
         .paper-texture-overlay {
@@ -819,7 +818,7 @@ import{a as e}from"./rolldown-runtime-Cyuzqnbw.js";import{_t as t,yt as n}from".
 
         @media (max-width: 1023px) {
           .about-stats-section {
-            padding: 40px 20px 60px 20px;
+            padding: 30px 20px 25px 20px;
           }
         }
 
@@ -1166,12 +1165,12 @@ import{a as e}from"./rolldown-runtime-Cyuzqnbw.js";import{_t as t,yt as n}from".
 
         @media (max-width: 1023px) {
           .purpose-hero {
-            padding: 100px 20px;
+            padding: 35px 20px 20px 20px;
           }
           .editorial-spread, .editorial-spread.reverse {
             grid-template-columns: 1fr;
-            gap: 40px;
-            padding: 80px 20px;
+            gap: 20px;
+            padding: 24px 20px;
           }
           .editorial-image-container, .editorial-text-col {
             order: 0 !important;
