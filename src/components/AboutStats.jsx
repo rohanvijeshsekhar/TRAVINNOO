@@ -112,16 +112,23 @@ export default function AboutStats() {
     <section 
       ref={sectionRef}
       className="about-stats-section"
-      style={{
-        position: 'relative',
-        backgroundColor: '#000000',
-        padding: '0px 24px 80px 24px',
-        overflow: 'hidden',
-        width: '100%',
-        boxSizing: 'border-box'
-      }}
     >
       <style>{`
+        .about-stats-section {
+          position: relative;
+          background-color: #000000;
+          padding: 80px 24px 100px 24px;
+          overflow: hidden;
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        @media (max-width: 1023px) {
+          .about-stats-section {
+            padding: 40px 20px 60px 20px;
+          }
+        }
+
         /* Checked background grid layer for AboutStats */
         .about-stats-grid-bg {
           position: absolute;
@@ -135,8 +142,8 @@ export default function AboutStats() {
           background-size: 40px 40px;
           pointer-events: none;
           z-index: 0;
-          mask-image: linear-gradient(to bottom, transparent 0%, black 30px, black calc(100% - 60px), transparent 100%);
-          -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 30px, black calc(100% - 60px), transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0%, black 60px, black calc(100% - 80px), transparent 100%);
+          -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 60px, black calc(100% - 80px), transparent 100%);
         }
 
         .about-stats-container {
