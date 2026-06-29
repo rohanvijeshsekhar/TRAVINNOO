@@ -133,6 +133,8 @@ export default function AboutJourney() {
   // Refs to store activeIndex and isFlipping state to prevent duplicate ScrollTrigger rebuilding on state changes
   const activeIndexRef = useRef(activeIndex);
   const isFlippingRef = useRef(isFlipping);
+  const isPage7ScrollLockedRef = useRef(false);
+  const page7LockTimeoutRef = useRef(null);
 
   useEffect(() => {
     activeIndexRef.current = activeIndex;
@@ -150,6 +152,43 @@ export default function AboutJourney() {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Intercept scroll down events when Page 7 (Vietnam) is locked
+  useEffect(() => {
+    let lastTouchY = 0;
+    const handleTouchStart = (e) => {
+      if (e.touches && e.touches[0]) {
+        lastTouchY = e.touches[0].clientY;
+      }
+    };
+
+    const handleWheelAndTouch = (e) => {
+      if (isPage7ScrollLockedRef.current && activeIndexRef.current === 6) {
+        let isScrollDown = false;
+        if (e.type === 'wheel') {
+          isScrollDown = e.deltaY > 0;
+        } else if (e.type === 'touchmove' && e.touches && e.touches[0]) {
+          const currentTouchY = e.touches[0].clientY;
+          isScrollDown = currentTouchY < lastTouchY;
+          lastTouchY = currentTouchY;
+        }
+
+        if (isScrollDown) {
+          e.preventDefault();
+        }
+      }
+    };
+
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('wheel', handleWheelAndTouch, { passive: false });
+    window.addEventListener('touchmove', handleWheelAndTouch, { passive: false });
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('wheel', handleWheelAndTouch);
+      window.removeEventListener('touchmove', handleWheelAndTouch);
+    };
   }, []);
 
   // GSAP ScrollTrigger to hook scroll position to journal page indices
@@ -207,6 +246,17 @@ export default function AboutJourney() {
             setTimeout(() => {
               setActiveIndex(targetIdx);
               setIsFlipping(false);
+
+              // If we just flipped to the last page (Vietnam, index 6), lock scroll down for 1 second
+              if (targetIdx === 6) {
+                isPage7ScrollLockedRef.current = true;
+                if (page7LockTimeoutRef.current) {
+                  clearTimeout(page7LockTimeoutRef.current);
+                }
+                page7LockTimeoutRef.current = setTimeout(() => {
+                  isPage7ScrollLockedRef.current = false;
+                }, 1000);
+              }
             }, 450);
           }
         }
