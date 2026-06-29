@@ -1528,6 +1528,7 @@ export default function AboutJourney() {
           z-index: 2;
           transform: rotateX(0deg);
           border-radius: 4px;
+          transform-origin: top center;
         }
 
         .mobile-face-back {
@@ -1542,6 +1543,7 @@ export default function AboutJourney() {
           box-shadow: inset 0 0 30px rgba(0,0,0,0.1);
           border-top: 1px solid rgba(0,0,0,0.1);
           overflow: hidden;
+          transform-origin: top center;
         }
 
         .mobile-face-back-pattern {
@@ -1803,7 +1805,7 @@ export default function AboutJourney() {
                     <div className="notepad-header-binding" style={{ height: '24px' }} />
 
                     {/* Watermark logo */}
-                    <div className="mobile-face-back-pattern">
+                    <div className="mobile-face-back-pattern" style={{ transform: 'rotate(180deg)' }}>
                       <svg viewBox="0 0 100 100" style={{ width: '70px', height: '70px', opacity: 0.3 }}>
                         <path d="M 30,50 L 50,30 L 70,50 L 50,70 Z" fill="none" stroke="rgba(0,0,0,0.5)" strokeWidth="1" />
                         <text x="50" y="53" fill="rgba(0,0,0,0.6)" fontSize="5" fontFamily="var(--font-sans)" fontWeight="bold" textAnchor="middle" letterSpacing="0.5">TRAVINNO</text>
