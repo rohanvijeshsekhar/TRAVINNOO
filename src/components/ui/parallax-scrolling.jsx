@@ -71,36 +71,36 @@ function AboutIntroBackground() {
         {/* World map landmass contours */}
         <path 
           d="M 300,200 Q 320,350 400,420 T 480,600 Q 520,700 480,850 Q 550,900 620,800 T 680,600 Q 640,400 750,300 T 680,100 Z" 
-          stroke="rgba(245, 242, 236, 0.022)" 
+          stroke="rgba(245, 242, 236, 0.08)" 
           strokeWidth="1.2" 
           fill="none" 
         />
         <path 
           d="M 750,300 Q 850,200 1000,150 T 1300,100 Q 1450,150 1550,300 T 1600,600 Q 1500,750 1350,700 T 1000,800 Q 900,900 800,850 T 700,750 Z" 
-          stroke="rgba(245, 242, 236, 0.022)" 
+          stroke="rgba(245, 242, 236, 0.08)" 
           strokeWidth="1.2" 
           fill="none" 
         />
 
         {/* Global contour loops */}
-        <circle cx="100" cy="150" r="180" stroke="rgba(245, 242, 236, 0.015)" strokeWidth="0.8" />
-        <circle cx="100" cy="150" r="240" stroke="rgba(245, 242, 236, 0.015)" strokeWidth="0.8" />
-        <circle cx="100" cy="150" r="300" stroke="rgba(245, 242, 236, 0.015)" strokeWidth="0.8" />
+        <circle cx="100" cy="150" r="180" stroke="rgba(245, 242, 236, 0.05)" strokeWidth="0.8" />
+        <circle cx="100" cy="150" r="240" stroke="rgba(245, 242, 236, 0.05)" strokeWidth="0.8" />
+        <circle cx="100" cy="150" r="300" stroke="rgba(245, 242, 236, 0.05)" strokeWidth="0.8" />
 
-        <circle cx="1800" cy="200" r="220" stroke="rgba(245, 242, 236, 0.015)" strokeWidth="0.8" />
-        <circle cx="1800" cy="200" r="300" stroke="rgba(245, 242, 236, 0.015)" strokeWidth="0.8" />
-        <circle cx="1800" cy="200" r="380" stroke="rgba(245, 242, 236, 0.015)" strokeWidth="0.8" />
+        <circle cx="1800" cy="200" r="220" stroke="rgba(245, 242, 236, 0.05)" strokeWidth="0.8" />
+        <circle cx="1800" cy="200" r="300" stroke="rgba(245, 242, 236, 0.05)" strokeWidth="0.8" />
+        <circle cx="1800" cy="200" r="380" stroke="rgba(245, 242, 236, 0.05)" strokeWidth="0.8" />
 
         {/* Travel lines */}
         <path 
           d="M 200,450 Q 550,550 900,820" 
-          stroke="rgba(245, 242, 236, 0.03)" 
+          stroke="rgba(245, 242, 236, 0.1)" 
           strokeWidth="1" 
           fill="none" 
         />
         <path 
           d="M 200,450 Q 900,300 1760,895" 
-          stroke="rgba(245, 242, 236, 0.035)" 
+          stroke="rgba(245, 242, 236, 0.11)" 
           strokeWidth="1" 
           fill="none" 
         />
@@ -108,7 +108,7 @@ function AboutIntroBackground() {
         {/* Active flight paths */}
         <path 
           d="M 200,450 Q 700,500 1510,580" 
-          stroke="rgba(193, 18, 31, 0.22)" 
+          stroke="rgba(193, 18, 31, 0.48)" 
           strokeWidth="1.2" 
           strokeDasharray="6, 12" 
           fill="none"
@@ -116,7 +116,7 @@ function AboutIntroBackground() {
         />
         <path 
           d="M 900,820 Q 1200,750 1760,895" 
-          stroke="rgba(193, 18, 31, 0.18)" 
+          stroke="rgba(193, 18, 31, 0.44)" 
           strokeWidth="1.2" 
           strokeDasharray="6, 12" 
           fill="none"
@@ -126,7 +126,7 @@ function AboutIntroBackground() {
         {/* DUBAI SKYLINE */}
         <path 
           d="M 10,1080 L 80,1080 L 80,980 L 95,980 L 95,1080 M 110,1080 L 110,950 L 130,950 L 130,1080 M 140,1080 L 140,890 L 160,890 L 160,1080 M 175,1080 L 175,930 L 195,930 L 195,850 L 205,850 L 205,730 L 212,730 L 212,560 L 215,500 L 218,560 L 218,730 L 225,730 L 225,850 L 235,850 L 235,930 L 255,930 L 255,1080 M 270,1080 L 270,960 L 290,960 L 290,1080 M 310,1080 L 310,1020 L 330,1020 L 330,1080 Z" 
-          stroke="rgba(245, 242, 236, 0.055)" 
+          stroke="rgba(245, 242, 236, 0.18)" 
           strokeWidth="1" 
           fill="none" 
         />
@@ -141,7 +141,7 @@ function AboutIntroBackground() {
         {/* PETRONAS TOWERS & MBS SINGAPORE */}
         <path 
           d="M 1480,1080 L 1480,820 L 1490,820 L 1490,750 L 1500,750 L 1500,680 L 1508,680 L 1508,580 L 1510,580 L 1510,680 L 1518,680 L 1518,750 L 1528,750 L 1528,820 L 1538,820 L 1538,1080 M 1578,1080 L 1578,820 L 1588,820 L 1588,750 L 1598,750 L 1598,680 L 1606,680 L 1606,580 L 1608,580 L 1608,680 L 1616,680 L 1616,750 L 1626,750 L 1626,820 L 1636,820 L 1636,1080 M 1528,800 L 1578,800 M 1528,790 L 1578,790" 
-          stroke="rgba(245, 242, 236, 0.055)" 
+          stroke="rgba(245, 242, 236, 0.18)" 
           strokeWidth="1" 
           fill="none" 
         />
@@ -150,18 +150,18 @@ function AboutIntroBackground() {
 
         <path 
           d="M 1680,1080 L 1680,900 L 1715,900 L 1715,1080 M 1740,1080 L 1740,900 L 1775,900 L 1775,1080 M 1800,1080 L 1800,900 L 1835,900 L 1835,1080 M 1660,895 L 1855,895 L 1835,880 L 1680,880 Z" 
-          stroke="rgba(245, 242, 236, 0.055)" 
+          stroke="rgba(245, 242, 236, 0.18)" 
           strokeWidth="1" 
           fill="none" 
         />
         <circle cx="1840" cy="890" r="2" fill="#C1121F" style={{ animation: 'blinkPoint 2.5s infinite ease-in-out', transformOrigin: '1840px 890px' }} />
 
         {/* Abstract Travel Coordinates */}
-        <text x="50" y="80" fill="rgba(245, 242, 236, 0.18)" fontFamily="monospace" fontSize="10" letterSpacing="1">25.2048° N, 55.2708° E</text>
-        <text x="50" y="100" fill="rgba(245, 242, 236, 0.18)" fontFamily="monospace" fontSize="10" letterSpacing="1">DXB / INBOUND</text>
+        <text x="50" y="80" fill="rgba(245, 242, 236, 0.35)" fontFamily="monospace" fontSize="10" letterSpacing="1">25.2048° N, 55.2708° E</text>
+        <text x="50" y="100" fill="rgba(245, 242, 236, 0.35)" fontFamily="monospace" fontSize="10" letterSpacing="1">DXB / INBOUND</text>
 
-        <text x="1650" y="80" fill="rgba(245, 242, 236, 0.18)" fontFamily="monospace" fontSize="10" letterSpacing="1">1.3521° N, 103.8198° E</text>
-        <text x="1650" y="100" fill="rgba(245, 242, 236, 0.18)" fontFamily="monospace" fontSize="10" letterSpacing="1">SIN / OUTBOUND</text>
+        <text x="1650" y="80" fill="rgba(245, 242, 236, 0.35)" fontFamily="monospace" fontSize="10" letterSpacing="1">1.3521° N, 103.8198° E</text>
+        <text x="1650" y="100" fill="rgba(245, 242, 236, 0.35)" fontFamily="monospace" fontSize="10" letterSpacing="1">SIN / OUTBOUND</text>
       </svg>
 
       {/* Particles */}
