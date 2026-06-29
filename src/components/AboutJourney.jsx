@@ -562,8 +562,8 @@ export default function AboutJourney() {
           width: '100%',
           backgroundColor: '#000000',
           backgroundImage: `
-            linear-gradient(rgba(245, 242, 236, 0.045) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(245, 242, 236, 0.045) 1px, transparent 1px)
+            linear-gradient(rgba(245, 242, 236, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(245, 242, 236, 0.08) 1px, transparent 1px)
           `,
           backgroundSize: '40px 40px, 40px 40px',
           padding: isMobile ? '20px 24px 0px 24px' : '24px 24px 0px 24px',
@@ -649,8 +649,8 @@ export default function AboutJourney() {
           height: '500vh', // 7 spreads of scroll height
           backgroundColor: '#000000',
           backgroundImage: `
-            linear-gradient(rgba(245, 242, 236, 0.015) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(245, 242, 236, 0.015) 1px, transparent 1px)
+            linear-gradient(rgba(245, 242, 236, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(245, 242, 236, 0.08) 1px, transparent 1px)
           `,
           backgroundSize: '40px 40px',
           width: '100%',
@@ -692,8 +692,8 @@ export default function AboutJourney() {
           overflow: hidden;
           background-color: #000000;
           background-image: 
-            linear-gradient(rgba(245, 242, 236, 0.045) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(245, 242, 236, 0.045) 1px, transparent 1px);
+            linear-gradient(rgba(245, 242, 236, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(245, 242, 236, 0.08) 1px, transparent 1px);
           background-size: 40px 40px;
           display: flex;
           justify-content: center;
