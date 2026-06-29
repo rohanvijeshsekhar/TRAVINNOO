@@ -3190,4 +3190,35 @@ html.lenis body {
   }
 }
 
+/* ==========================================================================
+   Standardized Global Section Spacing System
+   ========================================================================== */
+:root {
+  --section-gap: 140px;
+}
 
+@media (max-width: 1023px) {
+  :root {
+    --section-gap: 70px;
+  }
+}
+
+/* Apply standardized vertical spacing across all homepage sections */
+.editorial-section,
+.destinations-section,
+.expertise-section,
+.journey-section,
+.logo-cloud-section,
+.why-section,
+.contact-cta-section {
+  padding-top: var(--section-gap) !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Ensure the footer also matches the section gap at the top */
+footer {
+  padding-top: var(--section-gap) !important;
+  margin-top: 0 !important;
+}

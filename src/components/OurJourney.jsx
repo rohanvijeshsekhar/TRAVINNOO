@@ -340,6 +340,7 @@ export default function OurJourney() {
   return (
     <section 
       ref={containerRef}
+      className="journey-section"
       style={{
         width: '100%',
         padding: '50px 0',

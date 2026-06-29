@@ -104,6 +104,7 @@ function ContactCTA() {
   return (
     <section
       id="contact"
+      className="contact-cta-section"
       style={{
         position: 'relative',
         width: '100%',
