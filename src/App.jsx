@@ -127,6 +127,13 @@ function App() {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
+  // Force page scroll to top and disable automatic scroll restoration on refresh
+  useEffect(() => {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+  }, []);
 
   // Cinematic scroll-fade effect for section-by-section transitions
   useEffect(() => {
