@@ -605,7 +605,7 @@ export default function AboutJourney() {
         .leather-book {
           position: relative;
           width: min(1040px, 94vw);
-          height: min(650px, 80vh);
+          height: min(580px, 72vh);
           background-color: #1e120d;
           background-image: 
             radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 50%),
@@ -1288,7 +1288,7 @@ export default function AboutJourney() {
           position: relative;
           width: 90%;
           max-width: 440px;
-          height: 85vh;
+          height: min(540px, 72vh);
           background: #1e120d;
           border-radius: 12px;
           padding: 8px;
@@ -1358,12 +1358,76 @@ export default function AboutJourney() {
         {/* Soft radial backdrop glow */}
         <div className="journal-editorial-glow" />
 
-        {/* Floating Top-Right Progress Indicator */}
+        {/* Immersive Section Heading matching the homepage spacing, fonts, and colors */}
+        <div
+          className="journal-heading-container"
+          style={{
+            position: 'absolute',
+            top: isMobile ? '25px' : '40px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            zIndex: 15,
+            width: '90%',
+            maxWidth: '600px'
+          }}
+        >
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 10px',
+              border: '1px solid rgba(193, 18, 31, 0.15)',
+              borderRadius: '100px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.72rem',
+              fontWeight: 500,
+              letterSpacing: '0.05em',
+              color: 'rgba(255, 255, 255, 0.85)',
+              marginBottom: '10px',
+              background: 'rgba(193, 18, 31, 0.05)',
+              backdropFilter: 'blur(4px)',
+              WebkitBackdropFilter: 'blur(4px)'
+            }}
+          >
+            <span
+              style={{
+                width: '6px',
+                height: '6px',
+                backgroundColor: '#C1121F',
+                borderRadius: '50%',
+                display: 'inline-block'
+              }}
+            />
+            Our History
+          </span>
+          <h2
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: isMobile ? '1.8rem' : 'clamp(2rem, 3.2vw, 2.8rem)',
+              fontWeight: 500,
+              lineHeight: 1.15,
+              letterSpacing: '0.02em',
+              color: '#F5F2EC',
+              margin: '0',
+              textAlign: 'center'
+            }}
+          >
+            Our Journey
+          </h2>
+        </div>
+
+        {/* Floating Progress Indicator */}
         <div
           style={{
             position: 'absolute',
-            top: isMobile ? '80px' : '110px',
-            right: isMobile ? '20px' : '50px',
+            bottom: isMobile ? '24px' : 'auto',
+            top: isMobile ? 'auto' : '110px',
+            right: isMobile ? '24px' : '50px',
             fontFamily: 'monospace',
             fontSize: '12px',
             letterSpacing: '2px',
