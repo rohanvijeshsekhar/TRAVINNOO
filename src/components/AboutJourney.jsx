@@ -1467,14 +1467,12 @@ export default function AboutJourney() {
           width: '100%',
           height: '100%',
           backgroundImage: `
-            linear-gradient(rgba(245, 242, 236, 0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(245, 242, 236, 0.04) 1px, transparent 1px)
+            linear-gradient(rgba(245, 242, 236, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(245, 242, 236, 0.08) 1px, transparent 1px)
           `,
           backgroundSize: '40px 40px',
           pointerEvents: 'none',
-          zIndex: 0,
-          maskImage: 'radial-gradient(circle at 50% 50%, black 40%, transparent 95%)',
-          WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 40%, transparent 95%)'
+          zIndex: 0
         }}
       />
 

@@ -81,8 +81,8 @@ export default function AboutPurpose() {
           width: 100%;
           height: 100%;
           background-image: 
-            linear-gradient(rgba(245, 242, 236, 0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(245, 242, 236, 0.04) 1px, transparent 1px);
+            linear-gradient(rgba(245, 242, 236, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(245, 242, 236, 0.08) 1px, transparent 1px);
           background-size: 40px 40px;
           pointer-events: none;
           z-index: 0;
