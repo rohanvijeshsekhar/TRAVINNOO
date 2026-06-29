@@ -79,7 +79,7 @@ export function GlobePulse({
     const canvas = canvasRef.current
     let globe: ReturnType<typeof createGlobe> | null = null
     let animationId: number
-    let phi = 0
+    let phi = 1.57
     let currentWidth = canvas.offsetWidth
     let isVisible = false
     let isLoopRunning = false
@@ -129,7 +129,7 @@ export function GlobePulse({
         devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
         width: initialWidth,
         height: initialWidth,
-        phi: 0,
+        phi: 1.57,
         theta: 0.2,
         dark: 1,
         diffuse: 1.5,
