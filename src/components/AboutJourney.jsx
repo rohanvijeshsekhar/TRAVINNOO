@@ -586,6 +586,7 @@ export default function AboutJourney() {
           overflow: hidden;
           background-color: #050505;
           display: flex;
+          flex-direction: column;
           justify-content: center;
           align-items: center;
           box-sizing: border-box;
@@ -605,7 +606,7 @@ export default function AboutJourney() {
         .leather-book {
           position: relative;
           width: min(1040px, 94vw);
-          height: min(580px, 72vh);
+          height: min(650px, 80vh);
           background-color: #1e120d;
           background-image: 
             radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 50%),
@@ -1288,7 +1289,7 @@ export default function AboutJourney() {
           position: relative;
           width: 90%;
           max-width: 440px;
-          height: min(540px, 72vh);
+          height: 85vh;
           background: #1e120d;
           border-radius: 12px;
           padding: 8px;
@@ -1362,17 +1363,14 @@ export default function AboutJourney() {
         <div
           className="journal-heading-container"
           style={{
-            position: 'absolute',
-            top: isMobile ? '25px' : '40px',
-            left: '50%',
-            transform: 'translateX(-50%)',
             textAlign: 'center',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             zIndex: 15,
             width: '90%',
-            maxWidth: '600px'
+            maxWidth: '600px',
+            marginBottom: isMobile ? '20px' : '32px'
           }}
         >
           <span
