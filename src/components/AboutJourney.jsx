@@ -1427,10 +1427,14 @@ export default function AboutJourney() {
               letterSpacing: '0.02em',
               color: '#F5F2EC',
               margin: '0',
-              textAlign: 'center'
+              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center'
             }}
           >
-            Stories that <span className="about-inspire-cursive">Inspire</span>
+            <span>Stories that</span>
+            <span className="about-inspire-cursive" style={{ marginTop: '2px' }}>Inspire</span>
           </h2>
         </div>
 
