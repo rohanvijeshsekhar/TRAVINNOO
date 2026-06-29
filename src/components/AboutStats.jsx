@@ -117,7 +117,7 @@ export default function AboutStats() {
         .about-stats-section {
           position: relative;
           background-color: #000000;
-          padding: 80px 24px 40px 24px;
+          padding: 80px 24px 100px 24px;
           overflow: hidden;
           width: 100%;
           box-sizing: border-box;
@@ -125,7 +125,7 @@ export default function AboutStats() {
 
         @media (max-width: 1023px) {
           .about-stats-section {
-            padding: 40px 20px 30px 20px;
+            padding: 40px 20px 60px 20px;
           }
         }
 
@@ -277,7 +277,7 @@ export default function AboutStats() {
             gap: 20px;
           }
           .about-stats-section {
-            padding: 50px 20px 30px 20px;
+            padding: 80px 20px;
           }
         }
 

@@ -98,21 +98,37 @@ export default function AboutPurpose() {
 
         /* Purpose Section: Centered full-width hero */
         .purpose-hero {
-          padding: 60px 24px 60px 24px;
+          padding: 140px 24px 60px 24px;
           text-align: center;
           display: flex;
           flex-direction: column;
           align-items: center;
         }
 
-        .eyebrow-label {
+        .about-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 4px 10px;
+          border: 1px solid rgba(193, 18, 31, 0.15);
+          border-radius: 100px;
           font-family: var(--font-sans), sans-serif;
-          font-size: 0.75rem;
-          font-weight: 600;
-          letter-spacing: 0.2em;
-          color: #C1121F;
-          text-transform: uppercase;
+          font-size: 0.72rem;
+          font-weight: 500;
+          letter-spacing: 0.05em;
+          color: rgba(255, 255, 255, 0.85);
           margin-bottom: 24px;
+          background: rgba(193, 18, 31, 0.05);
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
+        }
+
+        .about-badge-dot {
+          width: 6px;
+          height: 6px;
+          background-color: #C1121F;
+          border-radius: 50%;
+          display: inline-block;
         }
 
         .purpose-heading {
@@ -209,7 +225,7 @@ export default function AboutPurpose() {
 
         @media (max-width: 1023px) {
           .purpose-hero {
-            padding: 40px 20px;
+            padding: 100px 20px;
           }
           .editorial-spread, .editorial-spread.reverse {
             grid-template-columns: 1fr;
@@ -238,7 +254,10 @@ export default function AboutPurpose() {
         {/* SECTION 1: Our Purpose */}
         <section className="purpose-hero">
           <FadeInContainer>
-            <div className="eyebrow-label">Our Purpose</div>
+            <div className="about-badge">
+              <span className="about-badge-dot" />
+              Our Purpose
+            </div>
             <h2 className="purpose-heading">
               To curate travel not as mere itineraries, but as works of art—extraordinary journeys that inspire, transform, and linger in memory forever.
             </h2>
@@ -253,7 +272,10 @@ export default function AboutPurpose() {
         <section className="editorial-spread">
           <div className="editorial-text-col centered">
             <FadeInContainer>
-              <div className="eyebrow-label">Our Mission</div>
+              <div className="about-badge">
+                <span className="about-badge-dot" />
+                Our Mission
+              </div>
               <h3 className="editorial-heading">Our Mission</h3>
               <div className="editorial-divider" />
               <p className="editorial-paragraph-sub">
@@ -271,7 +293,10 @@ export default function AboutPurpose() {
         <section className="editorial-spread reverse">
           <div className="editorial-text-col centered">
             <FadeInContainer>
-              <div className="eyebrow-label">Our Vision</div>
+              <div className="about-badge">
+                <span className="about-badge-dot" />
+                Our Vision
+              </div>
               <h3 className="editorial-heading">Our Vision</h3>
               <div className="editorial-divider" />
               <p className="editorial-paragraph-sub">
