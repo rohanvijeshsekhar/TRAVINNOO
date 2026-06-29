@@ -18,7 +18,7 @@ export function ParallaxComponent() {
           trigger: triggerElement,
           start: "0% 0%",
           end: "100% 0%",
-          scrub: 0
+          scrub: 1.2
         }
       });
 
@@ -43,6 +43,8 @@ export function ParallaxComponent() {
 
     const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
     const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: !isTouchDevice,
       smoothTouch: false,
       syncTouch: false,

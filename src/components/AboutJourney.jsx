@@ -172,9 +172,9 @@ export default function AboutJourney() {
         scrub: true,
         snap: {
           snapTo: 1 / 6,
-          duration: { min: 0.5, max: 0.8 },
-          ease: "power2.out",
-          delay: 0.05
+          duration: { min: 0.6, max: 1.2 },
+          ease: "power3.out",
+          delay: 0.15
         },
         onUpdate: (self) => {
           const progress = self.progress;
@@ -358,10 +358,6 @@ export default function AboutJourney() {
                 <span className="seal-emblem">T</span>
               </div>
             </div>
-          </div>
-          <div className="diary-signature">
-            <span className="sig-label">Recorded by:</span>
-            <span className="sig-name">Rohan Vijesh Sekhar</span>
           </div>
         </div>
       </div>
