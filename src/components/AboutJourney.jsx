@@ -622,6 +622,7 @@ export default function AboutJourney() {
           position: relative;
           width: min(1040px, 94vw);
           height: min(650px, 80vh);
+          overflow: hidden;
           background-color: #1e120d;
           background-image: 
             radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 50%),
