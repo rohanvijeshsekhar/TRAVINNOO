@@ -172,9 +172,9 @@ export default function AboutJourney() {
         scrub: true,
         snap: {
           snapTo: 1 / 6,
-          duration: { min: 0.6, max: 1.2 },
-          ease: "power3.out",
-          delay: 0.15
+          duration: { min: 0.3, max: 0.6 },
+          ease: "power2.out",
+          delay: 0.08
         },
         onUpdate: (self) => {
           const progress = self.progress;
@@ -191,11 +191,11 @@ export default function AboutJourney() {
             setFlippingTo(targetIdx);
             setIsFlipping(true);
 
-            // Complete flip after 850ms (corresponds to CSS animation speed)
+            // Complete flip after 450ms (corresponds to CSS animation speed)
             setTimeout(() => {
               setActiveIndex(targetIdx);
               setIsFlipping(false);
-            }, 850);
+            }, 450);
           }
         }
       });
@@ -497,7 +497,7 @@ export default function AboutJourney() {
       className="journal-experience-container"
       style={{ 
         position: 'relative', 
-        height: '700vh', // 7 spreads of scroll height
+        height: '250vh', // 7 spreads of scroll height
         backgroundColor: '#050505',
         width: '100%',
         boxSizing: 'border-box'
@@ -701,11 +701,11 @@ export default function AboutJourney() {
 
         /* Styles for turning page transitions (GSAP/CSS triggered) */
         .page-fold-active-forward {
-          animation: foldPageForward 0.85s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+          animation: foldPageForward 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
         .page-fold-active-backward {
-          animation: foldPageBackward 0.85s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+          animation: foldPageBackward 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
         @keyframes foldPageForward {
@@ -740,11 +740,11 @@ export default function AboutJourney() {
 
         /* Shadow animations */
         .shadow-fade-forward {
-          animation: shadowAnimationForward 0.85s linear forwards;
+          animation: shadowAnimationForward 0.45s linear forwards;
         }
 
         .shadow-fade-backward {
-          animation: shadowAnimationBackward 0.85s linear forwards;
+          animation: shadowAnimationBackward 0.45s linear forwards;
         }
 
         @keyframes shadowAnimationForward {
@@ -773,7 +773,7 @@ export default function AboutJourney() {
 
         /* Underlaying static page shadow casting */
         .landing-shadow-active {
-          animation: landingShadowAnim 0.85s ease-in-out forwards;
+          animation: landingShadowAnim 0.45s ease-in-out forwards;
         }
 
         @keyframes landingShadowAnim {
