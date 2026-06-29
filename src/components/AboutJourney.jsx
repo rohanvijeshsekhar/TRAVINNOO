@@ -561,7 +561,7 @@ export default function AboutJourney() {
         style={{
           width: '100%',
           backgroundColor: '#000000',
-          backgroundImage: 'radial-gradient(circle at 50% 0%, rgba(193, 18, 31, 0.12) 0%, transparent 70%), radial-gradient(circle at 0% 50%, rgba(193, 18, 31, 0.08) 0%, transparent 50%), radial-gradient(circle at 100% 50%, rgba(193, 18, 31, 0.08) 0%, transparent 50%)',
+          backgroundImage: 'radial-gradient(circle at 0% 50%, rgba(193, 18, 31, 0.10) 0%, transparent 60%), radial-gradient(circle at 100% 50%, rgba(193, 18, 31, 0.10) 0%, transparent 60%)',
           padding: isMobile ? '20px 24px 0px 24px' : '24px 24px 0px 24px',
           boxSizing: 'border-box',
           display: 'flex',
