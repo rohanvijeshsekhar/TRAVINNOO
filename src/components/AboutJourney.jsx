@@ -561,11 +561,6 @@ export default function AboutJourney() {
         style={{
           width: '100%',
           backgroundColor: '#000000',
-          backgroundImage: `
-            linear-gradient(rgba(245, 242, 236, 0.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(245, 242, 236, 0.08) 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px, 40px 40px',
           padding: isMobile ? '20px 24px 0px 24px' : '24px 24px 0px 24px',
           boxSizing: 'border-box',
           display: 'flex',
@@ -666,6 +661,27 @@ export default function AboutJourney() {
           --font-journal-serif: 'Playfair Display', Georgia, serif;
           --font-journal-hand: 'Caveat', cursive, sans-serif;
           --font-journal-note: 'Reenie Beanie', cursive, sans-serif;
+        }
+
+        .about-heading-section {
+          position: relative;
+        }
+
+        .about-heading-section::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: 
+            linear-gradient(rgba(245, 242, 236, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(245, 242, 236, 0.08) 1px, transparent 1px);
+          background-size: 40px 40px;
+          pointer-events: none;
+          z-index: 1;
+          mask-image: linear-gradient(to bottom, transparent 0%, black 120px);
+          -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 120px);
         }
 
         .about-inspire-cursive {
