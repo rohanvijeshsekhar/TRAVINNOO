@@ -329,8 +329,6 @@ export default function DestinationStorySection() {
 
         .destinations-story-card {
           position: absolute;
-          left: 0;
-          top: 0;
           width: 100%;
           height: 100%;
           background: #0B0B0B;

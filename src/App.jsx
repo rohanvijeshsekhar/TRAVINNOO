@@ -16,9 +16,9 @@ import LogoCloudSection from './components/LogoCloudSection';
 import WhyTravinno from './components/WhyTravinno';
 import ContactCTA from './components/ContactCTA';
 import Footer from './components/Footer';
-const ParallaxDemo     = lazy(() => import('./demos/default'));
-const TeamPage         = lazy(() => import('./components/TeamPage'));
-const ServicesPage     = lazy(() => import('./components/ServicesPage'));
+const ParallaxDemo = lazy(() => import('./demos/default'));
+const TeamPage = lazy(() => import('./components/TeamPage'));
+const ServicesPage = lazy(() => import('./components/ServicesPage'));
 
 
 
@@ -126,13 +126,6 @@ function App() {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, []);
-  // Force page scroll to top and disable automatic scroll restoration on refresh
-  useEffect(() => {
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-    window.scrollTo(0, 0);
   }, []);
 
   // Cinematic scroll-fade effect for section-by-section transitions
@@ -266,7 +259,7 @@ function App() {
             }}
           >
             {/* Background Reddish-Orange-Black Gradient with Static Check Pattern */}
-            <div 
+            <div
               style={{
                 position: 'absolute',
                 inset: 0,
@@ -280,14 +273,14 @@ function App() {
             />
 
             {/* Twinkling & Drifting Stars — paused via IntersectionObserver when off-screen */}
-            <div 
+            <div
               ref={starsContainerRef}
-              style={{ 
-                position: 'absolute', 
-                inset: 0, 
-                overflow: 'hidden', 
-                pointerEvents: 'none', 
-                zIndex: 2 
+              style={{
+                position: 'absolute',
+                inset: 0,
+                overflow: 'hidden',
+                pointerEvents: 'none',
+                zIndex: 2
               }}
             >
               <style>{`
@@ -329,7 +322,7 @@ function App() {
             </div>
 
             {/* Top Smooth Blend Overlay */}
-            <div 
+            <div
               style={{
                 position: 'absolute',
                 top: 0,
@@ -343,7 +336,7 @@ function App() {
             />
 
             {/* Bottom Smooth Blend Overlay */}
-            <div 
+            <div
               style={{
                 position: 'absolute',
                 bottom: 0,
