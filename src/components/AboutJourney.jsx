@@ -567,13 +567,28 @@ export default function AboutJourney() {
     >
       {/* Import vintage and handwriting fonts */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Reenie+Beanie&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Allura&family=Caveat:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Reenie+Beanie&display=swap');
         
         .journal-experience-container {
           --color-paper: #f5f2ec;
           --font-journal-serif: 'Playfair Display', Georgia, serif;
           --font-journal-hand: 'Caveat', cursive, sans-serif;
           --font-journal-note: 'Reenie Beanie', cursive, sans-serif;
+        }
+
+        .about-inspire-cursive {
+          font-family: 'Allura', cursive;
+          font-size: 1.35em;
+          font-weight: 400;
+          letter-spacing: 0.02em;
+          line-height: 1;
+          display: inline-block;
+          text-transform: none;
+          vertical-align: middle;
+          background: linear-gradient(to bottom, #F5F2EC 15%, #FF6B6B 65%, #C1121F 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
         }
 
         /* Ambient Lighting and Background Grid overlays */
@@ -1415,7 +1430,7 @@ export default function AboutJourney() {
               textAlign: 'center'
             }}
           >
-            Our Journey
+            Stories that <span className="about-inspire-cursive">Inspire</span>
           </h2>
         </div>
 
