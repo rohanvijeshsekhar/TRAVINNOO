@@ -210,14 +210,12 @@ export default function AboutJourney() {
     if (!container) return;
 
     const isMobileViewport = window.innerWidth < 1024;
-    const snapPoints = isMobileViewport
-      ? [0, 0.14, 0.28, 0.42, 0.56, 0.70, 0.84, 1.0]
-      : [0, 0.16, 0.32, 0.48, 0.64, 0.80, 1.0];
+    const snapPoints = [0, 0.08, 0.22, 0.36, 0.50, 0.64, 0.78, 0.92, 1.0];
 
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: container,
-        start: "top top",
+        start: isMobileViewport ? "top 16px" : "top top",
         end: isMobileViewport ? "+=2600" : "+=2200",
         pin: true,
         scrub: true,
@@ -233,19 +231,32 @@ export default function AboutJourney() {
           const progress = self.progress;
           
           // Find the index of the closest snap point
-          let targetIdx = 0;
+          let closestK = 0;
           let minDiff = Infinity;
           for (let k = 0; k < snapPoints.length; k++) {
             const diff = Math.abs(progress - snapPoints[k]);
             if (diff < minDiff) {
               minDiff = diff;
-              targetIdx = k;
+              closestK = k;
             }
           }
 
-          // Clamp targetIdx to active milestones range (0 to 6)
-          if (targetIdx >= 7) {
-            targetIdx = 6;
+          // Map the snap point index (0 to 8) to the 7 journal page indices (0 to 6)
+          let targetIdx = 0;
+          if (closestK <= 1) {
+            targetIdx = 0; // Page 1 (0 or 0.08)
+          } else if (closestK === 2) {
+            targetIdx = 1; // Page 2 (0.22)
+          } else if (closestK === 3) {
+            targetIdx = 2; // Page 3 (0.36)
+          } else if (closestK === 4) {
+            targetIdx = 3; // Page 4 (0.50)
+          } else if (closestK === 5) {
+            targetIdx = 4; // Page 5 (0.64)
+          } else if (closestK === 6) {
+            targetIdx = 5; // Page 6 (0.78)
+          } else {
+            targetIdx = 6; // Page 7 (0.92 or 1.0)
           }
           
           const currentActive = activeIndexRef.current;

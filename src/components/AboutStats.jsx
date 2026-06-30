@@ -193,28 +193,31 @@ export default function AboutStats() {
         }
 
         .about-stat-card {
-          background: rgba(255, 255, 255, 0.015);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          border-radius: 12px;
-          padding: 32px 28px;
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.015) 100%);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(245, 242, 236, 0.09);
+          border-radius: 14px;
+          padding: 36px 30px;
           display: flex;
           flex-direction: column;
           align-items: flex-start;
           transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
           position: relative;
           overflow: hidden;
-          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+          box-shadow: 
+            0 10px 40px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
 
         .about-stat-card:hover {
-          transform: translateY(-5px);
-          border-color: rgba(193, 18, 31, 0.25);
+          transform: translateY(-6px);
+          border-color: rgba(193, 18, 31, 0.5);
           box-shadow: 
-            0 12px 40px rgba(0, 0, 0, 0.3),
-            0 0 30px rgba(193, 18, 31, 0.04);
-          background: rgba(255, 255, 255, 0.025);
+            0 20px 50px rgba(0, 0, 0, 0.65),
+            0 0 35px rgba(193, 18, 31, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
         }
 
         .about-stat-card::before {
