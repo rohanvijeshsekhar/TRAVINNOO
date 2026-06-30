@@ -560,8 +560,9 @@ a {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(to bottom, #050505 0%, transparent 30%, transparent 70%, #050505 100%),
+    linear-gradient(to bottom, #050505 0%, transparent 30%, transparent 100%),
     radial-gradient(circle at 50% 50%, rgba(193, 18, 31, 0.08) 0%, transparent 65%),
+
     linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 100% 100%, 100% 100%, 50px 50px, 50px 50px;
@@ -3208,7 +3209,8 @@ html.lenis body {
 .destinations-section,
 .expertise-section,
 .journey-section,
-.logo-cloud-section {
+.logo-cloud-section,
+.testimonials-section {
   padding-top: var(--section-gap) !important;
   padding-bottom: 0 !important;
   margin-top: 0 !important;
@@ -3285,5 +3287,426 @@ footer {
     text-align: justify !important;
     font-size: 15px !important;
     line-height: 1.7 !important;
+  }
+}
+
+/* Testimonials Section Styles */
+.testimonials-section {
+  position: relative;
+  width: 100%;
+  background-color: #050505;
+  overflow: hidden;
+}
+
+.testimonials-header-container {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto 32px auto;
+  position: relative;
+  z-index: 2;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.testimonials-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid rgba(193, 18, 31, 0.25);
+  border-radius: 100px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(193, 18, 31, 0.05);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  margin-bottom: 18px;
+}
+
+      /* Remove on mobile. The background colour provides enough contrast. */
+@media (hover: none) and (pointer: coarse) {
+  .expertise-pill,
+  .logo-cloud-title,
+  .why-title,
+  .catalogue-pre-title,
+  .destinations-pill,
+  .glassmorphic-panel {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* 6. backdrop-filter on mobile header is necessary for readability; keep it
+      but drop blur radius from 20px to 12px to halve GPU work. */
+@media (max-width: 767px) {
+  .header-container {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+}
+
+/* 7. Pause the marquee animation when the JS IntersectionObserver sets
+      the data attribute, and always pause on reduced-motion. */
+@media (prefers-reduced-motion: reduce) {
+  .partners-marquee-track,
+  .new-testimonials-col-track {
+    animation: none !important;
+  }
+}
+
+/*
+.home-editorial-fade-wrap,
+.home-services-fade-wrap,
+.home-journey-fade-wrap,
+.home-contact-fade-wrap,
+.home-why-fade-wrap,
+.home-contact-cta-fade-wrap {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 800px;
+}
+*/
+
+/* 9. partner-logo-img: the CSS filter brightness(0) invert(1) is applied
+      to every logo on every frame during marquee scroll.
+      Promote each image to its own compositing layer so the filter is
+      cached, and the marquee translate3d moves only a single layer. */
+.partner-logo-img {
+  will-change: auto;
+  transform: translateZ(0);
+}
+
+/* 10. Remove expensive filter from .catalogue-destination-img on mobile —
+       brightness + contrast + saturate forces per-frame GPU texture blit. */
+@media (hover: none) and (pointer: coarse) {
+  .catalogue-destination-img {
+    filter: brightness(0.82);
+  }
+}
+
+/* ==========================================================================
+   Standardized Global Section Spacing System
+   ========================================================================== */
+:root {
+  --section-gap: 140px;
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --section-gap: 70px;
+  }
+}
+
+/* Apply standardized vertical spacing across all homepage sections */
+.editorial-section,
+.destinations-section,
+.expertise-section,
+.journey-section,
+.logo-cloud-section,
+.testimonials-section {
+  padding-top: var(--section-gap) !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Why Travinno section - has customized bottom padding to make the transition to Contact CTA exactly equal to the standard gap */
+.why-section {
+  padding-top: var(--section-gap) !important;
+  padding-bottom: 70px !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 1023px) {
+  .why-section {
+    padding-bottom: 30px !important;
+  }
+}
+
+/* Ensure the footer also matches the section gap at the top */
+footer {
+  padding-top: var(--section-gap) !important;
+  margin-top: 0 !important;
+}
+
+/* Parallax Editorial text styling for center alignment on desktop and justified on mobile */
+.parallax-editorial-wrapper {
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+  padding: 0 24px;
+  color: #FFFFFF;
+  z-index: 10;
+}
+
+.parallax-editorial-title {
+  font-family: 'Satoshi', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 500;
+  margin-bottom: 40px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.parallax-editorial-body {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.parallax-editorial-body p {
+  text-align: center;
+}
+
+@media (max-width: 1023px) {
+  .parallax__content {
+    padding: 60px 20px 40px 20px !important;
+    min-height: auto !important;
+  }
+  .parallax-editorial-wrapper {
+    padding: 0;
+  }
+  .parallax-editorial-title {
+    margin-bottom: 24px;
+  }
+  .parallax-editorial-body {
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .parallax-editorial-body p {
+    text-align: justify !important;
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+  }
+}
+
+/* Testimonials Section Styles */
+.testimonials-section {
+  position: relative;
+  width: 100%;
+  background-color: #050505;
+  overflow: hidden;
+  padding-top: 90px !important;
+}
+
+@media (max-width: 1023px) {
+  .testimonials-section {
+    padding-top: 50px !important;
+  }
+}
+
+.testimonials-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to bottom, rgba(5, 5, 5, 0.5) 0%, transparent 200px, transparent 70%, #050505 100%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 100% 100%, 50px 50px, 50px 50px;
+  background-repeat: no-repeat, repeat, repeat;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.testimonials-header-container {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto 32px auto;
+  position: relative;
+  z-index: 2;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.testimonials-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid rgba(193, 18, 31, 0.25);
+  border-radius: 100px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(193, 18, 31, 0.05);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  margin-bottom: 18px;
+}
+
+.testimonials-pill-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #C1121F;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.testimonials-heading {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  color: #F5F2EC;
+  margin: 0 0 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.testimonials-gradient-text {
+  background: linear-gradient(to bottom, #F5F2EC 20%, #E8A7A7 60%, #C1121F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+.testimonials-allura-text {
+  font-family: 'Allura', cursive;
+  font-size: 1.3em;
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: normal;
+  text-transform: none;
+  padding-top: 4px;
+}
+
+.testimonials-sub {
+  font-family: var(--font-sans);
+  font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+  line-height: 1.6;
+  color: rgba(245, 242, 236, 0.55);
+  margin: 0;
+  font-weight: 300;
+}
+
+.testimonials-marquee-wrapper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  margin-top: 48px;
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  padding: 12px 0;
+  z-index: 2;
+}
+
+.testimonials-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: testimonials-scroll 48s linear infinite;
+}
+
+@keyframes testimonials-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.testimonials-marquee-content {
+  display: flex;
+  gap: 24px;
+  padding: 0 12px;
+}
+
+.testimonial-card {
+  background: rgba(20, 20, 22, 0.45);
+  border: 1px solid rgba(245, 242, 236, 0.06);
+  border-radius: 20px;
+  padding: 32px;
+  width: 380px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  text-align: left;
+}
+
+@media (hover: hover) {
+  .testimonials-marquee-track:hover {
+    animation-play-state: paused;
+  }
+  .testimonial-card:hover {
+    transform: translateY(-6px);
+    background: rgba(245, 242, 236, 0.02) !important;
+    border-color: #C1121F !important;
+    box-shadow: 0 15px 40px rgba(193, 18, 31, 0.08), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.testimonial-stars {
+  display: flex;
+  gap: 4px;
+  color: #C1121F;
+}
+
+.testimonial-text {
+  font-family: var(--font-sans);
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: rgba(245, 242, 236, 0.7);
+  font-weight: 300;
+  margin: 0;
+}
+
+.testimonial-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.testimonial-name {
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #F5F2EC;
+}
+
+.testimonial-meta {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: rgba(245, 242, 236, 0.45);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1023px) {
+  .testimonial-card {
+    width: 320px;
+    padding: 24px;
+  }
+  .testimonials-marquee-wrapper {
+    margin-top: 32px;
+  }
+}
+
+@media (max-width: 767px) {
+  .testimonial-card {
+    width: 280px;
+    padding: 20px;
+    border-radius: 16px;
+    gap: 14px;
+  }
+  .testimonials-marquee-wrapper {
+    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
   }
 }

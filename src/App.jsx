@@ -15,6 +15,7 @@ import OurJourney from './components/OurJourney';
 import LogoCloudSection from './components/LogoCloudSection';
 import WhyTravinno from './components/WhyTravinno';
 import ContactCTA from './components/ContactCTA';
+import TestimonialsSection from './components/TestimonialsSection';
 import Footer from './components/Footer';
 const ParallaxDemo = lazy(() => import('./demos/default'));
 const TeamPage = lazy(() => import('./components/TeamPage'));
@@ -412,6 +413,11 @@ function App() {
           {/* Our Expertise Section */}
           <div id="services" className="home-services-fade-wrap">
             <ExpertiseSection />
+          </div>
+
+          {/* Testimonials Section */}
+          <div className="home-testimonials-fade-wrap">
+            <TestimonialsSection />
           </div>
 
 

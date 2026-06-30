@@ -125,17 +125,18 @@ export default function ContactPage() {
 
         @media (max-width: 1023px) {
           .contact-layout-grid {
-            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: column;
             gap: 40px;
           }
           
-          /* Order stack: Office info first, then form */
+          /* Order stack: Form first, then office info */
           .office-info-col {
-            order: 1;
+            order: 2;
           }
           
           .contact-form-col {
-            order: 2;
+            order: 1;
           }
         }
 
@@ -189,8 +190,22 @@ export default function ContactPage() {
           padding: 24px;
         }
       `}</style>
+      
+      {/* Background Reddish Gradient with Static Check Pattern */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'linear-gradient(rgba(245, 242, 236, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 242, 236, 0.04) 1px, transparent 1px), radial-gradient(circle at 50% 25%, rgba(193, 18, 31, 0.12) 0%, transparent 50%)',
+          backgroundSize: '100px 100px, 100px 100px, auto',
+          backgroundRepeat: 'repeat, repeat, no-repeat',
+          backgroundColor: '#050505',
+          zIndex: 1,
+          pointerEvents: 'none'
+        }}
+      />
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '160px 24px 120px 24px', boxSizing: 'border-box' }}>
+      <div style={{ position: 'relative', zIndex: 2, maxWidth: '1200px', margin: '0 auto', padding: '160px 24px 120px 24px', boxSizing: 'border-box' }}>
         
         {/* HERO SECTION */}
         <section style={{ marginBottom: '16px' }}>
@@ -224,7 +239,25 @@ export default function ContactPage() {
               margin: '0 0 24px 0'
             }}
           >
-            Reach Out To Our Experts
+            Reach Out To <br />
+            <span
+              style={{
+                fontFamily: "'Allura', cursive",
+                fontSize: '1.25em',
+                fontWeight: 400,
+                letterSpacing: '0.02em',
+                lineHeight: 1.0,
+                display: 'inline-block',
+                textTransform: 'none',
+                background: 'linear-gradient(to bottom, #F5F2EC 15%, #FF6B6B 65%, #C1121F 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                paddingTop: '6px'
+              }}
+            >
+              Our Experts
+            </span>
           </motion.h1>
 
           <motion.p
@@ -494,8 +527,10 @@ export default function ContactPage() {
                       <motion.button
                         type="submit"
                         style={{
-                          background: '#C1121F',
-                          border: 'none',
+                          background: 'rgba(255, 255, 255, 0.03)',
+                          backdropFilter: 'blur(8px)',
+                          WebkitBackdropFilter: 'blur(8px)',
+                          border: '1px solid rgba(245, 242, 236, 0.1)',
                           padding: '16px 36px',
                           borderRadius: '100px',
                           fontFamily: 'var(--font-sans)',
@@ -507,12 +542,14 @@ export default function ContactPage() {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '10px',
-                          boxShadow: '0 4px 20px rgba(193, 18, 31, 0.15)'
+                          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+                          transition: 'border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease'
                         }}
                         whileHover={{ 
                           scale: 1.02, 
-                          backgroundColor: '#d61a29',
-                          boxShadow: '0 6px 24px rgba(193, 18, 31, 0.3)'
+                          backgroundColor: 'rgba(193, 18, 31, 0.1)',
+                          borderColor: '#C1121F',
+                          boxShadow: '0 6px 24px rgba(193, 18, 31, 0.25)'
                         }}
                         whileTap={{ scale: 0.98 }}
                       >
