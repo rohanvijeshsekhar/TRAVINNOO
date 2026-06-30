@@ -404,10 +404,11 @@ export function ParallaxComponent() {
             fontSize: 'clamp(2rem, 4vw, 3rem)',
             fontWeight: 500,
             marginBottom: '40px',
-            lineHeight: 1.2,
+            lineHeight: 1.35,
             letterSpacing: '-0.02em'
           }}>
-            Experience Excellence in Travel with Travinno
+            Experience Excellence in Travel <br className="hidden md:inline" />
+            with <span className="journey-allura-text" style={{ fontSize: '1.45em', textTransform: 'none', marginLeft: '6px' }}>Travinno</span>
           </h3>
           <div style={{
             textAlign: 'center',
