@@ -494,9 +494,9 @@ export default function Header() {
               fontWeight: 600,
               letterSpacing: '2px',
               textTransform: 'uppercase',
-              color: 'var(--text-primary)',
+              color: activeTab === 'contact' ? 'var(--accent-red)' : 'var(--text-primary)',
               textDecoration: 'none',
-              opacity: isLockedMode ? 0.45 : 0.8,
+              opacity: activeTab === 'contact' ? 1 : (isLockedMode ? 0.45 : 0.8),
               padding: '4px 0',
               cursor: isLockedMode ? 'not-allowed' : 'pointer',
               display: 'flex',
@@ -512,8 +512,8 @@ export default function Header() {
             }}
             onMouseLeave={(e) => {
               if (!isLockedMode) {
-                e.currentTarget.style.opacity = '0.8';
-                e.currentTarget.style.color = 'var(--text-primary)';
+                e.currentTarget.style.opacity = activeTab === 'contact' ? '1' : '0.8';
+                e.currentTarget.style.color = activeTab === 'contact' ? 'var(--accent-red)' : 'var(--text-primary)';
               }
             }}
           >
