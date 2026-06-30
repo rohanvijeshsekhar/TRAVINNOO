@@ -138,11 +138,6 @@ function App() {
     // Detect real touch/mobile device (not desktop Chrome DevTools)
     const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
-    // Enable GSAP scroll normalization on real touch devices to prevent pinned scroll jitter/bouncing
-    if (isTouchDevice) {
-      ScrollTrigger.normalizeScroll(true);
-    }
-
     // Initialize Lenis smooth scroll
     // smoothTouch and syncTouch are DISABLED on real mobile — they intercept native
     // momentum scrolling and run JS-driven scroll on the main thread, causing severe jank.
@@ -173,9 +168,6 @@ function App() {
       lenis.destroy();
       window.lenis = null;
       ctx.revert();
-      if (isTouchDevice) {
-        ScrollTrigger.normalizeScroll(false);
-      }
     };
   }, [currentView, showLoader]);
 
