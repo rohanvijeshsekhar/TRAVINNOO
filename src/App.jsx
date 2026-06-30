@@ -19,6 +19,7 @@ import Footer from './components/Footer';
 const ParallaxDemo = lazy(() => import('./demos/default'));
 const TeamPage = lazy(() => import('./components/TeamPage'));
 const ServicesPage = lazy(() => import('./components/ServicesPage'));
+const ContactPage = lazy(() => import('./components/ContactPage'));
 
 
 
@@ -89,6 +90,8 @@ function App() {
           setCurrentView('team');
         } else if (hash === '#services') {
           setCurrentView('services');
+        } else if (hash === '#contact') {
+          setCurrentView('contact');
         } else {
           setCurrentView('home');
           if (hash) {
@@ -209,6 +212,8 @@ function App() {
         <Suspense fallback={null}><TeamPage /></Suspense>
       ) : currentView === 'services' ? (
         <Suspense fallback={null}><ServicesPage /></Suspense>
+      ) : currentView === 'contact' ? (
+        <Suspense fallback={null}><ContactPage /></Suspense>
       ) : (
         <>
           {/* Hero Section Container (100% Viewport Height) */}

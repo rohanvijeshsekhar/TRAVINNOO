@@ -321,7 +321,7 @@ function ContactCTA() {
           }}
         >
           <a
-            href="mailto:hello@travinno.com"
+            href="#contact"
             className="contact-cta-primary"
             style={{
               padding: '14px 28px',
