@@ -211,19 +211,36 @@ export default function ContactPage() {
         <section style={{ marginBottom: '16px' }}>
           <motion.span
             initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 0.45, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={faderTransition}
             style={{
-              display: 'inline-block',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 12px',
+              border: '1px solid rgba(193, 18, 31, 0.18)',
+              borderRadius: '100px',
               fontFamily: 'var(--font-sans)',
-              fontSize: '0.75rem',
-              fontWeight: 600,
-              letterSpacing: '3px',
-              color: '#F5F2EC',
-              marginBottom: '16px'
+              fontSize: '0.72rem',
+              fontWeight: 500,
+              letterSpacing: '0.05em',
+              color: 'rgba(245, 242, 236, 0.85)',
+              marginBottom: '16px',
+              background: 'rgba(193, 18, 31, 0.05)',
+              backdropFilter: 'blur(4px)',
+              WebkitBackdropFilter: 'blur(4px)'
             }}
           >
-            CONTACT US
+            <span
+              style={{
+                width: '6px',
+                height: '6px',
+                backgroundColor: '#C1121F',
+                borderRadius: '50%',
+                display: 'inline-block'
+              }}
+            />
+            Contact Us
           </motion.span>
 
           <motion.h1
