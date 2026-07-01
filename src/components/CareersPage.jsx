@@ -473,61 +473,57 @@ export default function CareersPage() {
         }}
       />
 
+      {/* Subtle Background/Foreground Editorial Hero Artwork */}
+      <div
+        className="hero-artwork-container"
+        style={{
+          position: 'absolute',
+          right: 0,
+          top: 0,
+          width: '54%',
+          height: '580px',
+          pointerEvents: 'none',
+          zIndex: 1,
+          overflow: 'hidden',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 70%)',
+          maskImage: 'linear-gradient(to right, transparent 0%, black 70%)'
+        }}
+      >
+        {/* Subtle Floating Movement wrapper (2-3px) */}
+        <motion.div
+          animate={{ y: [0, -3, 0] }}
+          transition={{
+            duration: 6,
+            ease: 'easeInOut',
+            repeat: Infinity
+          }}
+          style={{
+            width: '100%',
+            height: '100%',
+            position: 'relative'
+          }}
+        >
+          <img
+            src={`${import.meta.env.BASE_URL}images/careers_hero.png`}
+            alt="Executive Workspace Editorial"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              opacity: 0.38,
+              filter: 'grayscale(100%) contrast(80%) brightness(65%)',
+              transition: 'opacity 0.5s ease'
+            }}
+          />
+        </motion.div>
+      </div>
+
       <div className="careers-container">
         
         {/* HERO SECTION */}
         <section style={{ marginBottom: '64px', position: 'relative', display: 'flex', flexDirection: 'column', minHeight: '380px', justifyContent: 'center' }}>
           
-          {/* Subtle Background/Foreground Editorial Hero Artwork */}
-          <div
-            className="hero-artwork-container"
-            style={{
-              position: 'absolute',
-              right: '-40px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              width: '50%',
-              height: '110%',
-              pointerEvents: 'none',
-              zIndex: 1,
-              overflow: 'hidden',
-              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
-              maskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)'
-            }}
-          >
-            {/* Subtle Floating Movement wrapper (2-3px) */}
-            <motion.div
-              animate={{ y: [0, -3, 0] }}
-              transition={{
-                duration: 6,
-                ease: 'easeInOut',
-                repeat: Infinity
-              }}
-              style={{
-                width: '100%',
-                height: '100%',
-                position: 'relative'
-              }}
-            >
-              <img
-                src={`${import.meta.env.BASE_URL}images/careers_hero.png`}
-                alt="Executive Workspace Editorial"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  opacity: 0.38,
-                  borderRadius: '16px',
-                  filter: 'grayscale(100%) contrast(80%) brightness(65%)',
-                  transition: 'opacity 0.5s ease',
-                  WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)',
-                  maskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)'
-                }}
-              />
-            </motion.div>
-          </div>
-
-          <div style={{ maxWidth: '640px', position: 'relative', zIndex: 2 }}>
+          <div style={{ maxWidth: '640px', position: 'relative', zIndex: 3 }}>
             <motion.span
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}

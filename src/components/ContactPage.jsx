@@ -189,23 +189,94 @@ export default function ContactPage() {
           border-radius: 16px;
           padding: 24px;
         }
+
+        @media (max-width: 991px) {
+          .hero-artwork-container {
+            width: 100% !important;
+            height: 100% !important;
+            right: 0 !important;
+            top: 0 !important;
+            transform: none !important;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 40%, black 80%, transparent 100%) !important;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 40%, black 80%, transparent 100%) !important;
+          }
+          .hero-artwork-container img {
+            opacity: 0.16 !important;
+            border-radius: 0px !important;
+          }
+        }
       `}</style>
       
-      {/* Background Reddish Gradient with Static Check Pattern */}
+      {/* Base solid black background layer */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: 'linear-gradient(rgba(245, 242, 236, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 242, 236, 0.04) 1px, transparent 1px), radial-gradient(circle at 50% 25%, rgba(193, 18, 31, 0.12) 0%, transparent 50%)',
-          backgroundSize: '100px 100px, 100px 100px, auto',
-          backgroundRepeat: 'repeat, repeat, no-repeat',
           backgroundColor: '#050505',
-          zIndex: 1,
+          zIndex: 0,
           pointerEvents: 'none'
         }}
       />
 
-      <div style={{ position: 'relative', zIndex: 2, maxWidth: '1200px', margin: '0 auto', padding: '160px 24px 120px 24px', boxSizing: 'border-box' }}>
+      {/* Grid lines overlay layer drawn on top of the artwork but below text */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'linear-gradient(rgba(245, 242, 236, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 242, 236, 0.04) 1px, transparent 1px)',
+          backgroundSize: '100px 100px, 100px 100px',
+          backgroundRepeat: 'repeat, repeat',
+          zIndex: 2,
+          pointerEvents: 'none'
+        }}
+      />
+
+      {/* Subtle Background/Foreground Editorial Hero Artwork */}
+      <div
+        className="hero-artwork-container"
+        style={{
+          position: 'absolute',
+          right: 0,
+          top: 0,
+          width: '54%',
+          height: '580px',
+          pointerEvents: 'none',
+          zIndex: 1,
+          overflow: 'hidden',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 70%)',
+          maskImage: 'linear-gradient(to right, transparent 0%, black 70%)'
+        }}
+      >
+        {/* Subtle Floating Movement wrapper (2-3px) */}
+        <motion.div
+          animate={{ y: [0, -3, 0] }}
+          transition={{
+            duration: 6,
+            ease: 'easeInOut',
+            repeat: Infinity
+          }}
+          style={{
+            width: '100%',
+            height: '100%',
+            position: 'relative'
+          }}
+        >
+          <img
+            src={`${import.meta.env.BASE_URL}images/contact_hero.png`}
+            alt="Contact Desk Workspace Editorial"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              opacity: 0.38,
+              filter: 'grayscale(100%) contrast(80%) brightness(65%)',
+              transition: 'opacity 0.5s ease'
+            }}
+          />
+        </motion.div>
+      </div>
+
+      <div style={{ position: 'relative', zIndex: 3, maxWidth: '1200px', margin: '0 auto', padding: '160px 24px 120px 24px', boxSizing: 'border-box' }}>
         
         {/* HERO SECTION */}
         <section style={{ marginBottom: '16px' }}>
