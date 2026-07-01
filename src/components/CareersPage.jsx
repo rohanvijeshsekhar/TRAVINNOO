@@ -516,9 +516,9 @@ export default function CareersPage() {
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  opacity: 0.65,
+                  opacity: 0.52,
                   borderRadius: '16px',
-                  filter: 'grayscale(100%) contrast(90%) brightness(110%)',
+                  filter: 'grayscale(100%) contrast(85%) brightness(85%)',
                   transition: 'opacity 0.5s ease',
                   WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)',
                   maskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)'
