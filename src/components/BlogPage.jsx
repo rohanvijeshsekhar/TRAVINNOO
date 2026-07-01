@@ -176,7 +176,7 @@ const blogPosts = [
         <h2>Desert Escapes: Luxury in the Dunes</h2>
         <p>
           Far from the skyscrapers, retreats like Al Maha offer private pool villas nestled in the rolling dunes of the Dubai Desert Conservation Reserve. Here, guests can spot free-roaming Arabian oryx, enjoy sunset camel treks, and dine under a canopy of stars, enjoying absolute privacy and silence.
-        </h2>
+        </p>
         <blockquote>
           "Dubai hospitality turns the impossible into standard service."
         </blockquote>
