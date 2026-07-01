@@ -28,6 +28,8 @@ export default function Header() {
         setActiveTab('contact');
       } else if (hash === '#careers') {
         setActiveTab('careers');
+      } else if (hash === '#blog') {
+        setActiveTab('blog');
       } else {
         setActiveTab('home');
       }
@@ -42,7 +44,7 @@ export default function Header() {
   // Sync activeMobileItem with activeTab when menu opens
   useEffect(() => {
     if (isMobileMenuOpen) {
-      if (activeTab === 'about' || activeTab === 'team' || activeTab === 'services' || activeTab === 'careers') {
+      if (activeTab === 'about' || activeTab === 'team' || activeTab === 'services' || activeTab === 'careers' || activeTab === 'blog') {
         setActiveMobileItem('company');
         setMobileCompanyOpen(true);
         setMobileDestinationsOpen(false);

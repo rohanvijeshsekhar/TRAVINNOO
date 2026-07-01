@@ -22,6 +22,7 @@ const TeamPage = lazy(() => import('./components/TeamPage'));
 const ServicesPage = lazy(() => import('./components/ServicesPage'));
 const ContactPage = lazy(() => import('./components/ContactPage'));
 const CareersPage = lazy(() => import('./components/CareersPage'));
+const BlogPage = lazy(() => import('./components/BlogPage'));
 
 
 
@@ -109,6 +110,8 @@ function App() {
           setCurrentView('contact');
         } else if (hash === '#careers') {
           setCurrentView('careers');
+        } else if (hash === '#blog') {
+          setCurrentView('blog');
         } else {
           setCurrentView('home');
           if (hash) {
@@ -228,6 +231,8 @@ function App() {
         <Suspense fallback={null}><ContactPage /></Suspense>
       ) : currentView === 'careers' ? (
         <Suspense fallback={null}><CareersPage /></Suspense>
+      ) : currentView === 'blog' ? (
+        <Suspense fallback={null}><BlogPage /></Suspense>
       ) : (
         <>
           {/* Hero Section Container (100% Viewport Height) */}
