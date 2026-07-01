@@ -19,7 +19,6 @@ import TestimonialsSection from './components/TestimonialsSection';
 import Footer from './components/Footer';
 const ParallaxDemo = lazy(() => import('./demos/default'));
 const TeamPage = lazy(() => import('./components/TeamPage'));
-const ServicesPage = lazy(() => import('./components/ServicesPage'));
 const ContactPage = lazy(() => import('./components/ContactPage'));
 const CareersPage = lazy(() => import('./components/CareersPage'));
 const BlogPage = lazy(() => import('./components/BlogPage'));
@@ -96,7 +95,7 @@ function App() {
       if (isLockedMode) {
         // Locked mode: Force view to remain on home page
         setCurrentView('home');
-        if (hash && hash !== '#about' && hash !== '#team' && hash !== '#services') {
+        if (hash && hash !== '#about' && hash !== '#team') {
           scrollToAnchor(hash.substring(1));
         }
       } else {
@@ -105,8 +104,6 @@ function App() {
           setCurrentView('about');
         } else if (hash === '#team') {
           setCurrentView('team');
-        } else if (hash === '#services') {
-          setCurrentView('services');
         } else if (hash === '#contact') {
           setCurrentView('contact');
         } else if (hash === '#careers') {
@@ -235,8 +232,6 @@ function App() {
         <Suspense fallback={null}><ParallaxDemo /></Suspense>
       ) : currentView === 'team' ? (
         <Suspense fallback={null}><TeamPage /></Suspense>
-      ) : currentView === 'services' ? (
-        <Suspense fallback={null}><ServicesPage /></Suspense>
       ) : currentView === 'contact' ? (
         <Suspense fallback={null}><ContactPage /></Suspense>
       ) : currentView === 'careers' ? (

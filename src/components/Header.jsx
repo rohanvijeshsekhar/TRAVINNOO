@@ -104,26 +104,7 @@ export default function Header() {
     { name: 'Bali', index: 6 }
   ];
 
-  const handleDestinationClick = (e, index) => {
-    e.preventDefault();
-    setIsMobileMenuOpen(false);
-    const mapSection = document.querySelector('.map-route-section');
-    if (mapSection) {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const rect = mapSection.getBoundingClientRect();
-      const startY = rect.top + scrollTop;
 
-      // Total scroll range pinned for map is 6.5 * window.innerHeight
-      const totalScrollRange = window.innerHeight * 6.5;
-      const targetFraction = index / 6;
-      const targetY = startY + targetFraction * totalScrollRange + 5;
-
-      window.scrollTo({
-        top: targetY,
-        behavior: 'smooth'
-      });
-    }
-  };
 
   return (
     <>
@@ -439,12 +420,13 @@ export default function Header() {
                   {destinationItems.map((item) => (
                     <a
                       key={item.name}
-                      href={isLockedMode ? "#" : `#${item.name.toLowerCase()}`}
+                      href={isLockedMode ? "#" : `#destination-${item.name.toLowerCase()}`}
                       onClick={(e) => {
                         if (isLockedMode) {
                           e.preventDefault();
                         } else {
-                          handleDestinationClick(e, item.index);
+                          setIsMobileMenuOpen(false);
+                          setHoveredMenu(null);
                         }
                       }}
                       style={{
@@ -971,13 +953,13 @@ export default function Header() {
                           {destinationItems.map((item) => (
                             <a
                               key={item.name}
-                              href={isLockedMode ? "#" : `#${item.name.toLowerCase()}`}
+                              href={isLockedMode ? "#" : `#destination-${item.name.toLowerCase()}`}
                               onClick={(e) => {
                                 if (isLockedMode) {
                                   e.preventDefault();
                                 } else {
-                                  handleDestinationClick(e, item.index);
                                   setIsMobileMenuOpen(false);
+                                  setHoveredMenu(null);
                                 }
                               }}
                               style={{
