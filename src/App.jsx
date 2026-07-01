@@ -131,6 +131,13 @@ function App() {
   }, [isLockedMode]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    if (window.lenis) {
+      window.lenis.scrollTo(0, { immediate: true });
+    }
+  }, [currentView]);
+
+  useEffect(() => {
     // Only register mousemove listener on desktop/pointer devices to avoid performance lag on mobile
     if (!window.matchMedia('(hover: hover)').matches) {
       return;

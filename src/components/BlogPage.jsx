@@ -314,7 +314,7 @@ export default function BlogPage() {
                   display: 'inline-block'
                 }}
               />
-              Journal
+              BLOG
             </motion.span>
             
             <motion.h1
