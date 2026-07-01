@@ -514,21 +514,11 @@ export default function CareersPage() {
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  opacity: 0.38,
+                  opacity: 0.42,
                   borderRadius: '16px',
-                  transition: 'opacity 0.5s ease'
-                }}
-              />
-              {/* Radial and Linear Gradient Overlays to blend the image seamlessly into #050505 */}
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: `
-                    linear-gradient(to right, #050505 0%, #050505 15%, transparent 75%),
-                    linear-gradient(to bottom, #050505 0%, transparent 20%, transparent 80%, #050505 100%),
-                    radial-gradient(circle at 75% 50%, transparent 20%, #050505 95%)
-                  `
+                  transition: 'opacity 0.5s ease',
+                  WebkitMaskImage: 'radial-gradient(circle at 75% 50%, black 10%, transparent 85%)',
+                  maskImage: 'radial-gradient(circle at 75% 50%, black 10%, transparent 85%)'
                 }}
               />
             </motion.div>
