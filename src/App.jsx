@@ -113,7 +113,7 @@ function App() {
           setCurrentView('careers');
         } else if (hash === '#blog' || hash.startsWith('#blog-post-')) {
           setCurrentView('blog');
-        } else if (hash === '#destinations') {
+        } else if (hash === '#destinations' || hash.startsWith('#destination-')) {
           setCurrentView('destinations');
         } else {
           setCurrentView('home');

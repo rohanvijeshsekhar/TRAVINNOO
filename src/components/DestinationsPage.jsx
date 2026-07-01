@@ -147,7 +147,7 @@ export default function DestinationsPage() {
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash;
-      const match = hash.match(/^#destination-(.+)$/);
+      const match = hash.match(/^#destination-([^?#/]+)/);
       if (match) {
         const id = match[1];
         const dest = destinationsData.find(d => d.id === id);
@@ -617,43 +617,12 @@ export default function DestinationsPage() {
 
           {/* Main article narrative content below the hero */}
           <div className="destination-detail-body">
-            <p className="destination-detail-desc">
+            <p className="destination-detail-desc" style={{ marginBottom: '64px' }}>
               {activeDestination.description}
             </p>
 
-            <div className="detail-sections-grid">
-              
-              {/* Left Column: Curated Experiences */}
-              <div>
-                <h2 className="detail-section-title">Bespoke Experiences</h2>
-                <div className="experiences-list">
-                  {activeDestination.experiences.map((exp, i) => (
-                    <div key={i} className="experience-item">
-                      <CheckCircle size={16} style={{ color: '#C1121F', marginTop: '3px', flexShrink: 0 }} />
-                      <span>{exp}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Right Column: Sample Itinerary */}
-              <div>
-                <h2 className="detail-section-title">Sample Bespoke Itinerary</h2>
-                <div className="itinerary-list">
-                  {activeDestination.itinerary.map((day) => (
-                    <div key={day.day} className="itinerary-day-card">
-                      <span className="itinerary-day-num">Day {day.day}</span>
-                      <h4 className="itinerary-day-title">{day.title}</h4>
-                      <p className="itinerary-day-desc">{day.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-            </div>
-
             {/* Inquiry Call to Action */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '64px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
               <a
                 href="#contact"
                 style={{

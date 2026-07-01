@@ -209,7 +209,7 @@ export default function BlogPage() {
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash;
-      const match = hash.match(/^#blog-post-(\d+)$/);
+      const match = hash.match(/^#blog-post-(\d+)/);
       if (match) {
         const id = parseInt(match[1]);
         const post = blogPosts.find(p => p.id === id);
