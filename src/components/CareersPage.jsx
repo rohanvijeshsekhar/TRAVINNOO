@@ -490,7 +490,9 @@ export default function CareersPage() {
               height: '110%',
               pointerEvents: 'none',
               zIndex: 1,
-              overflow: 'hidden'
+              overflow: 'hidden',
+              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)',
+              maskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)'
             }}
           >
             {/* Subtle Floating Movement wrapper (2-3px) */}
@@ -518,8 +520,8 @@ export default function CareersPage() {
                   borderRadius: '16px',
                   filter: 'grayscale(100%) contrast(90%) brightness(110%)',
                   transition: 'opacity 0.5s ease',
-                  WebkitMaskImage: 'radial-gradient(ellipse 45% 50% at 50% 50%, black 35%, transparent 100%)',
-                  maskImage: 'radial-gradient(ellipse 45% 50% at 50% 50%, black 35%, transparent 100%)'
+                  WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)',
+                  maskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)'
                 }}
               />
             </motion.div>
