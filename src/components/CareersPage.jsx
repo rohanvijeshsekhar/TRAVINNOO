@@ -434,13 +434,15 @@ export default function CareersPage() {
         @media (max-width: 991px) {
           .hero-artwork-container {
             width: 100% !important;
-            height: 100% !important;
+            height: 520px !important;
             right: 0 !important;
             top: 0 !important;
             transform: none !important;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%) !important;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%) !important;
           }
           .hero-artwork-container img {
-            opacity: 0.16 !important;
+            opacity: 0.22 !important;
             border-radius: 0px !important;
           }
         }
