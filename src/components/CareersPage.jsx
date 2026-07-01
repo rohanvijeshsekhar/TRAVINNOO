@@ -523,7 +523,7 @@ export default function CareersPage() {
       <div className="careers-container">
         
         {/* HERO SECTION */}
-        <section style={{ marginBottom: '64px', position: 'relative', display: 'flex', flexDirection: 'column', minHeight: '380px', justifyContent: 'center' }}>
+        <section style={{ marginBottom: '64px', position: 'relative' }}>
           
           <div style={{ maxWidth: '640px', position: 'relative', zIndex: 3 }}>
             <motion.span
