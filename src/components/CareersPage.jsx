@@ -430,6 +430,20 @@ export default function CareersPage() {
             padding: 32px 24px;
           }
         }
+
+        @media (max-width: 991px) {
+          .hero-artwork-container {
+            width: 100% !important;
+            height: 100% !important;
+            right: 0 !important;
+            top: 0 !important;
+            transform: none !important;
+          }
+          .hero-artwork-container img {
+            opacity: 0.16 !important;
+            border-radius: 0px !important;
+          }
+        }
       `}</style>
 
       {/* Grid check pattern background with light reddish radial gradient */}
@@ -453,92 +467,151 @@ export default function CareersPage() {
       <div className="careers-container">
         
         {/* HERO SECTION */}
-        <section style={{ marginBottom: '64px', position: 'relative' }}>
-          <motion.span
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '4px 12px',
-              border: '1px solid rgba(193, 18, 31, 0.18)',
-              borderRadius: '100px',
-              fontFamily: 'var(--font-sans)',
-              fontSize: '0.72rem',
-              fontWeight: 500,
-              letterSpacing: '0.05em',
-              color: 'rgba(245, 242, 236, 0.85)',
-              marginBottom: '16px',
-              background: 'rgba(193, 18, 31, 0.05)',
-              backdropFilter: 'blur(4px)',
-              WebkitBackdropFilter: 'blur(4px)'
-            }}
-          >
-            <span
-              style={{
-                width: '6px',
-                height: '6px',
-                backgroundColor: '#C1121F',
-                borderRadius: '50%',
-                display: 'inline-block'
-              }}
-            />
-            Careers
-          </motion.span>
+        <section style={{ marginBottom: '64px', position: 'relative', display: 'flex', flexDirection: 'column', minHeight: '380px', justifyContent: 'center' }}>
           
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          {/* Subtle Background/Foreground Editorial Hero Artwork */}
+          <div
+            className="hero-artwork-container"
             style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
-              fontWeight: 450,
-              lineHeight: 1.15,
-              color: '#F5F2EC',
-              margin: '0 0 24px 0',
-              letterSpacing: '-0.5px'
+              position: 'absolute',
+              right: '-40px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '50%',
+              height: '110%',
+              pointerEvents: 'none',
+              zIndex: 1,
+              overflow: 'hidden'
             }}
           >
-            Build Extraordinary <br />
-            <span
+            {/* Subtle Floating Movement wrapper (2-3px) */}
+            <motion.div
+              animate={{ y: [0, -3, 0] }}
+              transition={{
+                duration: 6,
+                ease: 'easeInOut',
+                repeat: Infinity
+              }}
               style={{
-                fontFamily: "'Allura', cursive",
-                fontSize: '1.25em',
-                fontWeight: 400,
-                letterSpacing: '0.02em',
-                lineHeight: '1.2',
-                display: 'inline-block',
-                marginTop: '12px',
-                paddingBottom: '14px',
-                background: 'linear-gradient(to bottom, #F5F2EC 20%, #E8A7A7 60%, #C1121F 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
+                width: '100%',
+                height: '100%',
+                position: 'relative'
               }}
             >
-              Journeys With Us
-            </span>
-          </motion.h1>
+              <img
+                src={`${import.meta.env.BASE_URL}images/careers_hero.png`}
+                alt="Executive Workspace Editorial"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  opacity: 0.38,
+                  borderRadius: '16px',
+                  transition: 'opacity 0.5s ease'
+                }}
+              />
+              {/* Radial and Linear Gradient Overlays to blend the image seamlessly into #050505 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: `
+                    linear-gradient(to right, #050505 0%, transparent 60%),
+                    linear-gradient(to bottom, #050505 0%, transparent 20%, transparent 80%, #050505 100%),
+                    radial-gradient(circle at 70% 50%, transparent 25%, #050505 95%)
+                  `
+                }}
+              />
+            </motion.div>
+          </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 0.75, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-            style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: 'clamp(1rem, 1.8vw, 1.2rem)',
-              lineHeight: 1.65,
-              color: '#F5F2EC',
-              margin: 0,
-              maxWidth: '680px',
-              fontWeight: 300
-            }}
-          >
-            Join a passionate team creating exceptional travel experiences across global destinations. At Travinno, every role contributes to unforgettable journeys.
-          </motion.p>
+          <div style={{ maxWidth: '640px', position: 'relative', zIndex: 2 }}>
+            <motion.span
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '4px 12px',
+                border: '1px solid rgba(193, 18, 31, 0.18)',
+                borderRadius: '100px',
+                fontFamily: 'var(--font-sans)',
+                fontSize: '0.72rem',
+                fontWeight: 500,
+                letterSpacing: '0.05em',
+                color: 'rgba(245, 242, 236, 0.85)',
+                marginBottom: '16px',
+                background: 'rgba(193, 18, 31, 0.05)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)'
+              }}
+            >
+              <span
+                style={{
+                  width: '6px',
+                  height: '6px',
+                  backgroundColor: '#C1121F',
+                  borderRadius: '50%',
+                  display: 'inline-block'
+                }}
+              />
+              Careers
+            </motion.span>
+            
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
+                fontWeight: 450,
+                lineHeight: 1.15,
+                color: '#F5F2EC',
+                margin: '0 0 24px 0',
+                letterSpacing: '-0.5px'
+              }}
+            >
+              Build Extraordinary <br />
+              <span
+                style={{
+                  fontFamily: "'Allura', cursive",
+                  fontSize: '1.25em',
+                  fontWeight: 400,
+                  letterSpacing: '0.02em',
+                  lineHeight: '1.2',
+                  display: 'inline-block',
+                  marginTop: '12px',
+                  paddingBottom: '14px',
+                  background: 'linear-gradient(to bottom, #F5F2EC 20%, #E8A7A7 60%, #C1121F 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                Journeys With Us
+              </span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 0.75, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+              style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: 'clamp(1rem, 1.8vw, 1.2rem)',
+                lineHeight: 1.65,
+                color: '#F5F2EC',
+                margin: 0,
+                maxWidth: '680px',
+                fontWeight: 300
+              }}
+            >
+              Join a passionate team creating exceptional travel experiences across global destinations. At Travinno, every role contributes to unforgettable journeys.
+            </motion.p>
+          </div>
         </section>
 
         {/* OPEN POSITIONS / AVAILABLE OPPORTUNITIES */}
