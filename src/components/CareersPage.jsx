@@ -446,7 +446,18 @@ export default function CareersPage() {
         }
       `}</style>
 
-      {/* Grid check pattern background */}
+      {/* Base solid black background layer */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: '#050505',
+          zIndex: 0,
+          pointerEvents: 'none'
+        }}
+      />
+
+      {/* Grid lines overlay layer drawn on top of the artwork but below text */}
       <div
         style={{
           position: 'absolute',
@@ -457,8 +468,7 @@ export default function CareersPage() {
           `,
           backgroundSize: '50px 50px, 50px 50px',
           backgroundRepeat: 'repeat, repeat',
-          backgroundColor: '#050505',
-          zIndex: 1,
+          zIndex: 2,
           pointerEvents: 'none'
         }}
       />
@@ -515,9 +525,9 @@ export default function CareersPage() {
                   position: 'absolute',
                   inset: 0,
                   background: `
-                    linear-gradient(to right, #050505 0%, transparent 60%),
+                    linear-gradient(to right, #050505 0%, #050505 15%, transparent 75%),
                     linear-gradient(to bottom, #050505 0%, transparent 20%, transparent 80%, #050505 100%),
-                    radial-gradient(circle at 70% 50%, transparent 25%, #050505 95%)
+                    radial-gradient(circle at 75% 50%, transparent 20%, #050505 95%)
                   `
                 }}
               />
