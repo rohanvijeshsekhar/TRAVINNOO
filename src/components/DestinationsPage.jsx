@@ -9,7 +9,7 @@ const destinationsData = [
     region: 'Middle East',
     tagline: 'Futuristic architectural marvels meet ancient desert sands.',
     image: 'images/destinations/dubai.webp',
-    description: 'A global symbol of luxury, innovation, and dynamic urban living. Experience bespoke desert reserve safaris and private beachfront penthouses.',
+    description: 'Dubai stands as a monumental oasis of modern ambition and timeless allure, where futuristic architectural marvels rise dramatically from the golden sands of the Arabian Desert. Beyond the gleaming glass towers and ultra-luxury shopping domains lies a destination of rich cultural contrasts—from heritage souks and traditional dhows sailing the historic creek to private yacht charters along the modern marina. Visitors can transition seamlessly from the dynamic energy of world-class Michelin-starred dining to the absolute stillness of a private luxury conservation camp nestled deep within the desert dunes under a canopy of stars.',
     experiences: [
       'Private Yacht Cruise past Palm Jumeirah',
       'Ultra-luxury Desert Conservation Camp with private pool villas',
@@ -27,7 +27,7 @@ const destinationsData = [
     region: 'East Africa',
     tagline: 'Witness the majesty of the great wilderness.',
     image: 'images/destinations/kenya.webp',
-    description: 'An untamed paradise of rolling savannahs, wildlife sanctuaries, and authentic tribal heritage. Designed for the slow safari connoisseur.',
+    description: 'Kenya is the cradle of the wild, an untamed land of sweeping savannahs, ancient acacia trees, and dramatic volcanic landscapes that capture the raw essence of East Africa. It is a sanctuary where the rhythm of life is dictated by the great migration, and where the air is filled with the calls of the wild at daybreak. From eco-luxury tented camps situated along private conservancies to personalized hot air balloon safaris over the Maasai Mara, Kenya offers an intimate, slow-paced journey into nature, guided by Maasai warriors who share their deep ancestral knowledge and heritage.',
     experiences: [
       'Hot air balloon safari at sunrise over Maasai Mara',
       'Walking safari guided by Maasai warriors',
@@ -45,7 +45,7 @@ const destinationsData = [
     region: 'Southeast Asia',
     tagline: 'Immersive spiritual rituals in tropical sanctuaries.',
     image: 'images/destinations/bali.webp',
-    description: 'Indonesia’s cultural gem, famous for its sacred temples, emerald rice terraces, and peaceful wellness retreats.',
+    description: 'Bali is a spiritual sanctuary where deep-rooted Hindu traditions blend seamlessly with tropical volcanic peaks, sacred rivers, and pristine coastal shores. Known as the Island of the Gods, it is a landscape carpeted in emerald-green rice terraces and dotted with stone temples shrouded in morning mist. Visitors are invited to immerse themselves in purification rituals at holy springs, walk through lush rainforest canopies in Ubud, and stay in magnificent private pool villas that overlook deep river gorges, offering a profound sense of peace, healing, and cultural discovery.',
     experiences: [
       'Private purification ceremony at Tirta Empul',
       'Guided mountain trekking through volcanic craters',
@@ -63,7 +63,7 @@ const destinationsData = [
     region: 'Southeast Asia',
     tagline: 'Sailing emerald coves and tasting vibrant cultures.',
     image: 'images/destinations/thailand.webp',
-    description: 'A sensory blend of historical temples, vibrant culinary street culture, and remote tropical island escapes.',
+    description: 'Thailand is a sensory marvel of gold-leaf temples, bustling night markets, and pristine archipelagos rising from clear turquoise waters. From the historic capital of Bangkok to the secluded white-sand shores of Koh Samui, the kingdom offers an extraordinary balance of high-end indulgence and authentic heritage. Private catamaran charters navigate the limestone karsts of Phang Nga Bay, while custom cooking masterclasses with master chefs reveal the intricate balance of sweet, sour, salty, and spicy flavors that define the country’s revered culinary tradition.',
     experiences: [
       'Private catamaran cruise through Phang Nga Bay',
       'Bespoke cooking masterclass with heritage chefs',
@@ -81,7 +81,7 @@ const destinationsData = [
     region: 'Southeast Asia',
     tagline: 'Exploring biophilic skyscrapers and smart architecture.',
     image: 'images/destinations/singapore.webp',
-    description: 'A global metropolis that merges futuristic skyline gardens with green sustainability and rich colonial heritage.',
+    description: 'Singapore is a futuristic biophilic metropolis where steel-and-glass skyscrapers are enveloped in lush vertical gardens and sprawling rain forests. This island city-state is a global hub of innovation, culinary excellence, and rich multi-cultural heritage, seamlessly linking historical shophouses with high-altitude rooftop lounges. From after-hours tours of the iconic Gardens by the Bay domes to bespoke heritage walking trails through historic districts, Singapore offers a refined, hyper-modern urban experience unlike any other.',
     experiences: [
       'Private evening tour of Gardens by the Bay dome',
       'Exclusive rooftop mixology sessions in Marina Bay',
@@ -99,7 +99,7 @@ const destinationsData = [
     region: 'Southeast Asia',
     tagline: 'Intimate tea rituals and dynamic culinary paths.',
     image: 'images/destinations/vietnam.webp',
-    description: 'A land of historical charm, towering green limestone karsts, and exceptional culinary balance.',
+    description: 'Vietnam is a country of quiet elegance and spectacular natural beauty, defined by misty mountain peaks, endless emerald rice paddies, and thousands of towering limestone islands in Halong Bay. Its rich history is woven into the fabric of lantern-lit ancient trading towns and imperial cities, where traditional tea ceremonies offer a window into a graceful heritage. The country’s cuisine is a masterclass in fresh herbs and delicate balance, offering sophisticated travelers an authentic, multi-layered journey through time and culture.',
     experiences: [
       'Private junk boat cruise in Halong Bay',
       'Kaiseki-inspired royal cuisine tour in Hue',
@@ -117,7 +117,7 @@ const destinationsData = [
     region: 'Southeast Asia',
     tagline: 'Ancient rainforests meet dynamic culture.',
     image: 'images/destinations/malaysia.webp',
-    description: 'A beautiful country of pristine ancient rainforests, historic colonial trading towns, and vibrant modern skylines.',
+    description: 'Malaysia is a vibrant tapestry of prehistoric tropical rainforests, colonial heritage towns, and hyper-modern skylines that reflect a diverse multi-cultural identity. From the towering spires of Kuala Lumpur to the pristine, ancient jungles of Taman Negara, it is a destination where nature and cosmopolitan sophistication exist side-by-side. Guests can explore the culinary streets and rich Peranakan history of Penang, charter a private helicopter to the pristine beaches of Langkawi, or walk along night-canopy suspension bridges in the heart of the world\'s oldest jungle.',
     experiences: [
       'Helicopter charter over Langkawi archipelago',
       'Guided rainforest night canopy walk in Taman Negara',
