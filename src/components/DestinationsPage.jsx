@@ -593,7 +593,7 @@ export default function DestinationsPage() {
           {/* Header Image banner occupying 1/3 viewport height */}
           <div className="destination-detail-hero">
             <img
-              src={`${import.meta.env.BASE_URL}${activeDestination.image}`}
+              src={activeDestination.image && (activeDestination.image.startsWith('data:') || activeDestination.image.startsWith('http')) ? activeDestination.image : `${import.meta.env.BASE_URL}${activeDestination.image}`}
               alt={activeDestination.name}
             />
             <div className="destination-detail-hero-overlay">
@@ -874,7 +874,7 @@ export default function DestinationsPage() {
                   >
                     <div className="destination-img-wrapper">
                       <img
-                        src={`${import.meta.env.BASE_URL}${dest.image}`}
+                        src={dest.image && (dest.image.startsWith('data:') || dest.image.startsWith('http')) ? dest.image : `${import.meta.env.BASE_URL}${dest.image}`}
                         alt={dest.name}
                       />
                     </div>

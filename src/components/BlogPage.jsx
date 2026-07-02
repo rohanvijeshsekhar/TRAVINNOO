@@ -636,7 +636,7 @@ export default function BlogPage() {
           {/* Header/Hero Section occupying exactly 1/3 of the viewport */}
           <div className="editorial-detail-hero">
             <img
-              src={`${import.meta.env.BASE_URL}${selectedPost.image}`}
+              src={selectedPost.image && (selectedPost.image.startsWith('data:') || selectedPost.image.startsWith('http')) ? selectedPost.image : `${import.meta.env.BASE_URL}${selectedPost.image}`}
               alt={selectedPost.title}
             />
             <div className="editorial-detail-hero-overlay">
@@ -897,7 +897,7 @@ export default function BlogPage() {
                   >
                     <div className="card-image-wrapper">
                       <img
-                        src={`${import.meta.env.BASE_URL}${post.image}`}
+                        src={post.image && (post.image.startsWith('data:') || post.image.startsWith('http')) ? post.image : `${import.meta.env.BASE_URL}${post.image}`}
                         alt={post.title}
                       />
                     </div>
