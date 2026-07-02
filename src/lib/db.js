@@ -197,6 +197,65 @@ const INITIAL_TESTIMONIALS = [
 
 const INITIAL_LOGOS = Array.from({ length: 52 }, (_, i) => `partners/partner-${i + 1}.webp`);
 
+const INITIAL_HERO_SLIDES = [
+  {
+    id: 'hero_1',
+    name: 'Dubai',
+    duration: 4.0,
+    desktopImage: 'images/hero/uae.webp',
+    mobileImage: 'images/hero/uae.webp',
+    effect: { scaleStart: 1.05, scaleEnd: 1.11, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 }
+  },
+  {
+    id: 'hero_2',
+    name: 'Kenya',
+    duration: 3.6,
+    desktopImage: 'images/hero/kenya.webp',
+    mobileImage: 'images/hero/kenya.webp',
+    effect: { scaleStart: 1.11, scaleEnd: 1.05, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 }
+  },
+  {
+    id: 'hero_3',
+    name: 'Thailand',
+    duration: 4.2,
+    desktopImage: 'images/hero/thailand.webp',
+    mobileImage: 'images/hero/thailand.webp',
+    effect: { scaleStart: 1.10, scaleEnd: 1.16, xStart: -3, xEnd: 3, yStart: 0, yEnd: 0 }
+  },
+  {
+    id: 'hero_4',
+    name: 'Malaysia',
+    duration: 3.8,
+    desktopImage: 'images/hero/malaysia.webp',
+    mobileImage: 'images/hero/malaysia.webp',
+    effect: { scaleStart: 1.10, scaleEnd: 1.16, xStart: 0, xEnd: 0, yStart: -3, yEnd: 3 }
+  },
+  {
+    id: 'hero_5',
+    name: 'Singapore',
+    duration: 4.4,
+    desktopImage: 'images/hero/singapore.webp',
+    mobileImage: 'images/hero/singapore.webp',
+    effect: { scaleStart: 1.08, scaleEnd: 1.14, xStart: -2, xEnd: 2, yStart: -2, yEnd: 2 }
+  },
+  {
+    id: 'hero_6',
+    name: 'Vietnam',
+    duration: 3.7,
+    desktopImage: 'images/hero/vietnam.webp',
+    mobileImage: 'images/hero/vietnam.webp',
+    effect: { scaleStart: 1.14, scaleEnd: 1.08, xStart: 2, xEnd: -2, yStart: 0, yEnd: 0 }
+  },
+  {
+    id: 'hero_7',
+    name: 'Bali',
+    duration: 5.0,
+    desktopImage: 'images/hero/bali.webp',
+    mobileImage: 'images/hero/bali.webp',
+    effect: { scaleStart: 1.10, scaleEnd: 1.10, xStart: -2, xEnd: 2, yStart: 2, yEnd: -2 }
+  }
+];
+
 const INITIAL_INQUIRIES = [
   {
     id: 'inq_1',
@@ -265,6 +324,9 @@ export const db = {
     if (!existingLogos || !existingLogos.includes('partner-1.webp')) {
       localStorage.setItem('travinno_logos', JSON.stringify(INITIAL_LOGOS));
     }
+    if (!localStorage.getItem('travinno_hero_slides')) {
+      localStorage.setItem('travinno_hero_slides', JSON.stringify(INITIAL_HERO_SLIDES));
+    }
     if (!localStorage.getItem('travinno_inquiries')) {
       localStorage.setItem('travinno_inquiries', JSON.stringify(INITIAL_INQUIRIES));
     }
@@ -277,6 +339,18 @@ export const db = {
   },
 
   // GET ALL
+  // GET ALL
+  getHeroSlides() {
+    return JSON.parse(localStorage.getItem('travinno_hero_slides') || '[]');
+  },
+  saveHeroSlides(list, activityMessage = null) {
+    localStorage.setItem('travinno_hero_slides', JSON.stringify(list));
+    if (activityMessage) {
+      this.logActivity(activityMessage);
+    }
+    window.dispatchEvent(new Event('travinno-db-update'));
+  },
+
   getDestinations() {
     this.init();
     return JSON.parse(localStorage.getItem('travinno_destinations'));

@@ -7,65 +7,6 @@ const IS_MOBILE = typeof window !== 'undefined'
   : false;
 const IMG_WIDTH = IS_MOBILE ? 800 : 2400;
 
-const DESTINATIONS = [
-  {
-    name: 'Dubai',
-    duration: 4.0,
-    image: `${import.meta.env.BASE_URL}images/hero/uae.webp`,
-    // Push-in zoom (scale 1.05 to 1.11, centered)
-    effect: { scaleStart: 1.05, scaleEnd: 1.11, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 }
-  },
-  {
-    name: 'Kenya',
-    duration: 3.6,
-    image: `${import.meta.env.BASE_URL}images/hero/kenya.webp`,
-    // Pull-back zoom (scale 1.11 to 1.05, centered)
-    effect: { scaleStart: 1.11, scaleEnd: 1.05, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 }
-  },
-  {
-    name: 'Thailand',
-    duration: 4.2,
-    image: `${import.meta.env.BASE_URL}images/hero/thailand.webp`,
-    // Horizontal drift (xPercent -3% to +3% to prevent edges leakage under scale 1.10)
-    effect: { scaleStart: 1.10, scaleEnd: 1.16, xStart: -3, xEnd: 3, yStart: 0, yEnd: 0 }
-  },
-  {
-    name: 'Malaysia',
-    duration: 3.8,
-    image: `${import.meta.env.BASE_URL}images/hero/malaysia.webp`,
-    // Vertical drift (yPercent -3% to +3% under scale 1.10)
-    effect: { scaleStart: 1.10, scaleEnd: 1.16, xStart: 0, xEnd: 0, yStart: -3, yEnd: 3 }
-  },
-  {
-    name: 'Singapore',
-    duration: 4.4,
-    image: `${import.meta.env.BASE_URL}images/hero/singapore.webp`,
-    // Diagonal push (scale 1.08 to 1.14, x -2% to 2%, y -2% to 2%)
-    effect: { scaleStart: 1.08, scaleEnd: 1.14, xStart: -2, xEnd: 2, yStart: -2, yEnd: 2 }
-  },
-  {
-    name: 'Vietnam',
-    duration: 3.7,
-    image: `${import.meta.env.BASE_URL}images/hero/vietnam.webp`,
-    // Pull-back horizontal drift (scale 1.14 to 1.08, x 2% to -2%)
-    effect: { scaleStart: 1.14, scaleEnd: 1.08, xStart: 2, xEnd: -2, yStart: 0, yEnd: 0 }
-  },
-  {
-    name: 'Bali',
-    duration: 5.0,
-    image: `${import.meta.env.BASE_URL}images/hero/bali.webp`,
-    // Diagonal drift (scale 1.10 static, x -2% to 2%, y 2% to -2%)
-    effect: { scaleStart: 1.10, scaleEnd: 1.10, xStart: -2, xEnd: 2, yStart: 2, yEnd: -2 }
-  },
-  {
-    name: 'Dubai Duplicate',
-    duration: 1.8, // Duration of the transition block
-    image: `${import.meta.env.BASE_URL}images/hero/uae.webp`,
-    // First slide start condition at loop wrap (scale starts at 1.05 and ends at scale after 1.8s, which is 1.0686)
-    effect: { scaleStart: 1.05, scaleEnd: 1.0686, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 }
-  }
-];
-
 const getDestinationAltText = (name) => {
   const cleanName = name.replace(' Duplicate', '');
   const mapping = {
@@ -82,11 +23,60 @@ const getDestinationAltText = (name) => {
 
 export default function CinematicHero() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [destinations, setDestinations] = useState([]);
+  const [isMobileView, setIsMobileView] = useState(false);
+  
   const slideRefs = useRef([]);
   const imageRefs = useRef([]);
   const textRefs = useRef([]);
   const timelineRef = useRef(null);
   const rootRef = useRef(null);
+
+  const resolveImgPath = (src) => {
+    if (!src) return '';
+    if (src.startsWith('data:') || src.startsWith('http')) return src;
+    return `${import.meta.env.BASE_URL}${src}`;
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    import('../lib/db').then(({ db }) => {
+      const slides = db.getHeroSlides();
+      if (slides.length > 0) {
+        // Append loop wrap duplicate of first slide
+        const loopSlide = {
+          ...slides[0],
+          name: `${slides[0].name} Duplicate`,
+          duration: 1.8,
+          effect: { scaleStart: 1.05, scaleEnd: 1.0686, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 }
+        };
+        setDestinations([...slides, loopSlide]);
+      }
+      
+      const handleUpdate = () => {
+        const updated = db.getHeroSlides();
+        if (updated.length > 0) {
+          const loopSlide = {
+            ...updated[0],
+            name: `${updated[0].name} Duplicate`,
+            duration: 1.8,
+            effect: { scaleStart: 1.05, scaleEnd: 1.0686, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 }
+          };
+          setDestinations([...updated, loopSlide]);
+        }
+      };
+      window.addEventListener('travinno-db-update', handleUpdate);
+      return () => window.removeEventListener('travinno-db-update', handleUpdate);
+    });
+  }, []);
 
   // Pause timeline when off-screen to save CPU/GPU resources
   useEffect(() => {
@@ -121,7 +111,10 @@ export default function CinematicHero() {
 
   // Preload only the first hero image; lazy-load the remaining ones
   useEffect(() => {
-    const firstImageUrl = DESTINATIONS[0].image;
+    if (destinations.length === 0) return;
+    
+    const firstSlide = destinations[0];
+    const firstImageUrl = resolveImgPath(isMobileView ? (firstSlide.mobileImage || firstSlide.desktopImage) : (firstSlide.desktopImage || firstSlide.mobileImage));
     const imgObj = new Image();
     imgObj.src = firstImageUrl;
     
@@ -131,11 +124,11 @@ export default function CinematicHero() {
     
     imgObj.onload = onLoaded;
     imgObj.onerror = onLoaded;
-  }, []);
+  }, [destinations, isMobileView]);
 
   // GSAP Coordinated Loop Timeline
   useEffect(() => {
-    if (!imagesLoaded) return;
+    if (!imagesLoaded || destinations.length === 0) return;
 
     // Reset slide and text elements initially
     gsap.set(slideRefs.current, { opacity: 0 });
@@ -154,101 +147,59 @@ export default function CinematicHero() {
     });
 
     const transitionTime = 1.8; // Coexist dissolves for 1.8s
+    let currentTime = 0;
 
-    // Slide 0: Dubai (T = 4.0s, movement = 5.8s)
-    tl.fromTo(imageRefs.current[0],
-      { scale: 1.05, xPercent: 0, yPercent: 0 },
-      { scale: 1.11, xPercent: 0, yPercent: 0, duration: 5.8, ease: 'none' },
-      0
-    );
-    // initial entrance fade (duration 1.8s)
-    tl.fromTo(slideRefs.current[0], { opacity: 0 }, { opacity: 1, duration: transitionTime, ease: 'power1.inOut' }, 0);
-    tl.fromTo(textRefs.current[0], { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 0.5);
-    // text exit at 4.0
-    tl.to(textRefs.current[0], { y: -15, opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 4.0);
-    // instant opacity reset when next slide is fully opaque
-    tl.to(slideRefs.current[0], { opacity: 0, duration: 0 }, 5.8);
+    destinations.forEach((dest, idx) => {
+      const isLast = idx === destinations.length - 1;
+      const duration = dest.duration || 4.0;
+      const movementDuration = duration + transitionTime; // overlap duration
 
-    // Slide 1: Kenya (T = 3.6s, movement = 5.4s)
-    tl.fromTo(imageRefs.current[1],
-      { scale: 1.11, xPercent: 0, yPercent: 0 },
-      { scale: 1.05, xPercent: 0, yPercent: 0, duration: 5.4, ease: 'none' },
-      4.0
-    );
-    tl.fromTo(slideRefs.current[1], { opacity: 0 }, { opacity: 1, duration: transitionTime, ease: 'power1.inOut' }, 4.0);
-    tl.fromTo(textRefs.current[1], { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 4.4);
-    // text exit at 7.6
-    tl.to(textRefs.current[1], { y: -15, opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 7.6);
-    tl.to(slideRefs.current[1], { opacity: 0, duration: 0 }, 9.4);
+      const effect = dest.effect || { scaleStart: 1.05, scaleEnd: 1.11, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 };
 
-    // Slide 2: Thailand (T = 4.2s, movement = 6.0s)
-    tl.fromTo(imageRefs.current[2],
-      { scale: 1.10, xPercent: -3, yPercent: 0 },
-      { scale: 1.16, xPercent: 3, yPercent: 0, duration: 6.0, ease: 'none' },
-      7.6
-    );
-    tl.fromTo(slideRefs.current[2], { opacity: 0 }, { opacity: 1, duration: transitionTime, ease: 'power1.inOut' }, 7.6);
-    tl.fromTo(textRefs.current[2], { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 8.0);
-    // text exit at 11.8
-    tl.to(textRefs.current[2], { y: -15, opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 11.8);
-    tl.to(slideRefs.current[2], { opacity: 0, duration: 0 }, 13.6);
+      // Set up Ken Burns zoom effect
+      tl.fromTo(imageRefs.current[idx],
+        { 
+          scale: effect.scaleStart, 
+          xPercent: effect.xStart, 
+          yPercent: effect.yStart 
+        },
+        { 
+          scale: effect.scaleEnd, 
+          xPercent: effect.xEnd, 
+          yPercent: effect.yEnd, 
+          duration: isLast ? transitionTime : movementDuration, 
+          ease: 'none' 
+        },
+        currentTime
+      );
 
-    // Slide 3: Malaysia (T = 3.8s, movement = 5.6s)
-    tl.fromTo(imageRefs.current[3],
-      { scale: 1.10, xPercent: 0, yPercent: -3 },
-      { scale: 1.16, xPercent: 0, yPercent: 3, duration: 5.6, ease: 'none' },
-      11.8
-    );
-    tl.fromTo(slideRefs.current[3], { opacity: 0 }, { opacity: 1, duration: transitionTime, ease: 'power1.inOut' }, 11.8);
-    tl.fromTo(textRefs.current[3], { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 12.2);
-    // text exit at 15.6
-    tl.to(textRefs.current[3], { y: -15, opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 15.6);
-    tl.to(slideRefs.current[3], { opacity: 0, duration: 0 }, 17.4);
+      // Slide opacity dissolve
+      tl.fromTo(slideRefs.current[idx], 
+        { opacity: 0 }, 
+        { opacity: 1, duration: transitionTime, ease: 'power1.inOut' }, 
+        currentTime
+      );
 
-    // Slide 4: Singapore (T = 4.4s, movement = 6.2s)
-    tl.fromTo(imageRefs.current[4],
-      { scale: 1.08, xPercent: -2, yPercent: -2 },
-      { scale: 1.14, xPercent: 2, yPercent: 2, duration: 6.2, ease: 'none' },
-      15.6
-    );
-    tl.fromTo(slideRefs.current[4], { opacity: 0 }, { opacity: 1, duration: transitionTime, ease: 'power1.inOut' }, 15.6);
-    tl.fromTo(textRefs.current[4], { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 16.0);
-    // text exit at 20.0
-    tl.to(textRefs.current[4], { y: -15, opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 20.0);
-    tl.to(slideRefs.current[4], { opacity: 0, duration: 0 }, 21.8);
+      // Slide Text title animation (do not animate text on the duplicate wrapping slide)
+      if (!isLast) {
+        tl.fromTo(textRefs.current[idx], 
+          { y: 15, opacity: 0 }, 
+          { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 
+          currentTime + 0.4
+        );
+        tl.to(textRefs.current[idx], 
+          { y: -15, opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 
+          currentTime + duration
+        );
+      }
 
-    // Slide 5: Vietnam (T = 3.7s, movement = 5.5s)
-    tl.fromTo(imageRefs.current[5],
-      { scale: 1.14, xPercent: 2, yPercent: 0 },
-      { scale: 1.08, xPercent: -2, yPercent: 0, duration: 5.5, ease: 'none' },
-      20.0
-    );
-    tl.fromTo(slideRefs.current[5], { opacity: 0 }, { opacity: 1, duration: transitionTime, ease: 'power1.inOut' }, 20.0);
-    tl.fromTo(textRefs.current[5], { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 20.4);
-    // text exit at 23.7
-    tl.to(textRefs.current[5], { y: -15, opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 23.7);
-    tl.to(slideRefs.current[5], { opacity: 0, duration: 0 }, 25.5);
+      // Hide slide when next transition finishes
+      if (!isLast) {
+        tl.to(slideRefs.current[idx], { opacity: 0, duration: 0 }, currentTime + movementDuration);
+      }
 
-    // Slide 6: Bali (T = 5.0s, movement = 6.8s)
-    tl.fromTo(imageRefs.current[6],
-      { scale: 1.10, xPercent: -2, yPercent: 2 },
-      { scale: 1.10, xPercent: 2, yPercent: -2, duration: 6.8, ease: 'none' },
-      23.7
-    );
-    tl.fromTo(slideRefs.current[6], { opacity: 0 }, { opacity: 1, duration: transitionTime, ease: 'power1.inOut' }, 23.7);
-    tl.fromTo(textRefs.current[6], { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 24.1);
-    // text exit at 28.7
-    tl.to(textRefs.current[6], { y: -15, opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 28.7);
-    tl.to(slideRefs.current[6], { opacity: 0, duration: 0 }, 30.5);
-
-    // Slide 7: Dubai Duplicate (Fade-in transition over 1.8s)
-    tl.fromTo(imageRefs.current[7],
-      { scale: 1.05, xPercent: 0, yPercent: 0 },
-      { scale: 1.0686, xPercent: 0, yPercent: 0, duration: 1.8, ease: 'none' },
-      28.7
-    );
-    tl.fromTo(slideRefs.current[7], { opacity: 0 }, { opacity: 1, duration: transitionTime, ease: 'power1.inOut' }, 28.7);
-    tl.fromTo(textRefs.current[7], { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 29.1);
+      currentTime += duration;
+    });
 
     timelineRef.current = tl;
 
@@ -257,7 +208,7 @@ export default function CinematicHero() {
         timelineRef.current.kill();
       }
     };
-  }, [imagesLoaded]);
+  }, [imagesLoaded, destinations]);
 
   return (
     <div
@@ -275,7 +226,7 @@ export default function CinematicHero() {
     >
       {/* Background Images Layers (Living Photographs) */}
       {imagesLoaded &&
-        DESTINATIONS.map((dest, idx) => (
+        destinations.map((dest, idx) => (
           <div
             key={`${dest.name}-${idx}`}
             ref={addToSlideRefs}
@@ -292,7 +243,7 @@ export default function CinematicHero() {
           >
             <img
               ref={addToImageRefs}
-              src={dest.image}
+              src={resolveImgPath(isMobileView ? (dest.mobileImage || dest.desktopImage) : (dest.desktopImage || dest.mobileImage))}
               alt={getDestinationAltText(dest.name)}
               loading={idx === 0 ? "eager" : "lazy"}
               {...(idx === 0 ? { fetchpriority: "high" } : { decoding: "async" })}
@@ -356,7 +307,7 @@ export default function CinematicHero() {
           }}
         >
           {imagesLoaded &&
-            DESTINATIONS.map((dest, idx) => (
+            destinations.map((dest, idx) => (
               <span
                 key={`text-${dest.name}-${idx}`}
                 ref={addToTextRefs}
@@ -373,7 +324,7 @@ export default function CinematicHero() {
                   textShadow: '0 2px 10px rgba(0, 0, 0, 0.4)'
                 }}
               >
-                {dest.name === 'Dubai Duplicate' ? 'Dubai' : dest.name}
+                {dest.name.endsWith(' Duplicate') ? dest.name.replace(' Duplicate', '') : dest.name}
               </span>
             ))}
         </div>

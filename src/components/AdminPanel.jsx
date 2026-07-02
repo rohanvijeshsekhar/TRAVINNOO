@@ -29,7 +29,7 @@ import {
 // ==========================================
 // 1. IMAGE CROPPER & UPLOADER COMPONENT
 // ==========================================
-function ImageCropper({ onImageCropped, currentImage, title = "Upload Image" }) {
+function ImageCropper({ onImageCropped, currentImage, title = "Upload Image", aspectRatio }) {
   const [imageSrc, setImageSrc] = useState(null);
   const [zoom, setZoom] = useState(1);
   const [posX, setPosX] = useState(0);
@@ -39,6 +39,24 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image" }) 
   const fileInputRef = useRef(null);
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+
+  // Set default dimensions (8:5 aspect ratio)
+  let containerWidth = 400;
+  let containerHeight = 250;
+  let outputWidth = 800;
+  let outputHeight = 500;
+
+  if (aspectRatio === '16:9') {
+    containerWidth = 400;
+    containerHeight = 225;
+    outputWidth = 1920;
+    outputHeight = 1080;
+  } else if (aspectRatio === '9:16') {
+    containerWidth = 225;
+    containerHeight = 400;
+    outputWidth = 1080;
+    outputHeight = 1920;
+  }
 
   // Load existing image if any
   useEffect(() => {
@@ -98,18 +116,11 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image" }) 
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
       
-      // Bounding box size for cropped output
-      const outputWidth = 800;
-      const outputHeight = 500;
       canvas.width = outputWidth;
       canvas.height = outputHeight;
       
       ctx.fillStyle = '#050505';
       ctx.fillRect(0, 0, outputWidth, outputHeight);
-      
-      // Calculate drawing dimensions based on zoom and translation offsets
-      const containerWidth = 400;
-      const containerHeight = 250;
       
       const imgRatio = img.width / img.height;
       const targetRatio = containerWidth / containerHeight;
@@ -127,8 +138,8 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image" }) 
       const startX = (containerWidth - drawWidth) / 2;
       const startY = (containerHeight - drawHeight) / 2;
       
-      // Scale coordinates from 400x250 container space up to 800x500 output canvas space
-      const scaleMultiplier = outputWidth / containerWidth; // 2x
+      // Scale coordinates from container space up to output canvas space
+      const scaleMultiplier = outputWidth / containerWidth;
       
       const scaledWidth = drawWidth * zoom * scaleMultiplier;
       const scaledHeight = drawHeight * zoom * scaleMultiplier;
@@ -172,8 +183,9 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image" }) 
         onDrop={handleDrop}
         onClick={() => !imageSrc && fileInputRef.current.click()}
         style={{
-          width: '100%',
-          height: '250px',
+          width: `${containerWidth}px`,
+          height: `${containerHeight}px`,
+          margin: '0 auto',
           border: isDragOver ? '2px dashed #C1121F' : '1px dashed rgba(255,255,255,0.15)',
           borderRadius: '12px',
           backgroundColor: 'rgba(0,0,0,0.4)',
@@ -428,6 +440,7 @@ export default function AdminPanel() {
   const [inquiries, setInquiries] = useState([]);
   const [applications, setApplications] = useState([]);
   const [activities, setActivities] = useState([]);
+  const [heroSlides, setHeroSlides] = useState([]);
 
   // Modal / Form overlays
   const [editingItem, setEditingItem] = useState(null);
@@ -440,6 +453,7 @@ export default function AdminPanel() {
   const [careerForm, setCareerForm] = useState({ title: '', location: '', type: 'Full-Time', description: '', status: 'Open' });
   const [teamForm, setTeamForm] = useState({ name: '', position: '', bio: '', image: '', isLeader: false });
   const [testimonialForm, setTestimonialForm] = useState({ name: '', company: '', location: '', text: '', rating: 5 });
+  const [heroSlideForm, setHeroSlideForm] = useState({ name: '', duration: 4.0, desktopImage: '', mobileImage: '', effect: { scaleStart: 1.05, scaleEnd: 1.11, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 } });
 
   // Initial Auth & Sync load
   useEffect(() => {
@@ -468,6 +482,7 @@ export default function AdminPanel() {
     setInquiries(db.getInquiries());
     setApplications(db.getApplications());
     setActivities(db.getActivities());
+    setHeroSlides(db.getHeroSlides());
   };
 
   const handleLogin = (e) => {
@@ -542,6 +557,33 @@ export default function AdminPanel() {
     if (confirm(`Are you sure you want to delete ${name}?`)) {
       const list = destinations.filter(item => item.id !== id);
       db.saveDestinations(list, `Deleted destination country: ${name}`);
+    }
+  };
+
+  // HERO SLIDES CRUD
+  const saveHeroSlide = (e) => {
+    e.preventDefault();
+    if (!heroSlideForm.name) {
+      alert("Please fill in the slide name.");
+      return;
+    }
+    let list = [...heroSlides];
+    if (editingItem) {
+      list = list.map(item => item.id === editingItem.id ? { ...item, ...heroSlideForm } : item);
+      db.saveHeroSlides(list, `Edited hero slide: ${heroSlideForm.name}`);
+    } else {
+      const id = 'hero_' + Date.now();
+      const newItem = { ...heroSlideForm, id };
+      list.push(newItem);
+      db.saveHeroSlides(list, `Added new hero slide: ${heroSlideForm.name}`);
+    }
+    closeForm();
+  };
+
+  const deleteHeroSlide = (id, name) => {
+    if (confirm(`Are you sure you want to delete the hero slide "${name}"?`)) {
+      const list = heroSlides.filter(item => item.id !== id);
+      db.saveHeroSlides(list, `Deleted hero slide: ${name}`);
     }
   };
 
@@ -678,6 +720,8 @@ export default function AdminPanel() {
     setEditingItem(item);
     if (activeTab === 'destinations') {
       setDestForm(item ? { ...item } : { name: '', region: '', tagline: '', image: '', description: '' });
+    } else if (activeTab === 'hero-slides') {
+      setHeroSlideForm(item ? { ...item } : { name: '', duration: 4.0, desktopImage: '', mobileImage: '', effect: { scaleStart: 1.05, scaleEnd: 1.11, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 } });
     } else if (activeTab === 'blogs') {
       setBlogForm(item ? { ...item } : { title: '', category: '', readTime: '', image: '', description: '', content: '' });
     } else if (activeTab === 'careers') {
@@ -875,6 +919,7 @@ export default function AdminPanel() {
             {[
               { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={16} /> },
               { id: 'destinations', label: 'Destinations', icon: <Globe size={16} /> },
+              { id: 'hero-slides', label: 'Hero Slides', icon: <Image size={16} /> },
               { id: 'blogs', label: 'Blog Posts', icon: <BookOpen size={16} /> },
               { id: 'careers', label: 'Job Openings', icon: <Briefcase size={16} /> },
               { id: 'applications', label: 'Applications', icon: <FileText size={16} /> },
@@ -1001,7 +1046,7 @@ export default function AdminPanel() {
               Public Website <ChevronRight size={14} />
             </a>
 
-            {['destinations', 'blogs', 'careers', 'team', 'testimonials'].includes(activeTab) && (
+            {['destinations', 'hero-slides', 'blogs', 'careers', 'team', 'testimonials'].includes(activeTab) && (
               <button
                 onClick={() => openForm()}
                 style={{
@@ -1176,6 +1221,97 @@ export default function AdminPanel() {
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ==========================================
+            VIEW: HERO SLIDES
+            ========================================== */}
+        {activeTab === 'hero-slides' && !isFormOpen && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
+            {heroSlides.map((item) => (
+              <div
+                key={item.id}
+                style={{
+                  backgroundColor: 'rgba(255,255,255,0.02)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '350px'
+                }}
+              >
+                {/* Desktop & Mobile Previews Side-by-Side */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '150px', borderBottom: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+                  <div style={{ position: 'relative', overflow: 'hidden', height: '100%' }}>
+                    {item.desktopImage ? (
+                      <img src={item.desktopImage.startsWith('data:') || item.desktopImage.startsWith('http') ? item.desktopImage : `${import.meta.env.BASE_URL}${item.desktopImage}`} alt="Desktop" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255,255,255,0.03)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.65rem' }}>No Desktop</div>
+                    )}
+                    <span style={{ position: 'absolute', bottom: '6px', left: '6px', backgroundColor: 'rgba(0,0,0,0.7)', padding: '2px 6px', fontSize: '0.55rem', borderRadius: '3px', textTransform: 'uppercase' }}>Desktop</span>
+                  </div>
+                  <div style={{ position: 'relative', overflow: 'hidden', height: '100%', borderLeft: '1px solid rgba(255,255,255,0.08)' }}>
+                    {item.mobileImage ? (
+                      <img src={item.mobileImage.startsWith('data:') || item.mobileImage.startsWith('http') ? item.mobileImage : `${import.meta.env.BASE_URL}${item.mobileImage}`} alt="Mobile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255,255,255,0.03)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.65rem' }}>No Mobile</div>
+                    )}
+                    <span style={{ position: 'absolute', bottom: '6px', left: '6px', backgroundColor: 'rgba(0,0,0,0.7)', padding: '2px 6px', fontSize: '0.55rem', borderRadius: '3px', textTransform: 'uppercase' }}>Mobile</span>
+                  </div>
+                </div>
+
+                {/* Details */}
+                <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
+                  <div>
+                    <h3 style={{ fontSize: '1.1rem', color: '#FFFFFF', margin: '0 0 4px 0' }}>{item.name}</h3>
+                    <div style={{ display: 'flex', gap: '8px', fontSize: '0.72rem', color: 'rgba(255,255,255,0.45)' }}>
+                      <span>Duration: {item.duration}s</span>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px', marginTop: '12px' }}>
+                    <button
+                      onClick={() => openForm(item)}
+                      style={{
+                        flex: 1,
+                        padding: '8px',
+                        backgroundColor: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        borderRadius: '6px',
+                        color: '#FFFFFF',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px'
+                      }}
+                    >
+                      <Edit2 size={12} /> Edit
+                    </button>
+                    <button
+                      onClick={() => deleteHeroSlide(item.id, item.name)}
+                      style={{
+                        padding: '8px 12px',
+                        backgroundColor: 'rgba(193, 18, 31, 0.1)',
+                        border: '1px solid rgba(193, 18, 31, 0.25)',
+                        borderRadius: '6px',
+                        color: '#FF6B6B',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
@@ -1892,6 +2028,56 @@ export default function AdminPanel() {
               </div>
 
               {/* DYNAMIC FORM VIEWS */}
+
+              {/* 0. Hero Slides Form */}
+              {activeTab === 'hero-slides' && (
+                <form onSubmit={saveHeroSlide} style={formGroupStyle}>
+                  <div style={fieldStyle}>
+                    <label style={labelStyle}>Slide Name (e.g. Dubai)</label>
+                    <input
+                      type="text"
+                      required
+                      value={heroSlideForm.name}
+                      onChange={(e) => setHeroSlideForm({ ...heroSlideForm, name: e.target.value })}
+                      style={inputStyle}
+                      placeholder="e.g. Dubai"
+                    />
+                  </div>
+
+                  <div style={fieldStyle}>
+                    <label style={labelStyle}>Animation Duration (Seconds)</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      required
+                      value={heroSlideForm.duration}
+                      onChange={(e) => setHeroSlideForm({ ...heroSlideForm, duration: parseFloat(e.target.value) })}
+                      style={inputStyle}
+                      placeholder="e.g. 4.0"
+                    />
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                    <ImageCropper
+                      title="Desktop Slide Image (16:9 aspect ratio)"
+                      currentImage={heroSlideForm.desktopImage}
+                      onImageCropped={(base64) => setHeroSlideForm({ ...heroSlideForm, desktopImage: base64 })}
+                      aspectRatio="16:9"
+                    />
+                    <ImageCropper
+                      title="Mobile Slide Image (9:16 aspect ratio)"
+                      currentImage={heroSlideForm.mobileImage}
+                      onImageCropped={(base64) => setHeroSlideForm({ ...heroSlideForm, mobileImage: base64 })}
+                      aspectRatio="9:16"
+                    />
+                  </div>
+
+                  <div style={formActionsStyle}>
+                    <button type="button" onClick={closeForm} style={btnCancelStyle}>Cancel</button>
+                    <button type="submit" style={btnSubmitStyle}>Save Slide</button>
+                  </div>
+                </form>
+              )}
 
               {/* 1. Destinations Form */}
               {activeTab === 'destinations' && (
