@@ -1659,7 +1659,9 @@ export default function AboutJourney() {
           `,
           backgroundSize: '40px 40px',
           pointerEvents: 'none',
-          zIndex: 0
+          zIndex: 0,
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 160px, black calc(100% - 160px), transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 160px, black calc(100% - 160px), transparent 100%)'
         }}
       />
 

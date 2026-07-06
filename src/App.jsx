@@ -55,6 +55,37 @@ function App() {
     }));
   });
 
+  const scrollToAnchor = (targetId, delayMs = 0) => {
+    const execute = () => {
+      const el = document.getElementById(targetId);
+      if (!el) return;
+
+      // Walk the offsetParent chain to get the element's TRUE absolute Y position
+      // in the document. getBoundingClientRect depends on current scroll position
+      // and can be incorrect when called during layout transitions.
+      // offsetParent traversal is scroll-independent and includes GSAP pin spacers.
+      let absoluteTop = 0;
+      let node = el;
+      while (node) {
+        absoluteTop += node.offsetTop || 0;
+        node = node.offsetParent;
+      }
+      absoluteTop = Math.max(0, absoluteTop - 80);
+
+      if (window.lenis) {
+        window.lenis.scrollTo(absoluteTop, { duration: 1.5 });
+      } else {
+        window.scrollTo({ top: absoluteTop, behavior: 'smooth' });
+      }
+    };
+
+    if (delayMs > 0) {
+      setTimeout(execute, delayMs);
+    } else {
+      execute();
+    }
+  };
+
   // Pause star animations when the destinations section is scrolled off-screen
   useEffect(() => {
     const container = starsContainerRef.current;
@@ -73,24 +104,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const scrollToAnchor = (targetId) => {
-      let attempts = 0;
-      const findAndScroll = () => {
-        const el = document.getElementById(targetId);
-        if (el) {
-          if (window.lenis) {
-            window.lenis.scrollTo(el, { duration: 1.2, offset: -80 });
-          } else {
-            el.scrollIntoView({ behavior: 'smooth' });
-          }
-        } else if (attempts < 30) {
-          attempts++;
-          setTimeout(findAndScroll, 50);
-        }
-      };
-      findAndScroll();
-    };
-
     // Initialize LocalStorage database
     db.init();
 
@@ -100,13 +113,11 @@ function App() {
       if (hash === '#admin') {
         setCurrentView('admin');
       } else if (isLockedMode) {
-        // Locked mode: Force view to remain on home page
         setCurrentView('home');
         if (hash && hash !== '#about' && hash !== '#team') {
           scrollToAnchor(hash.substring(1));
         }
       } else {
-        // Normal mode (development)
         if (hash === '#about') {
           setCurrentView('about');
         } else if (hash === '#team') {
@@ -120,10 +131,10 @@ function App() {
         } else if (hash === '#destinations' || hash.startsWith('#destination-')) {
           setCurrentView('destinations');
         } else {
+          // All other hashes: show home page
+          // Home-section anchors (services, testimonials etc.) are handled
+          // via sessionStorage set by Header.jsx before the hash change.
           setCurrentView('home');
-          if (hash) {
-            scrollToAnchor(hash.substring(1));
-          }
         }
       }
     };
@@ -138,6 +149,9 @@ function App() {
   }, [isLockedMode]);
 
   useEffect(() => {
+    // Skip the scroll-to-top reset when a cross-page section anchor is pending —
+    // the anchor scroll will position the page correctly after Lenis initializes.
+    if (sessionStorage.getItem('travinno_pending_scroll')) return;
     window.scrollTo(0, 0);
     if (window.lenis) {
       window.lenis.scrollTo(0, { immediate: true });
@@ -181,6 +195,7 @@ function App() {
       syncTouch: false,
     });
     window.lenis = lenis;
+    window.ScrollTrigger = ScrollTrigger;
 
     // Update ScrollTrigger on Lenis scroll
     lenis.on('scroll', ScrollTrigger.update);
@@ -190,6 +205,15 @@ function App() {
       lenis.raf(time * 1000);
     };
     gsap.ticker.add(tickerUpdate);
+
+    // If a pending scroll target was stored in sessionStorage (cross-page nav),
+    // consume it ONCE. Delay 500ms so child components (DestinationStorySection etc.)
+    // have time to mount and register their ScrollTrigger pin spacers.
+    const pendingTarget = sessionStorage.getItem('travinno_pending_scroll');
+    if (pendingTarget) {
+      sessionStorage.removeItem('travinno_pending_scroll');
+      scrollToAnchor(pendingTarget, 800);
+    }
 
     const ctx = gsap.context(() => {
       // Disabled section opacity fade-out animations to keep sections fully bright, readable, and premium
@@ -237,20 +261,22 @@ function App() {
 
       {currentView === 'admin' ? (
         <Suspense fallback={null}><AdminPanel /></Suspense>
-      ) : currentView === 'about' ? (
-        <Suspense fallback={null}><ParallaxDemo /></Suspense>
-      ) : currentView === 'team' ? (
-        <Suspense fallback={null}><TeamPage /></Suspense>
-      ) : currentView === 'contact' ? (
-        <Suspense fallback={null}><ContactPage /></Suspense>
-      ) : currentView === 'careers' ? (
-        <Suspense fallback={null}><CareersPage /></Suspense>
-      ) : currentView === 'blog' ? (
-        <Suspense fallback={null}><BlogPage /></Suspense>
-      ) : currentView === 'destinations' ? (
-        <Suspense fallback={null}><DestinationsPage /></Suspense>
       ) : (
         <>
+          {currentView === 'about' ? (
+            <Suspense fallback={null}><ParallaxDemo /></Suspense>
+          ) : currentView === 'team' ? (
+            <Suspense fallback={null}><TeamPage /></Suspense>
+          ) : currentView === 'contact' ? (
+            <Suspense fallback={null}><ContactPage /></Suspense>
+          ) : currentView === 'careers' ? (
+            <Suspense fallback={null}><CareersPage /></Suspense>
+          ) : currentView === 'blog' ? (
+            <Suspense fallback={null}><BlogPage /></Suspense>
+          ) : currentView === 'destinations' ? (
+            <Suspense fallback={null}><DestinationsPage /></Suspense>
+          ) : (
+            <>
           {/* Hero Section Container (100% Viewport Height) */}
           <div
             className="home-hero-fade"
@@ -476,7 +502,10 @@ function App() {
             <ContactCTA />
           </div>
 
-          {/* Footer Section */}
+            </>
+          )}
+
+          {/* Global Footer Section */}
           <Footer />
         </>
       )}

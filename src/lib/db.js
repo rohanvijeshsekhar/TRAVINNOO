@@ -135,36 +135,82 @@ const INITIAL_TEAM = [
     name: 'Prinu Santhappan',
     position: 'Managing Director',
     bio: 'With over two decades of experience in the travel and hospitality industry, I am proud to lead a team of passionate professionals who are united by a shared vision of excellence, innovation, and genuine customer satisfaction.\n\nOur journey has been defined by strong partnerships – built on trust, mutual growth, and a commitment to delivering exceptional value. We believe that success is not achieved alone; it is the result of meaningful collaborations with our clients, partners, and stakeholders.',
+    signature: 'Prinu Santhappan',
     image: 'images/founder.webp',
-    isLeader: true
+    isLeader: true,
+    order: 0
   },
   {
     id: 2,
     name: 'Geetha Biju',
     position: 'Sr. Manager (Finance)',
     image: 'images/specialist_1.webp',
-    isLeader: false
+    isLeader: false,
+    order: 1
   },
   {
     id: 3,
     name: 'Manu Prasad',
     position: 'Head of Operations',
     image: 'images/specialist_2.webp',
-    isLeader: false
+    isLeader: false,
+    order: 2
   },
   {
     id: 4,
     name: 'Anuraj VS',
     position: 'Business Development Head (India)',
     image: 'images/specialist_3.webp',
-    isLeader: false
+    isLeader: false,
+    order: 3
   },
   {
     id: 5,
     name: 'Kavitha Prinu',
     position: 'Manager Sales (Group)',
     image: 'images/specialist_4.webp',
-    isLeader: false
+    isLeader: false,
+    order: 4
+  },
+  {
+    id: 6,
+    name: 'Neethu Dilver',
+    position: 'Manager FIT (Indian Operations)',
+    image: 'images/specialist_5.webp',
+    isLeader: false,
+    order: 5
+  },
+  {
+    id: 7,
+    name: 'Sree Rekha M',
+    position: 'Asst. Manager (Product & Contracting)',
+    image: 'images/specialist_6.webp',
+    isLeader: false,
+    order: 6
+  },
+  {
+    id: 8,
+    name: 'Godson KJ',
+    position: 'Asst. Manager - Groups',
+    image: 'images/specialist_7.webp',
+    isLeader: false,
+    order: 7
+  },
+  {
+    id: 9,
+    name: 'Vishnu VB',
+    position: 'Visa Department Head',
+    image: 'images/specialist_8.webp',
+    isLeader: false,
+    order: 8
+  },
+  {
+    id: 10,
+    name: 'Violah Cherotich',
+    position: 'Business Development Manager (Africa)',
+    image: 'images/specialist_9.webp',
+    isLeader: false,
+    order: 9
   }
 ];
 
@@ -304,7 +350,16 @@ const broadcastChange = () => {
 
 // 2. Database Core Interface
 export const db = {
+  serverActive: false,
+  collections: {},
+  initialized: false,
+  initPromise: null,
+
   init() {
+    if (this.initialized) return;
+    this.initialized = true;
+
+    // Check LocalStorage defaults first (immediate fallback backup)
     if (!localStorage.getItem('travinno_destinations')) {
       localStorage.setItem('travinno_destinations', JSON.stringify(INITIAL_DESTINATIONS));
     }
@@ -336,56 +391,166 @@ export const db = {
     if (!localStorage.getItem('travinno_activities')) {
       localStorage.setItem('travinno_activities', JSON.stringify(INITIAL_ACTIVITIES));
     }
+
+    // Ping SQLite backend server and load collections
+    this.initPromise = (async () => {
+      try {
+        const pingRes = await fetch('http://localhost:5001/api/ping').then(r => r.json()).catch(() => null);
+        if (pingRes && pingRes.success) {
+          console.log("SQLite Express server detected on http://localhost:5001. Syncing collections...");
+          this.serverActive = true;
+          
+          const data = await fetch('http://localhost:5001/api/collections').then(r => r.json()).catch(() => ({}));
+          this.collections = data;
+
+          // Migrate local storage contents -> server SQLite DB if the database is fresh/empty
+          const collectionsToSync = [
+            { key: 'travinno_destinations', defaultVal: INITIAL_DESTINATIONS },
+            { key: 'travinno_blogs', defaultVal: INITIAL_BLOGS },
+            { key: 'travinno_careers', defaultVal: INITIAL_JOBS },
+            { key: 'travinno_team', defaultVal: INITIAL_TEAM },
+            { key: 'travinno_testimonials', defaultVal: INITIAL_TESTIMONIALS },
+            { key: 'travinno_logos', defaultVal: INITIAL_LOGOS },
+            { key: 'travinno_hero_slides', defaultVal: INITIAL_HERO_SLIDES },
+            { key: 'travinno_inquiries', defaultVal: INITIAL_INQUIRIES },
+            { key: 'travinno_applications', defaultVal: INITIAL_APPLICATIONS },
+            { key: 'travinno_activities', defaultVal: INITIAL_ACTIVITIES }
+          ];
+
+          for (const item of collectionsToSync) {
+            if (!this.collections[item.key] || this.collections[item.key].length === 0) {
+              const localData = localStorage.getItem(item.key);
+              let valToUpload = item.defaultVal;
+              if (localData) {
+                try {
+                  valToUpload = JSON.parse(localData);
+                } catch (e) {}
+              }
+              
+              await fetch('http://localhost:5001/api/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key: item.key, value: valToUpload })
+              }).catch(() => null);
+              
+              this.collections[item.key] = valToUpload;
+            }
+          }
+          
+          broadcastChange();
+        } else {
+          console.log("No SQLite server detected. Operating in static LocalStorage mode.");
+        }
+      } catch (e) {
+        console.warn("Connection to SQLite server failed. Operating in static LocalStorage mode.", e);
+      }
+    })();
   },
 
   // GET ALL
-  // GET ALL
   getHeroSlides() {
+    if (this.serverActive && this.collections['travinno_hero_slides']) {
+      return this.collections['travinno_hero_slides'];
+    }
     return JSON.parse(localStorage.getItem('travinno_hero_slides') || '[]');
   },
   saveHeroSlides(list, activityMessage = null) {
-    localStorage.setItem('travinno_hero_slides', JSON.stringify(list));
-    if (activityMessage) {
-      this.logActivity(activityMessage);
+    const localSaved = this.safeSetItem('travinno_hero_slides', JSON.stringify(list), !this.serverActive);
+    if (this.serverActive) {
+      this.collections['travinno_hero_slides'] = list;
+      fetch('http://localhost:5001/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'travinno_hero_slides', value: list })
+      }).catch(err => console.error("Error writing hero slides to server:", err));
+      if (activityMessage) {
+        this.logActivity(activityMessage);
+      }
+      window.dispatchEvent(new Event('travinno-db-update'));
+    } else if (localSaved) {
+      if (activityMessage) {
+        this.logActivity(activityMessage);
+      }
+      window.dispatchEvent(new Event('travinno-db-update'));
     }
-    window.dispatchEvent(new Event('travinno-db-update'));
   },
 
   getDestinations() {
     this.init();
-    return JSON.parse(localStorage.getItem('travinno_destinations'));
+    if (this.serverActive && this.collections['travinno_destinations']) {
+      return this.collections['travinno_destinations'];
+    }
+    return JSON.parse(localStorage.getItem('travinno_destinations') || '[]');
   },
   getBlogs() {
     this.init();
-    return JSON.parse(localStorage.getItem('travinno_blogs'));
+    if (this.serverActive && this.collections['travinno_blogs']) {
+      return this.collections['travinno_blogs'];
+    }
+    return JSON.parse(localStorage.getItem('travinno_blogs') || '[]');
   },
   getCareers() {
     this.init();
-    return JSON.parse(localStorage.getItem('travinno_careers'));
+    if (this.serverActive && this.collections['travinno_careers']) {
+      return this.collections['travinno_careers'];
+    }
+    return JSON.parse(localStorage.getItem('travinno_careers') || '[]');
   },
   getTeam() {
     this.init();
-    return JSON.parse(localStorage.getItem('travinno_team'));
+    if (this.serverActive && this.collections['travinno_team']) {
+      return this.collections['travinno_team'];
+    }
+    return JSON.parse(localStorage.getItem('travinno_team') || '[]');
   },
   getTestimonials() {
     this.init();
-    return JSON.parse(localStorage.getItem('travinno_testimonials'));
+    if (this.serverActive && this.collections['travinno_testimonials']) {
+      return this.collections['travinno_testimonials'];
+    }
+    return JSON.parse(localStorage.getItem('travinno_testimonials') || '[]');
   },
   getLogos() {
     this.init();
-    return JSON.parse(localStorage.getItem('travinno_logos'));
+    if (this.serverActive && this.collections['travinno_logos']) {
+      return this.collections['travinno_logos'];
+    }
+    return JSON.parse(localStorage.getItem('travinno_logos') || '[]');
   },
   getInquiries() {
     this.init();
-    return JSON.parse(localStorage.getItem('travinno_inquiries'));
+    if (this.serverActive && this.collections['travinno_inquiries']) {
+      return this.collections['travinno_inquiries'];
+    }
+    return JSON.parse(localStorage.getItem('travinno_inquiries') || '[]');
   },
   getApplications() {
     this.init();
-    return JSON.parse(localStorage.getItem('travinno_applications'));
+    if (this.serverActive && this.collections['travinno_applications']) {
+      return this.collections['travinno_applications'];
+    }
+    return JSON.parse(localStorage.getItem('travinno_applications') || '[]');
   },
   getActivities() {
     this.init();
-    return JSON.parse(localStorage.getItem('travinno_activities'));
+    if (this.serverActive && this.collections['travinno_activities']) {
+      return this.collections['travinno_activities'];
+    }
+    return JSON.parse(localStorage.getItem('travinno_activities') || '[]');
+  },
+
+  // Helper for safe storage operations
+  safeSetItem(key, value, showAlert = true) {
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch (e) {
+      console.error(`QuotaExceededError: Failed to save ${key} to localStorage:`, e);
+      if (showAlert) {
+        alert("Failed to save data: Browser storage quota exceeded. The image file you are uploading is too large. Please crop to a smaller region, compress the image, or upload a smaller file.");
+      }
+      return false;
+    }
   },
 
   // WRITE & LOG ACTIVITY
@@ -396,48 +561,150 @@ export const db = {
       text,
       date: new Date().toLocaleString()
     };
-    localStorage.setItem('travinno_activities', JSON.stringify([newLog, ...logs].slice(0, 100)));
+    const updatedLogs = [newLog, ...logs].slice(0, 100);
+    this.safeSetItem('travinno_activities', JSON.stringify(updatedLogs), !this.serverActive);
+    if (this.serverActive) {
+      this.collections['travinno_activities'] = updatedLogs;
+      fetch('http://localhost:5001/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'travinno_activities', value: updatedLogs })
+      }).catch(err => console.error("Error writing activity logs to server:", err));
+    }
   },
 
   // SAVE ALL
   saveDestinations(data, activityMsg) {
-    localStorage.setItem('travinno_destinations', JSON.stringify(data));
-    if (activityMsg) this.logActivity(activityMsg);
-    broadcastChange();
+    const localSaved = this.safeSetItem('travinno_destinations', JSON.stringify(data), !this.serverActive);
+    if (this.serverActive) {
+      this.collections['travinno_destinations'] = data;
+      fetch('http://localhost:5001/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'travinno_destinations', value: data })
+      }).catch(err => console.error("Error writing destinations to server:", err));
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    } else if (localSaved) {
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    }
   },
   saveBlogs(data, activityMsg) {
-    localStorage.setItem('travinno_blogs', JSON.stringify(data));
-    if (activityMsg) this.logActivity(activityMsg);
-    broadcastChange();
+    const localSaved = this.safeSetItem('travinno_blogs', JSON.stringify(data), !this.serverActive);
+    if (this.serverActive) {
+      this.collections['travinno_blogs'] = data;
+      fetch('http://localhost:5001/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'travinno_blogs', value: data })
+      }).catch(err => console.error("Error writing blogs to server:", err));
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    } else if (localSaved) {
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    }
   },
   saveCareers(data, activityMsg) {
-    localStorage.setItem('travinno_careers', JSON.stringify(data));
-    if (activityMsg) this.logActivity(activityMsg);
-    broadcastChange();
+    const localSaved = this.safeSetItem('travinno_careers', JSON.stringify(data), !this.serverActive);
+    if (this.serverActive) {
+      this.collections['travinno_careers'] = data;
+      fetch('http://localhost:5001/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'travinno_careers', value: data })
+      }).catch(err => console.error("Error writing careers to server:", err));
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    } else if (localSaved) {
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    }
   },
   saveTeam(data, activityMsg) {
-    localStorage.setItem('travinno_team', JSON.stringify(data));
-    if (activityMsg) this.logActivity(activityMsg);
-    broadcastChange();
+    const localSaved = this.safeSetItem('travinno_team', JSON.stringify(data), !this.serverActive);
+    if (this.serverActive) {
+      this.collections['travinno_team'] = data;
+      fetch('http://localhost:5001/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'travinno_team', value: data })
+      }).catch(err => console.error("Error writing team to server:", err));
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    } else if (localSaved) {
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    }
   },
   saveTestimonials(data, activityMsg) {
-    localStorage.setItem('travinno_testimonials', JSON.stringify(data));
-    if (activityMsg) this.logActivity(activityMsg);
-    broadcastChange();
+    const localSaved = this.safeSetItem('travinno_testimonials', JSON.stringify(data), !this.serverActive);
+    if (this.serverActive) {
+      this.collections['travinno_testimonials'] = data;
+      fetch('http://localhost:5001/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'travinno_testimonials', value: data })
+      }).catch(err => console.error("Error writing testimonials to server:", err));
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    } else if (localSaved) {
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    }
   },
   saveLogos(data, activityMsg) {
-    localStorage.setItem('travinno_logos', JSON.stringify(data));
-    if (activityMsg) this.logActivity(activityMsg);
-    broadcastChange();
+    const localSaved = this.safeSetItem('travinno_logos', JSON.stringify(data), !this.serverActive);
+    if (this.serverActive) {
+      this.collections['travinno_logos'] = data;
+      fetch('http://localhost:5001/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'travinno_logos', value: data })
+      }).catch(err => console.error("Error writing logos to server:", err));
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    } else if (localSaved) {
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    }
   },
   saveInquiries(data, activityMsg) {
-    localStorage.setItem('travinno_inquiries', JSON.stringify(data));
-    if (activityMsg) this.logActivity(activityMsg);
-    broadcastChange();
+    const localSaved = this.safeSetItem('travinno_inquiries', JSON.stringify(data), !this.serverActive);
+    if (this.serverActive) {
+      this.collections['travinno_inquiries'] = data;
+      fetch('http://localhost:5001/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'travinno_inquiries', value: data })
+      }).catch(err => console.error("Error writing inquiries to server:", err));
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    } else if (localSaved) {
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    }
   },
   saveApplications(data, activityMsg) {
-    localStorage.setItem('travinno_applications', JSON.stringify(data));
-    if (activityMsg) this.logActivity(activityMsg);
-    broadcastChange();
+    const localSaved = this.safeSetItem('travinno_applications', JSON.stringify(data), !this.serverActive);
+    if (this.serverActive) {
+      this.collections['travinno_applications'] = data;
+      fetch('http://localhost:5001/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'travinno_applications', value: data })
+      }).catch(err => console.error("Error writing applications to server:", err));
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    } else if (localSaved) {
+      if (activityMsg) this.logActivity(activityMsg);
+      broadcastChange();
+    }
   }
 };
+
+// Trigger background initialization
+setTimeout(() => {
+  db.init();
+}, 0);

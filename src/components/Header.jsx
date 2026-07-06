@@ -110,17 +110,29 @@ export default function Header() {
     
     if (href && href.startsWith('#')) {
       const targetId = href.substring(1);
-      const isHomeSection = ['services', 'testimonials', 'contact', 'why', 'journey'].includes(targetId);
+      const isHomeSection = ['services', 'testimonials', 'contact', 'why', 'journey', 'destinations'].includes(targetId);
+      
       if (isHomeSection) {
-        const el = document.getElementById(targetId);
-        if (el) {
-          e.preventDefault();
+        e.preventDefault(); // Always take full control of home section navigation
+
+        if (window.lenis) {
+          // Already on home page — scroll using true document Y (offsetParent traversal)
           window.location.hash = targetId;
-          if (window.lenis) {
-            window.lenis.scrollTo(el, { duration: 1.5 });
-          } else {
-            el.scrollIntoView({ behavior: 'smooth' });
-          }
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              const el = document.getElementById(targetId);
+              if (!el) return;
+              let absoluteTop = 0;
+              let node = el;
+              while (node) { absoluteTop += node.offsetTop || 0; node = node.offsetParent; }
+              absoluteTop = Math.max(0, absoluteTop - 80);
+              window.lenis.scrollTo(absoluteTop, { duration: 1.5 });
+            });
+          });
+        } else {
+          // On another page — store target so Lenis init picks it up after home mounts
+          sessionStorage.setItem('travinno_pending_scroll', targetId);
+          window.location.hash = targetId; // triggers handleHashChange → setCurrentView('home')
         }
       }
     }

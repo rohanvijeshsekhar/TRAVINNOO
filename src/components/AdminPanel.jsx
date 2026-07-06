@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../lib/db';
+import { darkTheme, lightTheme } from '../lib/theme';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -23,13 +24,17 @@ import {
   Upload,
   ChevronRight,
   ZoomIn,
-  Move
+  Move,
+  Sun,
+  Moon,
+  Menu,
+  X as XIcon
 } from 'lucide-react';
 
 // ==========================================
 // 1. IMAGE CROPPER & UPLOADER COMPONENT
 // ==========================================
-function ImageCropper({ onImageCropped, currentImage, title = "Upload Image", aspectRatio }) {
+function ImageCropper({ onImageCropped, currentImage, title = "Upload Image", aspectRatio, outputType = "jpeg" }) {
   const [imageSrc, setImageSrc] = useState(null);
   const [zoom, setZoom] = useState(1);
   const [posX, setPosX] = useState(0);
@@ -43,8 +48,8 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image", as
   // Set default dimensions (8:5 aspect ratio)
   let containerWidth = 400;
   let containerHeight = 250;
-  let outputWidth = 800;
-  let outputHeight = 500;
+  let outputWidth = 1600;
+  let outputHeight = 1000;
 
   if (aspectRatio === '16:9') {
     containerWidth = 400;
@@ -56,6 +61,11 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image", as
     containerHeight = 400;
     outputWidth = 1080;
     outputHeight = 1920;
+  } else if (aspectRatio === '4:5') {
+    containerWidth = 320;
+    containerHeight = 400;
+    outputWidth = 1080;
+    outputHeight = 1350;
   }
 
   // Load existing image if any
@@ -111,7 +121,11 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image", as
     if (!imageSrc) return;
     
     const img = new window.Image();
-    img.src = imageSrc;
+    const resolvedSrc = imageSrc.startsWith('data:') || imageSrc.startsWith('http') 
+      ? imageSrc 
+      : `${import.meta.env.BASE_URL}${imageSrc}`;
+    img.crossOrigin = "anonymous";
+    img.src = resolvedSrc;
     img.onload = () => {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
@@ -119,8 +133,12 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image", as
       canvas.width = outputWidth;
       canvas.height = outputHeight;
       
-      ctx.fillStyle = '#050505';
-      ctx.fillRect(0, 0, outputWidth, outputHeight);
+      if (outputType !== 'png') {
+        ctx.fillStyle = '#050505';
+        ctx.fillRect(0, 0, outputWidth, outputHeight);
+      } else {
+        ctx.clearRect(0, 0, outputWidth, outputHeight);
+      }
       
       const imgRatio = img.width / img.height;
       const targetRatio = containerWidth / containerHeight;
@@ -150,8 +168,8 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image", as
       
       ctx.drawImage(img, dx, dy, scaledWidth, scaledHeight);
       
-      // Get base64 string
-      const base64Image = canvas.toDataURL('image/jpeg', 0.85);
+      // Get base64 string compressed in webp format
+      const base64Image = canvas.toDataURL('image/webp', 0.85);
       onImageCropped(base64Image);
       alert("Image crop applied and saved successfully!");
     };
@@ -211,7 +229,7 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image", as
             alignItems: 'center'
           }}>
             <img
-              src={imageSrc}
+              src={imageSrc.startsWith('data:') || imageSrc.startsWith('http') ? imageSrc : `${import.meta.env.BASE_URL}${imageSrc}`}
               alt="Preview"
               style={{
                 maxWidth: '100%',
@@ -427,8 +445,12 @@ const helperBtnStyle = {
 // ==========================================
 export default function AdminPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [theme, setTheme] = useState('dark');
+  const currentTheme = theme === 'dark' ? darkTheme : lightTheme;
   const [passcode, setPasscode] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Schema state
   const [destinations, setDestinations] = useState([]);
@@ -451,18 +473,29 @@ export default function AdminPanel() {
   const [destForm, setDestForm] = useState({ name: '', region: '', tagline: '', image: '', description: '' });
   const [blogForm, setBlogForm] = useState({ title: '', category: '', readTime: '', image: '', description: '', content: '' });
   const [careerForm, setCareerForm] = useState({ title: '', location: '', type: 'Full-Time', description: '', status: 'Open' });
-  const [teamForm, setTeamForm] = useState({ name: '', position: '', bio: '', image: '', isLeader: false });
+  const [teamForm, setTeamForm] = useState({ name: '', position: '', bio: '', image: '', isLeader: false, order: 0, signature: '' });
   const [testimonialForm, setTestimonialForm] = useState({ name: '', company: '', location: '', text: '', rating: 5 });
   const [heroSlideForm, setHeroSlideForm] = useState({ name: '', duration: 4.0, desktopImage: '', mobileImage: '', effect: { scaleStart: 1.05, scaleEnd: 1.11, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 } });
 
   // Initial Auth & Sync load
   useEffect(() => {
+    const savedTheme = localStorage.getItem('travinno_theme');
+    if (savedTheme) setTheme(savedTheme);
     const isAuth = sessionStorage.getItem('travinno_admin_auth') === 'true';
     if (isAuth) {
       setIsAuthenticated(true);
       loadCollections();
     }
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    localStorage.setItem('travinno_theme', newTheme);
+  };
 
   // Set event listener for dynamic updates
   useEffect(() => {
@@ -727,7 +760,7 @@ export default function AdminPanel() {
     } else if (activeTab === 'careers') {
       setCareerForm(item ? { ...item } : { title: '', location: '', type: 'Full-Time', description: '', status: 'Open' });
     } else if (activeTab === 'team') {
-      setTeamForm(item ? { ...item } : { name: '', position: '', bio: '', image: '', isLeader: false });
+      setTeamForm(item ? { ...item } : { name: '', position: '', bio: '', image: '', isLeader: false, order: 0, signature: '' });
     } else if (activeTab === 'testimonials') {
       setTestimonialForm(item ? { ...item } : { name: '', company: '', location: '', text: '', rating: 5 });
     }
@@ -746,7 +779,7 @@ export default function AdminPanel() {
     return (
       <div style={{
         minHeight: '100vh',
-        backgroundColor: '#050505',
+        backgroundColor: currentTheme.bg,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -769,23 +802,24 @@ export default function AdminPanel() {
           style={{
             width: '100%',
             maxWidth: '420px',
-            backgroundColor: 'rgba(12, 12, 14, 0.85)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            backgroundColor: currentTheme.surface,
+            border: `1px solid ${currentTheme.border}`,
             borderRadius: '24px',
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.02), 0 25px 50px rgba(0,0,0,0.8)',
+            boxShadow: '0 25px 50px rgba(0,0,0,0.8)',
             backdropFilter: 'blur(30px)',
             WebkitBackdropFilter: 'blur(30px)',
             padding: '40px 32px',
             boxSizing: 'border-box',
             textAlign: 'center',
             position: 'relative',
-            zIndex: 1
+            zIndex: 1,
+            transition: 'background-color 0.3s, color 0.3s'
           }}
         >
           <h2 style={{
             fontFamily: 'var(--font-heading)',
             fontSize: '1.8rem',
-            color: '#F5F2EC',
+            color: currentTheme.text,
             margin: '0 0 8px 0',
             fontWeight: 450
           }}>
@@ -793,7 +827,7 @@ export default function AdminPanel() {
           </h2>
           <p style={{
             fontSize: '0.82rem',
-            color: 'rgba(245,242,236,0.5)',
+            color: currentTheme.subText,
             margin: '0 0 32px 0',
             letterSpacing: '0.3px'
           }}>
@@ -877,25 +911,45 @@ export default function AdminPanel() {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#050505',
+      backgroundColor: currentTheme.bg,
       display: 'flex',
-      color: '#F5F2EC',
+      color: currentTheme.text,
       fontFamily: 'var(--font-sans)',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      transition: 'background-color 0.3s, color 0.3s',
+      position: 'relative'
     }}>
+      {/* MOBILE OVERLAY */}
+      {isMobile && sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            zIndex: 99,
+            backdropFilter: 'blur(2px)'
+          }}
+        />
+      )}
       {/* SIDEBAR NAVIGATION */}
       <aside style={{
         width: '280px',
-        backgroundColor: '#0A0A0C',
-        borderRight: '1px solid rgba(255, 255, 255, 0.06)',
+        backgroundColor: theme === 'dark' ? '#0A0A0C' : '#FFFFFF',
+        borderRight: `1px solid ${currentTheme.border}`,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         padding: '32px 16px',
         boxSizing: 'border-box',
-        position: 'sticky',
+        position: isMobile ? 'fixed' : 'sticky',
         top: 0,
-        height: '100vh'
+        left: 0,
+        height: '100vh',
+        zIndex: isMobile ? 100 : 'auto',
+        transform: isMobile ? (sidebarOpen ? 'translateX(0)' : 'translateX(-100%)') : 'translateX(0)',
+        transition: 'transform 0.3s ease, background-color 0.3s',
+        overflowY: 'auto'
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
           {/* Logo Brand */}
@@ -970,87 +1024,179 @@ export default function AdminPanel() {
           </nav>
         </div>
 
-        {/* Footer Logout */}
-        <button
-          onClick={handleLogout}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '12px 16px',
-            backgroundColor: 'transparent',
-            border: 'none',
-            borderRadius: '10px',
-            color: '#FF6B6B',
-            fontFamily: 'var(--font-sans)',
-            fontSize: '0.84rem',
-            cursor: 'pointer',
-            textAlign: 'left',
-            transition: 'opacity 0.2s'
-          }}
-        >
-          <LogOut size={16} />
-          <span>Exit Console</span>
-        </button>
+        {/* Footer: Theme toggle + Logout */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <button
+            onClick={toggleTheme}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '12px 16px',
+              backgroundColor: 'transparent',
+              border: `1px solid ${currentTheme.border}`,
+              borderRadius: '10px',
+              color: currentTheme.text,
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.84rem',
+              cursor: 'pointer',
+              textAlign: 'left',
+              transition: 'opacity 0.2s'
+            }}
+          >
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+            <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+          </button>
+          
+          <button
+            onClick={async () => {
+              if (confirm("Reset the CMS database to initial defaults? This will clear storage limits and restore the original template data, but remove custom modifications.")) {
+                localStorage.clear();
+                try {
+                  const { db } = await import('../lib/db');
+                  if (db.serverActive) {
+                    await fetch('http://localhost:5001/api/reset', { method: 'POST' }).catch(() => null);
+                  }
+                } catch (e) {}
+                window.location.reload();
+              }
+            }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '12px 16px',
+              backgroundColor: 'transparent',
+              border: `1px solid ${currentTheme.border}`,
+              borderRadius: '10px',
+              color: currentTheme.subText,
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.84rem',
+              cursor: 'pointer',
+              textAlign: 'left',
+              transition: 'opacity 0.2s'
+            }}
+          >
+            <RotateCcw size={16} />
+            <span>Reset Database</span>
+          </button>
+
+
+          <button
+            onClick={handleLogout}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '12px 16px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderRadius: '10px',
+              color: '#FF6B6B',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.84rem',
+              cursor: 'pointer',
+              textAlign: 'left',
+              transition: 'opacity 0.2s'
+            }}
+          >
+            <LogOut size={16} />
+            <span>Exit Console</span>
+          </button>
+        </div>
       </aside>
 
       {/* CORE WORKSPACE CONTENT AREA */}
       <main style={{
         flex: 1,
-        padding: '48px',
+        padding: isMobile ? '20px 16px' : '48px',
         boxSizing: 'border-box',
         overflowY: 'auto',
-        height: '100vh'
+        height: '100vh',
+        width: isMobile ? '100%' : 'auto',
+        minWidth: 0
       }}>
         {/* HEADER BAR */}
         <header style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-          paddingBottom: '24px',
-          marginBottom: '32px'
+          borderBottom: `1px solid ${currentTheme.border}`,
+          paddingBottom: '20px',
+          marginBottom: '28px',
+          flexWrap: 'wrap',
+          gap: '12px'
         }}>
-          <div>
-            <h1 style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: '2rem',
-              fontWeight: 450,
-              color: '#FFFFFF',
-              margin: '0 0 4px 0'
-            }}>
-              {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Manager
-            </h1>
-            <span style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.45)' }}>
-              Real-time synchronization active • Local Database Store
-            </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
+            {/* Hamburger on mobile */}
+            {isMobile && (
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                style={{
+                  background: 'none',
+                  border: `1px solid ${currentTheme.border}`,
+                  borderRadius: '8px',
+                  padding: '8px',
+                  color: currentTheme.text,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexShrink: 0
+                }}
+              >
+                {sidebarOpen ? <XIcon size={20} /> : <Menu size={20} />}
+              </button>
+            )}
+            <div style={{ minWidth: 0 }}>
+              <h1 style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: isMobile ? '1.3rem' : '2rem',
+                fontWeight: 450,
+                color: currentTheme.text,
+                margin: '0 0 2px 0',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}>
+                {activeTab.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase())} Manager
+              </h1>
+              {!isMobile && (
+                <span style={{ fontSize: '0.78rem', color: currentTheme.subText }}>
+                  Real-time synchronization active • Local Database Store
+                </span>
+              )}
+            </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <a
-              href="#"
-              style={{
-                padding: '10px 18px',
-                backgroundColor: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: '8px',
-                color: '#FFFFFF',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-            >
-              Public Website <ChevronRight size={14} />
-            </a>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
+
+
+            {!isMobile && (
+              <a
+                href="#"
+                style={{
+                  padding: '8px 14px',
+                  backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.06)',
+                  border: `1px solid ${currentTheme.border}`,
+                  borderRadius: '8px',
+                  color: currentTheme.text,
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                Public Website <ChevronRight size={14} />
+              </a>
+            )}
 
             {['destinations', 'hero-slides', 'blogs', 'careers', 'team', 'testimonials'].includes(activeTab) && (
               <button
                 onClick={() => openForm()}
                 style={{
-                  padding: '10px 18px',
+                  padding: '8px 14px',
                   backgroundColor: '#C1121F',
                   border: 'none',
                   borderRadius: '8px',
@@ -1060,10 +1206,11 @@ export default function AdminPanel() {
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  whiteSpace: 'nowrap'
                 }}
               >
-                <Plus size={16} /> Add {activeTab === 'blogs' ? 'Post' : activeTab === 'careers' ? 'Job' : 'Item'}
+                <Plus size={16} /> {isMobile ? 'Add' : `Add ${activeTab === 'blogs' ? 'Post' : activeTab === 'careers' ? 'Job' : 'Item'}`}
               </button>
             )}
           </div>
@@ -1077,8 +1224,8 @@ export default function AdminPanel() {
             {/* STATS TILES GRID */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '20px'
+              gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
+              gap: isMobile ? '12px' : '20px'
             }}>
               {[
                 { label: 'Total Blogs', count: blogs.length, color: '#C1121F' },
@@ -1121,7 +1268,7 @@ export default function AdminPanel() {
             </div>
 
             {/* DASHBOARD DETAILS PANEL GROUP */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '32px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 0.8fr', gap: '32px' }}>
               {/* LEFT: INQUIRIES & RECENT LOGS */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                 {/* Recent Inquiries */}
@@ -1709,6 +1856,9 @@ export default function AdminPanel() {
                   {member.isLeader && (
                     <span style={{ display: 'block', fontSize: '0.62rem', color: 'rgba(255,255,255,0.3)', marginTop: '4px', textTransform: 'uppercase' }}>Managing Director</span>
                   )}
+                  <span style={{ display: 'block', fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>
+                    Order: {member.order || 0}
+                  </span>
                 </div>
 
                 <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px', marginTop: '16px' }}>
@@ -2304,7 +2454,7 @@ export default function AdminPanel() {
                   </div>
 
                   <div style={fieldStyle}>
-                    <label style={labelStyle}>Position / Title</label>
+                    <label style={labelStyle}>Designation / Title</label>
                     <input
                       type="text"
                       required
@@ -2312,6 +2462,18 @@ export default function AdminPanel() {
                       onChange={(e) => setTeamForm({ ...teamForm, position: e.target.value })}
                       style={inputStyle}
                       placeholder="e.g. Managing Director"
+                    />
+                  </div>
+
+                  <div style={fieldStyle}>
+                    <label style={labelStyle}>Display Order</label>
+                    <input
+                      type="number"
+                      required
+                      value={teamForm.order !== undefined ? teamForm.order : 0}
+                      onChange={(e) => setTeamForm({ ...teamForm, order: parseInt(e.target.value) || 0 })}
+                      style={inputStyle}
+                      placeholder="e.g. 1"
                     />
                   </div>
 
@@ -2324,27 +2486,133 @@ export default function AdminPanel() {
                       style={{ accentColor: '#C1121F', cursor: 'pointer' }}
                     />
                     <label htmlFor="isLeaderCheck" style={{ fontSize: '0.8rem', color: '#FFFFFF', cursor: 'pointer' }}>
-                      Mark as Executive Leader (Displays bio block on Team Page)
+                      Mark as Executive Leader (Managing Director featured layout)
                     </label>
                   </div>
 
                   {teamForm.isLeader && (
-                    <div style={fieldStyle}>
-                      <label style={labelStyle}>Executive Bio Profile</label>
-                      <textarea
-                        value={teamForm.bio}
-                        onChange={(e) => setTeamForm({ ...teamForm, bio: e.target.value })}
-                        style={{ ...textareaStyle, height: '140px' }}
-                        placeholder="Detailed profile bio description..."
-                      />
-                    </div>
+                    <>
+                      <div style={fieldStyle}>
+                        <label style={labelStyle}>Personal Message / Introduction</label>
+                        <textarea
+                          value={teamForm.bio || ''}
+                          onChange={(e) => setTeamForm({ ...teamForm, bio: e.target.value })}
+                          style={{ ...textareaStyle, height: '140px' }}
+                          placeholder="A personal message or introduction from the Managing Director..."
+                        />
+                      </div>
+                      <div style={fieldStyle}>
+                        <label style={labelStyle}>Signature Text</label>
+                        <input
+                          type="text"
+                          value={teamForm.signature || ''}
+                          onChange={(e) => setTeamForm({ ...teamForm, signature: e.target.value })}
+                          style={inputStyle}
+                          placeholder="e.g. Prinu Santhappan"
+                        />
+                      </div>
+                    </>
                   )}
 
-                  <ImageCropper
-                    title="Profile Portrait Photo"
-                    currentImage={teamForm.image}
-                    onImageCropped={(base64) => setTeamForm({ ...teamForm, image: base64 })}
-                  />
+                  <div style={fieldStyle}>
+                    <label style={labelStyle}>Profile Portrait Photo (PNG transparent recommended)</label>
+                    <div
+                      onClick={() => document.getElementById('team-image-file').click()}
+                      style={{
+                        backgroundColor: 'rgba(255,255,255,0.02)',
+                        border: '1px dashed rgba(255,255,255,0.15)',
+                        borderRadius: '12px',
+                        padding: '30px 20px',
+                        textAlign: 'center',
+                        cursor: 'pointer',
+                        position: 'relative',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '12px',
+                        transition: 'all 0.25s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = '#C1121F';
+                        e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.04)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
+                        e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.02)';
+                      }}
+                    >
+                      <input
+                        type="file"
+                        id="team-image-file"
+                        accept="image/png, image/jpeg, image/webp"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              const img = new window.Image();
+                              img.src = event.target.result;
+                              img.onload = () => {
+                                const canvas = document.createElement('canvas');
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+                                const ctx = canvas.getContext('2d');
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                ctx.drawImage(img, 0, 0);
+                                const webpDataUrl = canvas.toDataURL('image/webp', 0.85);
+                                setTeamForm({ ...teamForm, image: webpDataUrl });
+                              };
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                        style={{ display: 'none' }}
+                      />
+                      
+                      {teamForm.image ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                          <img
+                            src={teamForm.image.startsWith('data:') || teamForm.image.startsWith('http') ? teamForm.image : `${import.meta.env.BASE_URL}${teamForm.image}`}
+                            alt="Preview"
+                            style={{ maxHeight: '160px', objectFit: 'contain', display: 'block', pointerEvents: 'none' }}
+                          />
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTeamForm({ ...teamForm, image: '' });
+                            }}
+                            style={{
+                              backgroundColor: '#C1121F',
+                              border: 'none',
+                              color: '#FFFFFF',
+                              padding: '8px 16px',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontSize: '0.78rem',
+                              fontFamily: 'var(--font-sans)',
+                              fontWeight: 600,
+                              transition: 'opacity 0.2s'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+                            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                          >
+                            Remove Photo
+                          </button>
+                        </div>
+                      ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-sans)' }}>
+                            Click to upload transparent PNG
+                          </span>
+                          <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)', fontFamily: 'var(--font-sans)' }}>
+                            No crop/resize/zoom. Raw PNG will be saved.
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
 
                   <div style={formActionsStyle}>
                     <button type="button" onClick={closeForm} style={btnCancelStyle}>Cancel</button>

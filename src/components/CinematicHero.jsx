@@ -109,19 +109,23 @@ export default function CinematicHero() {
   const addToImageRefs = (el) => { if (el && !imageRefs.current.includes(el)) imageRefs.current.push(el); };
   const addToTextRefs = (el) => { if (el && !textRefs.current.includes(el)) textRefs.current.push(el); };
 
-  // Preload only the first hero image; lazy-load the remaining ones
+  // Preload the first hero image; reset imagesLoaded whenever source changes so GSAP rebuilds
   useEffect(() => {
     if (destinations.length === 0) return;
-    
+
+    // Reset so GSAP timeline rebuilds with correct image (desktop vs mobile)
+    setImagesLoaded(false);
+
     const firstSlide = destinations[0];
-    const firstImageUrl = resolveImgPath(isMobileView ? (firstSlide.mobileImage || firstSlide.desktopImage) : (firstSlide.desktopImage || firstSlide.mobileImage));
-    const imgObj = new Image();
+    const firstImageUrl = resolveImgPath(
+      isMobileView
+        ? (firstSlide.mobileImage || firstSlide.desktopImage)
+        : (firstSlide.desktopImage || firstSlide.mobileImage)
+    );
+    const imgObj = new window.Image();
     imgObj.src = firstImageUrl;
-    
-    const onLoaded = () => {
-      setImagesLoaded(true);
-    };
-    
+
+    const onLoaded = () => setImagesLoaded(true);
     imgObj.onload = onLoaded;
     imgObj.onerror = onLoaded;
   }, [destinations, isMobileView]);
@@ -156,17 +160,30 @@ export default function CinematicHero() {
 
       const effect = dest.effect || { scaleStart: 1.05, scaleEnd: 1.11, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 };
 
-      // Set up Ken Burns zoom effect
+      // If slide has no translation movement (e.g. Dubai, Kenya which relied on zoom-only),
+      // assign a subtle diagonal drift so they still feel alive like the other slides.
+      const hasTranslation = (effect.xStart !== effect.xEnd) || (effect.yStart !== effect.yEnd);
+      const panXStart = hasTranslation ? effect.xStart : -2;
+      const panXEnd   = hasTranslation ? effect.xEnd   :  2;
+      const panYStart = hasTranslation ? effect.yStart : -1;
+      const panYEnd   = hasTranslation ? effect.yEnd   :  1;
+
+      // Keep scale constant — compute the minimum to avoid revealing container edges during pan.
+      const maxX = Math.max(Math.abs(panXStart), Math.abs(panXEnd));
+      const maxY = Math.max(Math.abs(panYStart), Math.abs(panYEnd));
+      const constantScale = 1 + 2 * (Math.max(maxX, maxY) / 100);
+
+      // Set up image movement timeline with constant scale
       tl.fromTo(imageRefs.current[idx],
         { 
-          scale: effect.scaleStart, 
-          xPercent: effect.xStart, 
-          yPercent: effect.yStart 
+          scale: constantScale, 
+          xPercent: panXStart, 
+          yPercent: panYStart 
         },
         { 
-          scale: effect.scaleEnd, 
-          xPercent: effect.xEnd, 
-          yPercent: effect.yEnd, 
+          scale: constantScale, 
+          xPercent: panXEnd, 
+          yPercent: panYEnd, 
           duration: isLast ? transitionTime : movementDuration, 
           ease: 'none' 
         },
@@ -246,16 +263,13 @@ export default function CinematicHero() {
               src={resolveImgPath(isMobileView ? (dest.mobileImage || dest.desktopImage) : (dest.desktopImage || dest.mobileImage))}
               alt={getDestinationAltText(dest.name)}
               loading={idx === 0 ? "eager" : "lazy"}
-              {...(idx === 0 ? { fetchpriority: "high" } : { decoding: "async" })}
+              {...(idx === 0 ? { fetchPriority: "high" } : { decoding: "async" })}
               style={{
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
                 transformOrigin: 'center center',
-                willChange: 'transform',
-                // Cinematic colour grading treatment: slightly increased contrast, slightly reduced saturation
-                // Skip multi-property filter on mobile — 8 simultaneous GPU texture blits
-                filter: IS_MOBILE ? 'none' : 'contrast(1.08) saturate(0.88)'
+                willChange: 'transform'
               }}
             />
           </div>

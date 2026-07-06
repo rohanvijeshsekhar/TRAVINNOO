@@ -113,7 +113,7 @@ export default function Loader({ onComplete }) {
             x="140"
             y="710"
             textAnchor="middle"
-            fill="rgba(255, 255, 255, 0.4)"
+            fill="rgba(255, 255, 255, 0.15)"
             fontFamily="var(--font-sans)"
             fontSize="24"
             letterSpacing="0.15em"
@@ -192,8 +192,8 @@ export default function Loader({ onComplete }) {
           maxWidth: '600px'
         }}
       >
-        {/* Brand Name - fades in at 2.2s */}
-        <motion.div
+        {/* Brand Name Logo - fades in at 2.2s */}
+        <motion.img
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{
@@ -201,20 +201,15 @@ export default function Loader({ onComplete }) {
             duration: 0.8,
             ease: "easeOut"
           }}
+          src={`${import.meta.env.BASE_URL}images/logo_loading.png`}
+          alt="Travinno Logo"
           style={{
-            fontFamily: "var(--font-sans)",
-            fontWeight: 500,
-            fontSize: '24px',
-            letterSpacing: '0.25em',
-            color: '#FFFFFF',
-            textTransform: 'uppercase',
-            textAlign: 'center',
+            height: '24px',
+            objectFit: 'contain',
             userSelect: 'none',
             marginBottom: '8px'
           }}
-        >
-          TRAVINNO
-        </motion.div>
+        />
 
         {/* Tagline - fades in at 2.4s */}
         <motion.div
@@ -230,7 +225,7 @@ export default function Loader({ onComplete }) {
             fontWeight: 400,
             fontSize: '10px',
             letterSpacing: '0.18em',
-            color: 'rgba(245, 242, 236, 0.45)',
+            color: 'rgba(245, 242, 236, 0.22)',
             textTransform: 'uppercase',
             textAlign: 'center',
             userSelect: 'none',

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion } from 'framer-motion';
 import AboutJourney from '../AboutJourney';
 import AboutStats from '../AboutStats';
 import AboutPurpose from '../AboutPurpose';
@@ -300,153 +301,192 @@ function AboutIntroBackground() {
 
 export function ParallaxComponent() {
   const parallaxRef = useRef(null);
+  const heroImageRef = useRef(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const triggerElement = parallaxRef.current?.querySelector('[data-parallax-layers]');
-
-    if (triggerElement) {
-      const tl = gsap.timeline({
+    if (heroImageRef.current) {
+      gsap.to(heroImageRef.current, {
         scrollTrigger: {
-          trigger: triggerElement,
-          start: "0% 0%",
-          end: "100% 0%",
-          scrub: 1.2
-        }
-      });
-
-      const layers = [
-        { layer: "1", yPercent: 70 },
-        { layer: "2", yPercent: 55 },
-        { layer: "3", yPercent: 40 },
-        { layer: "4", yPercent: 10 }
-      ];
-
-      layers.forEach((layerObj, idx) => {
-        tl.to(
-          triggerElement.querySelectorAll(`[data-parallax-layer="${layerObj.layer}"]`),
-          {
-            yPercent: layerObj.yPercent,
-            ease: "none"
-          },
-          idx === 0 ? undefined : "<"
-        );
+          trigger: parallaxRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true
+        },
+        yPercent: 15,
+        ease: "none"
       });
     }
 
     return () => {
       ScrollTrigger.getAll().forEach(st => st.kill());
-      if (triggerElement) {
-        gsap.killTweensOf(triggerElement);
-      }
     };
   }, []);
 
   return (
-    <div className="parallax" ref={parallaxRef}>
-      <section className="parallax__header">
-        <div className="parallax__visuals">
-          <div className="parallax__black-line-overflow"></div>
-          <div data-parallax-layers className="parallax__layers">
-            {/* Background Layer 1 - Unsplash mountain backdrop */}
-            <img
-              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80"
-              loading="eager"
-              width="800"
-              data-parallax-layer="1"
-              alt=""
-              aria-hidden="true"
-              className="parallax__layer-img"
+    <div className="parallax" ref={parallaxRef} style={{ backgroundColor: '#050505', overflow: 'hidden' }}>
+      {/* Cinematic Full-screen Centered Hero */}
+      <section style={{
+        position: 'relative',
+        width: '100%',
+        height: '92vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        backgroundColor: '#050505'
+      }}>
+        {/* Background Image Layer */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '115%', // taller for parallax space
+          zIndex: 1,
+          overflow: 'hidden'
+        }}>
+          <img
+            ref={heroImageRef}
+            src={`${import.meta.env.BASE_URL}images/about_hero.png`}
+            alt="Cinematic Silhouette on Mountain Ridge B&W"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              filter: 'grayscale(100%) contrast(1.15) brightness(0.4)',
+              willChange: 'transform'
+            }}
+          />
+        </div>
+
+        {/* Ambient Overlays & Lighting */}
+        {/* 1. Subtle grid pattern */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'linear-gradient(rgba(245, 242, 236, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 242, 236, 0.04) 1px, transparent 1px)',
+          backgroundSize: '80px 80px',
+          pointerEvents: 'none',
+          zIndex: 2,
+          opacity: 0.7,
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 120px, black calc(100% - 120px), transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 120px, black calc(100% - 120px), transparent 100%)'
+        }} />
+
+        {/* 2. Top fade gradient */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '180px',
+          background: 'linear-gradient(to bottom, #050505 0%, rgba(5,5,5,0.7) 40%, transparent 100%)',
+          pointerEvents: 'none',
+          zIndex: 3
+        }} />
+
+        {/* 3. Bottom fade gradient */}
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          width: '100%',
+          height: '380px',
+          background: 'linear-gradient(to top, #050505 0%, rgba(5,5,5,0.85) 45%, rgba(5,5,5,0.3) 75%, transparent 100%)',
+          pointerEvents: 'none',
+          zIndex: 3
+        }} />
+
+
+
+        {/* Centered Typography Hero Content */}
+        <div style={{
+          position: 'relative',
+          zIndex: 10,
+          maxWidth: '850px',
+          width: '90%',
+          textAlign: 'center',
+          padding: '0 24px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '16px'
+        }}>
+          {/* Eyebrow */}
+          <motion.span
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 12px',
+              border: '1px solid rgba(193, 18, 31, 0.18)',
+              borderRadius: '100px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.72rem',
+              fontWeight: 500,
+              letterSpacing: '0.08em',
+              color: 'rgba(245, 242, 236, 0.85)',
+              background: 'rgba(193, 18, 31, 0.05)',
+              backdropFilter: 'blur(4px)',
+              WebkitBackdropFilter: 'blur(4px)'
+            }}
+          >
+            <span
+              style={{
+                width: '6px',
+                height: '6px',
+                backgroundColor: '#C1121F',
+                borderRadius: '50%',
+                display: 'inline-block'
+              }}
             />
-            {/* Midground Layer 2 - Osmo transparent midground hills */}
-            <img
-              src="https://cdn.prod.website-files.com/671752cd4027f01b1b8f1c7f/6717795b4d5ac529e7d3a562_osmo-parallax-layer-2.webp"
-              loading="eager"
-              width="800"
-              data-parallax-layer="2"
-              alt=""
-              aria-hidden="true"
-              className="parallax__layer-img"
-            />
-            {/* Text Title Layer 3 */}
-            <div data-parallax-layer="3" className="parallax__layer-title">
-              <h2 className="parallax__title">JOURNEY</h2>
-            </div>
-            {/* Foreground Layer 4 - Osmo transparent foreground forest */}
-            <img
-              src="https://cdn.prod.website-files.com/671752cd4027f01b1b8f1c7f/6717795bb5aceca85011ad83_osmo-parallax-layer-1.webp"
-              loading="eager"
-              width="800"
-              data-parallax-layer="4"
-              alt=""
-              aria-hidden="true"
-              className="parallax__layer-img"
-            />
-          </div>
-          <div className="parallax__fade"></div>
+            ABOUT TRAVINNO
+          </motion.span>
+
+          {/* Main Serif Heading with Cursive accent */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'clamp(2.2rem, 5.5vw, 4rem)',
+              fontWeight: 450,
+              lineHeight: 1.15,
+              color: '#F5F2EC',
+              margin: '0 0 8px 0',
+              letterSpacing: '-0.5px'
+            }}
+          >
+            Beyond Destinations, <br />
+            We Create <span className="journey-allura-text" style={{ fontSize: '1.25em', textTransform: 'none', marginLeft: '6px', verticalAlign: 'middle' }}>Experiences</span>
+          </motion.h1>
+
+          {/* Elegant Sans-serif Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+            style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: 'clamp(0.95rem, 1.6vw, 1.12rem)',
+              lineHeight: 1.75,
+              color: 'rgba(245, 242, 236, 0.72)',
+              margin: '0 auto',
+              maxWidth: '680px',
+              fontWeight: 400
+            }}
+          >
+            We are curators of extraordinary journeys, designing bespoke travel curations that transcend boundaries. Combining meticulous local expertise with global standards, we craft elevated, seamless experiences across the world's most desired destinations.
+          </motion.p>
         </div>
       </section>
 
-      {/* Editorial Content under header */}
-      <section className="parallax__content">
-        <AboutIntroBackground />
-        <div style={{
-          maxWidth: '800px',
-          width: '100%',
-          textAlign: 'center',
-          padding: '0 24px',
-          color: '#FFFFFF',
-          zIndex: 10
-        }}>
-          <h3 style={{
-            fontFamily: 'Satoshi, sans-serif',
-            fontSize: 'clamp(2rem, 4vw, 3rem)',
-            fontWeight: 500,
-            marginBottom: '40px',
-            lineHeight: 1.35,
-            letterSpacing: '-0.02em'
-          }}>
-            Experience Excellence in Travel <br className="hidden md:inline" />
-            with <span className="journey-allura-text" style={{ fontSize: '1.45em', textTransform: 'none', marginLeft: '6px' }}>Travinno</span>
-          </h3>
-          <div style={{
-            textAlign: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '24px',
-            marginBottom: '48px'
-          }}>
-            <p style={{
-              fontFamily: 'Satoshi, sans-serif',
-              fontSize: '16px',
-              lineHeight: 1.8,
-              color: 'rgba(255, 255, 255, 0.7)',
-              margin: 0
-            }}>
-              At Travinno, we specialize in crafting high-quality leisure and business travel experiences in the UAE, Thailand, and Kerala. As a Destination Management Company (DMC), we blend local expertise with international standards, curating top attractions, accommodations, and services for tailor-made travel solutions.
-            </p>
-            <p style={{
-              fontFamily: 'Satoshi, sans-serif',
-              fontSize: '16px',
-              lineHeight: 1.8,
-              color: 'rgba(255, 255, 255, 0.7)',
-              margin: 0
-            }}>
-              Our strength lies in partnerships with clients and a global network of hotels, best attractions, logistics and service providers—ensuring seamless, high-quality experiences. We prioritize individualized care, professionalism, and prompt service, addressing every request with dedication and attention to detail.
-            </p>
-            <p style={{
-              fontFamily: 'Satoshi, sans-serif',
-              fontSize: '16px',
-              lineHeight: 1.8,
-              color: 'rgba(255, 255, 255, 0.7)',
-              margin: 0
-            }}>
-            </p>
-          </div>
-        </div>
-      </section>
-      
       {/* Scroll-Linked Vertical Journey Timeline */}
       <AboutJourney />
 
