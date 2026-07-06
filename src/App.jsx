@@ -55,8 +55,8 @@ function App() {
     }));
   });
 
-  const scrollToAnchor = (targetId, delayMs = 0) => {
-    const execute = () => {
+  const scrollToAnchor = (targetId) => {
+    const doScroll = () => {
       const el = document.getElementById(targetId);
       if (!el) return;
 
@@ -79,10 +79,19 @@ function App() {
       }
     };
 
-    if (delayMs > 0) {
-      setTimeout(execute, delayMs);
+    if (window.travinnoScrollTriggerReady) {
+      doScroll();
     } else {
-      execute();
+      let resolved = false;
+      const handleReady = () => {
+        if (resolved) return;
+        resolved = true;
+        window.removeEventListener('travinnoScrollTriggerReady', handleReady);
+        // Defer scroll to next frame to allow DOM layout to update after refresh
+        requestAnimationFrame(doScroll);
+      };
+      window.addEventListener('travinnoScrollTriggerReady', handleReady);
+      setTimeout(handleReady, 2500); // safety fallback timeout
     }
   };
 
@@ -132,8 +141,18 @@ function App() {
           setCurrentView('destinations');
         } else {
           // All other hashes: show home page
-          // Home-section anchors (services, testimonials etc.) are handled
-          // via sessionStorage set by Header.jsx before the hash change.
+          // If the hash is a home section anchor (e.g. #services, #testimonials, #contact, #why, #journey),
+          // set it as a pending scroll target so the Lenis initialization scrolls to it,
+          // or scroll directly if already on home page with active Lenis.
+          const targetId = hash ? hash.substring(1) : null;
+          const homeSections = ['services', 'testimonials', 'contact', 'why', 'journey'];
+          if (targetId && homeSections.includes(targetId)) {
+            if (window.lenis) {
+              scrollToAnchor(targetId);
+            } else {
+              sessionStorage.setItem('travinno_pending_scroll', targetId);
+            }
+          }
           setCurrentView('home');
         }
       }
@@ -207,12 +226,11 @@ function App() {
     gsap.ticker.add(tickerUpdate);
 
     // If a pending scroll target was stored in sessionStorage (cross-page nav),
-    // consume it ONCE. Delay 500ms so child components (DestinationStorySection etc.)
-    // have time to mount and register their ScrollTrigger pin spacers.
+    // consume it ONCE. It coordinates with travinnoScrollTriggerReady state automatically.
     const pendingTarget = sessionStorage.getItem('travinno_pending_scroll');
     if (pendingTarget) {
       sessionStorage.removeItem('travinno_pending_scroll');
-      scrollToAnchor(pendingTarget, 800);
+      scrollToAnchor(pendingTarget);
     }
 
     const ctx = gsap.context(() => {

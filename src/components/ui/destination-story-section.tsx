@@ -234,10 +234,12 @@ export default function DestinationStorySection() {
       rafId1 = requestAnimationFrame(() => {
         rafId2 = requestAnimationFrame(() => {
           ScrollTrigger.refresh(true);
+          window.travinnoScrollTriggerReady = true;
+          window.dispatchEvent(new CustomEvent('travinnoScrollTriggerReady'));
         });
       });
     };
-
+ 
     const checkAndInit = () => {
       const loader = document.querySelector('.fullscreen-loader');
       if (loader) {
@@ -258,15 +260,16 @@ export default function DestinationStorySection() {
         }
       }
     };
-
+ 
     checkAndInit();
-
+ 
     return () => {
       if (loaderListener) {
         window.removeEventListener('travinnoLoaderComplete', loaderListener);
       }
       cancelAnimationFrame(rafId1);
       cancelAnimationFrame(rafId2);
+      window.travinnoScrollTriggerReady = false;
       if (ctx) {
         ctx.revert();
       }
