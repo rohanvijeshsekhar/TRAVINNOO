@@ -1,3 +1,4 @@
+// Deployment Trigger: 2026-07-07
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { fileURLToPath, URL } from 'url'
