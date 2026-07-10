@@ -103,7 +103,59 @@ async function handleRequest(req, res) {
     return send(res, 200, { success: true });
   }
 
-  // 404
+  // ── Static file serving + SPA fallback ──────────────────────────────────────
+  // Non-API requests: serve from dist/ folder
+  const DIST = path.join(__dirname, 'dist');
+  const MIME = {
+    '.html':  'text/html; charset=utf-8',
+    '.js':    'application/javascript',
+    '.css':   'text/css',
+    '.json':  'application/json',
+    '.png':   'image/png',
+    '.jpg':   'image/jpeg',
+    '.jpeg':  'image/jpeg',
+    '.gif':   'image/gif',
+    '.svg':   'image/svg+xml',
+    '.webp':  'image/webp',
+    '.woff':  'font/woff',
+    '.woff2': 'font/woff2',
+    '.ttf':   'font/ttf',
+    '.ico':   'image/x-icon',
+    '.mp4':   'video/mp4',
+    '.webm':  'video/webm',
+  };
+
+  // Map URL path to a file in dist/
+  // e.g. /assets/index.js → dist/assets/index.js
+  //      / or /home/admin → dist/index.html (SPA fallback)
+  const filePath = path.join(DIST, urlPath === '/' ? 'index.html' : urlPath);
+
+  // Security: prevent path traversal
+  if (!filePath.startsWith(DIST)) {
+    return send(res, 403, { error: 'Forbidden' });
+  }
+
+  try {
+    const stat = fs.statSync(filePath);
+    if (stat.isFile()) {
+      const ext = path.extname(filePath).toLowerCase();
+      const contentType = MIME[ext] || 'application/octet-stream';
+      res.writeHead(200, { 'Content-Type': contentType });
+      fs.createReadStream(filePath).pipe(res);
+      return;
+    }
+  } catch (e) {
+    // File not found — fall through to SPA fallback
+  }
+
+  // SPA fallback: serve index.html for React Router routes
+  const indexFile = path.join(DIST, 'index.html');
+  if (fs.existsSync(indexFile)) {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    fs.createReadStream(indexFile).pipe(res);
+    return;
+  }
+
   send(res, 404, { error: 'Not found', path: urlPath });
 }
 
