@@ -1051,11 +1051,10 @@ export default function AdminPanel() {
           <button
             onClick={async () => {
               if (confirm("Reset the CMS database to initial defaults? This will clear storage limits and restore the original template data, but remove custom modifications.")) {
-                localStorage.clear();
                 try {
                   const { db } = await import('../lib/db');
                   if (db.serverActive) {
-                    await fetch('http://localhost:5001/api/reset', { method: 'POST' }).catch(() => null);
+                    await fetch(`${db.apiBase}/api/reset`, { method: 'POST' }).catch(() => null);
                   }
                 } catch (e) {}
                 window.location.reload();

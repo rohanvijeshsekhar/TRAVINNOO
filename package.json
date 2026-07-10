@@ -7,6 +7,7 @@
     "dev": "vite",
     "server": "node server.js",
     "build": "vite build",
+    "build:prod": "vite build --mode production",
     "build:gh": "vite build --mode github",
     "build:gh2": "vite build --mode github2",
     "lint": "eslint .",
@@ -22,6 +23,7 @@
     "clsx": "^2.1.1",
     "cobe": "^2.0.1",
     "cors": "^2.8.6",
+    "dotenv": "^16.4.5",
     "express": "^5.2.1",
     "framer-motion": "^12.40.0",
     "gsap": "^3.15.0",
@@ -36,6 +38,7 @@
     "three": "^0.184.0"
   },
   "devDependencies": {
+    "mysql2": "^3.11.0",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.3.1",
     "@types/react": "^19.2.14",

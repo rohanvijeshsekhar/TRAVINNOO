@@ -8,7 +8,8 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig(({ command, mode }) => {
   const isGithub = mode === 'github';
   const isGithub2 = mode === 'github2';
-  const base = isGithub ? '/TRAVINNOO/' : isGithub2 ? '/TRAVINNO2/' : '/demo/';
+  const isProd = mode === 'production';
+  const base = isGithub ? '/TRAVINNOO/' : isGithub2 ? '/TRAVINNO2/' : isProd ? '/' : '/demo/';
 
   return {
     plugins: [react(), tailwindcss()],
