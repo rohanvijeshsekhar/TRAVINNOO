@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import fs from 'fs';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -17,53 +17,43 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// ─── SQLite Setup ──────────────────────────────────────────────────────────────
-// Use absolute path so it works correctly regardless of working directory
-const dbPath = path.resolve(__dirname, 'travinno.db');
+// ─── JSON File Storage (replaces SQLite — no native modules needed) ────────────
+// All data is stored in a single JSON file: travinno-data.json
+// This works on any hosting without compilation.
 
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('Error opening SQLite database:', err);
-  } else {
-    console.log(`Connected to SQLite database at: ${dbPath}`);
-  }
-});
+const DATA_FILE = path.resolve(__dirname, 'travinno-data.json');
 
-const dbRun = (sql, params = []) => new Promise((resolve, reject) => {
-  db.run(sql, params, function (err) {
-    if (err) reject(err);
-    else resolve(this);
-  });
-});
-
-const dbAll = (sql, params = []) => new Promise((resolve, reject) => {
-  db.all(sql, params, (err, rows) => {
-    if (err) reject(err);
-    else resolve(rows);
-  });
-});
-
-async function initDb() {
+function readData() {
   try {
-    await dbRun(`
-      CREATE TABLE IF NOT EXISTS collections (
-        key TEXT PRIMARY KEY,
-        value TEXT
-      )
-    `);
-    console.log('Verified SQLite table schema.');
-  } catch (err) {
-    console.error('Error initializing SQLite database:', err);
+    if (fs.existsSync(DATA_FILE)) {
+      const raw = fs.readFileSync(DATA_FILE, 'utf8');
+      return JSON.parse(raw);
+    }
+  } catch (e) {
+    console.error('Error reading data file:', e.message);
+  }
+  return {};
+}
+
+function writeData(data) {
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
+    return true;
+  } catch (e) {
+    console.error('Error writing data file:', e.message);
+    return false;
   }
 }
 
-initDb();
+// Initialize data file if it doesn't exist
+if (!fs.existsSync(DATA_FILE)) {
+  writeData({});
+  console.log(`Created data store at: ${DATA_FILE}`);
+} else {
+  console.log(`Data store loaded from: ${DATA_FILE}`);
+}
 
 // ─── API Router ────────────────────────────────────────────────────────────────
-// On Hostinger Passenger, all requests are routed through server.js.
-// Apache serves /demo/ static files directly; Passenger handles /demo/api/*
-// Mount at both /api (local dev) and /demo/api (Hostinger production)
-
 const apiRouter = express.Router();
 
 // Health Check
@@ -72,17 +62,9 @@ apiRouter.get('/ping', (req, res) => {
 });
 
 // Get all collections
-apiRouter.get('/collections', async (req, res) => {
+apiRouter.get('/collections', (req, res) => {
   try {
-    const rows = await dbAll('SELECT key, value FROM collections');
-    const data = {};
-    rows.forEach(row => {
-      try {
-        data[row.key] = JSON.parse(row.value);
-      } catch (e) {
-        data[row.key] = row.value;
-      }
-    });
+    const data = readData();
     res.json(data);
   } catch (err) {
     console.error('Error fetching collections:', err);
@@ -91,20 +73,21 @@ apiRouter.get('/collections', async (req, res) => {
 });
 
 // Save/Upsert a collection
-apiRouter.post('/save', async (req, res) => {
+apiRouter.post('/save', (req, res) => {
   const { key, value } = req.body;
   if (!key || value === undefined) {
     return res.status(400).json({ error: 'Missing key or value' });
   }
 
-  const valueStr = typeof value === 'string' ? value : JSON.stringify(value);
-
   try {
-    await dbRun(
-      'INSERT OR REPLACE INTO collections (key, value) VALUES (?, ?)',
-      [key, valueStr]
-    );
-    res.json({ success: true });
+    const data = readData();
+    data[key] = typeof value === 'string' ? JSON.parse(value) : value;
+    const ok = writeData(data);
+    if (ok) {
+      res.json({ success: true });
+    } else {
+      res.status(500).json({ error: 'Failed to write data file' });
+    }
   } catch (err) {
     console.error(`Error saving collection ${key}:`, err);
     res.status(500).json({ error: err.message });
@@ -112,26 +95,28 @@ apiRouter.post('/save', async (req, res) => {
 });
 
 // Reset/Clear all collections
-apiRouter.post('/reset', async (req, res) => {
+apiRouter.post('/reset', (req, res) => {
   try {
-    await dbRun('DELETE FROM collections');
-    res.json({ success: true });
+    const ok = writeData({});
+    if (ok) {
+      res.json({ success: true });
+    } else {
+      res.status(500).json({ error: 'Failed to reset data file' });
+    }
   } catch (err) {
-    console.error('Error clearing database:', err);
+    console.error('Error clearing data:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Mount API router at both paths:
-//   /api        → local dev (http://localhost:5001/api/...)
-//   /demo/api   → Hostinger production (https://fazo.in/demo/api/...)
+// Mount the API router at both prefixes:
+//   /api        → local dev  (http://localhost:5001/api/...)
+//   /demo/api   → production (https://fazo.in/demo/api/...)
 app.use('/api', apiRouter);
 app.use('/demo/api', apiRouter);
 
 // ─── Static + SPA Fallback ─────────────────────────────────────────────────────
-// On Hostinger, Apache already serves static files in public_html/demo/
-// But we still serve dist/ here so the app works in local dev too.
-// The SPA fallback ensures React Router works for direct URL access.
+// Serves the built React app locally. On Hostinger, Apache serves dist/ directly.
 const distPath = path.resolve(__dirname, 'dist');
 app.use('/demo', express.static(distPath));
 app.get('/demo/*', (req, res) => {
@@ -142,8 +127,8 @@ app.get('/demo', (req, res) => {
 });
 
 // ─── Start Server ──────────────────────────────────────────────────────────────
-// On Hostinger Passenger, the PORT env variable is injected automatically.
-// Locally, defaults to 5001.
+// Hostinger Passenger injects PORT automatically.
+// Local dev defaults to 5001.
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
@@ -151,5 +136,5 @@ app.listen(PORT, () => {
   console.log(`  Prod:   https://fazo.in/demo/api/ping`);
 });
 
-// Passenger compatibility — export app for Passenger's require() mode
+// Passenger compatibility
 export default app;
