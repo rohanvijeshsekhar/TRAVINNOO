@@ -17,14 +17,15 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Serve built React frontend from dist/
+// Resolve paths
 const distPath = path.resolve(__dirname, 'dist');
-app.use(express.static(distPath));
-
-// Resolve SQLite database file path
 const dbPath = path.resolve(__dirname, './travinno.db');
 
-// Establish connection to SQLite database
+// Serve built React frontend static assets under /demo/
+app.use('/demo', express.static(distPath));
+
+// ─── SQLite Setup ──────────────────────────────────────────────────────────────
+
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('Error opening SQLite database:', err);
@@ -33,7 +34,6 @@ const db = new sqlite3.Database(dbPath, (err) => {
   }
 });
 
-// Helper functions to wrap sqlite3 methods in Promises
 const dbRun = (sql, params = []) => new Promise((resolve, reject) => {
   db.run(sql, params, function (err) {
     if (err) reject(err);
@@ -50,7 +50,6 @@ const dbAll = (sql, params = []) => new Promise((resolve, reject) => {
 
 async function initDb() {
   try {
-    // Create the collections table with TEXT type
     await dbRun(`
       CREATE TABLE IF NOT EXISTS collections (
         key TEXT PRIMARY KEY,
@@ -65,13 +64,18 @@ async function initDb() {
 
 initDb();
 
+// ─── API Router ────────────────────────────────────────────────────────────────
+// Mount at BOTH /api (local dev) and /demo/api (production via fazo.in/demo/)
+
+const apiRouter = express.Router();
+
 // Health Check
-app.get('/api/ping', (req, res) => {
+apiRouter.get('/ping', (req, res) => {
   res.json({ success: true });
 });
 
 // Get all collections
-app.get('/api/collections', async (req, res) => {
+apiRouter.get('/collections', async (req, res) => {
   try {
     const rows = await dbAll('SELECT key, value FROM collections');
     const data = {};
@@ -90,16 +94,15 @@ app.get('/api/collections', async (req, res) => {
 });
 
 // Save/Upsert a collection
-app.post('/api/save', async (req, res) => {
+apiRouter.post('/save', async (req, res) => {
   const { key, value } = req.body;
   if (!key || value === undefined) {
     return res.status(400).json({ error: 'Missing key or value' });
   }
-  
+
   const valueStr = typeof value === 'string' ? value : JSON.stringify(value);
-  
+
   try {
-    // SQLite upsert syntax using INSERT OR REPLACE
     await dbRun(
       'INSERT OR REPLACE INTO collections (key, value) VALUES (?, ?)',
       [key, valueStr]
@@ -112,7 +115,7 @@ app.post('/api/save', async (req, res) => {
 });
 
 // Reset/Clear all collections
-app.post('/api/reset', async (req, res) => {
+apiRouter.post('/reset', async (req, res) => {
   try {
     await dbRun('DELETE FROM collections');
     res.json({ success: true });
@@ -122,11 +125,23 @@ app.post('/api/reset', async (req, res) => {
   }
 });
 
-// SPA fallback — serve index.html for all non-API routes so React Router works
-app.get('*', (req, res) => {
+// Mount the same router at both prefixes
+app.use('/api', apiRouter);       // local dev:  http://localhost:5001/api/...
+app.use('/demo/api', apiRouter);  // production: https://fazo.in/demo/api/...
+
+// ─── SPA Fallback ──────────────────────────────────────────────────────────────
+// All /demo/* routes that aren't /demo/api/* get index.html (React Router support)
+app.get('/demo/*', (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
+});
+
+// Also handle bare /demo (no trailing slash)
+app.get('/demo', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
 app.listen(PORT, () => {
-  console.log('Express SQLite server running on http://localhost:' + PORT);
+  console.log(`Express SQLite server running on http://localhost:${PORT}`);
+  console.log(`  Local dev API:  http://localhost:${PORT}/api/ping`);
+  console.log(`  Production API: https://fazo.in/demo/api/ping`);
 });

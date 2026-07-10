@@ -8,8 +8,8 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig(({ command, mode }) => {
   const isGithub = mode === 'github';
   const isGithub2 = mode === 'github2';
-  const isProd = mode === 'production';
-  const base = isGithub ? '/TRAVINNOO/' : isGithub2 ? '/TRAVINNO2/' : isProd ? '/' : '/demo/';
+  // Default build (npm run build) uses /demo/ — matches fazo.in/demo/
+  const base = isGithub ? '/TRAVINNOO/' : isGithub2 ? '/TRAVINNO2/' : '/demo/';
 
   return {
     plugins: [react(), tailwindcss()],

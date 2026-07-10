@@ -349,10 +349,8 @@ const broadcastChange = () => {
 };
 
 const getApiUrl = () => {
-  // In production, API is served from the same origin as the frontend.
-  // Use a relative base ('') so fetch('/api/...') hits the correct server
-  // regardless of port or domain — no hardcoded URL needed.
-  if (import.meta.env.PROD) return '';
+  // In production the app is served under /demo/, so API routes are at /demo/api/...
+  if (import.meta.env.PROD) return '/demo';
   // In local dev, use VITE_API_URL from .env, or fall back to localhost:5001
   return import.meta.env.VITE_API_URL || 'http://localhost:5001';
 };
