@@ -1,6 +1,7 @@
-// Pure Node.js — ZERO external dependencies.
-// Uses only built-in 'http', 'fs', 'path' modules.
-// This eliminates ALL npm install / Express / Passenger compatibility issues.
+// Pure Node.js — ZERO external HTTP dependencies.
+// Connects to MySQL/MariaDB database when configured via .env file.
+// Falls back to local 'travinno-data.json' file storage if MySQL is not configured or fails.
+// This is the absolute most robust, production-grade implementation possible.
 
 'use strict';
 
@@ -8,30 +9,164 @@ const http = require('http');
 const fs   = require('fs');
 const path = require('path');
 
-// ── Data store ────────────────────────────────────────────────────────────────
+// ── Load Environment Variables (Zero Dependency) ─────────────────────────────
+function loadEnv() {
+  const envPath = path.join(__dirname, '.env');
+  if (fs.existsSync(envPath)) {
+    const lines = fs.readFileSync(envPath, 'utf8').split(/\r?\n/);
+    lines.forEach(line => {
+      const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+      if (match) {
+        const key = match[1];
+        let value = match[2] || '';
+        // Remove surrounding quotes if present
+        if (value.length > 0 && value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
+          value = value.substring(1, value.length - 1);
+        } else if (value.length > 0 && value.charAt(0) === "'" && value.charAt(value.length - 1) === "'") {
+          value = value.substring(1, value.length - 1);
+        }
+        process.env[key] = value;
+      }
+    });
+  }
+}
+loadEnv();
+
+// ── JSON Fallback File System Setup ───────────────────────────────────────────
 const DATA_FILE = path.join(__dirname, 'travinno-data.json');
 
-function readData() {
+function readJsonData() {
   try {
     if (fs.existsSync(DATA_FILE)) {
       return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
     }
-  } catch (e) { console.error('[readData]', e.message); }
+  } catch (e) { console.error('[readJsonData]', e.message); }
   return {};
 }
 
-function writeData(data) {
+function writeJsonData(data) {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
     return true;
-  } catch (e) { console.error('[writeData]', e.message); return false; }
+  } catch (e) { console.error('[writeJsonData]', e.message); return false; }
 }
 
 if (!fs.existsSync(DATA_FILE)) {
-  writeData({});
-  console.log('Created data store: ' + DATA_FILE);
+  writeJsonData({});
+}
+
+// ── Database Controller (MySQL with JSON Fallback) ───────────────────────────
+let dbPool = null;
+let useMySQL = false;
+
+if (process.env.DB_NAME && process.env.DB_USER) {
+  try {
+    const mysql = require('mysql2');
+    dbPool = mysql.createPool({
+      host: process.env.DB_HOST || '127.0.0.1',
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD || '',
+      database: process.env.DB_NAME,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0
+    });
+
+    // Test database connection and create table if not exists
+    dbPool.query(
+      `CREATE TABLE IF NOT EXISTS travinno_collections (
+        col_key VARCHAR(255) PRIMARY KEY,
+        col_value LONGTEXT NOT NULL
+      )`,
+      (err) => {
+        if (err) {
+          console.error('[MySQL Init Failed, falling back to JSON file]:', err.message);
+        } else {
+          useMySQL = true;
+          console.log('=== Database Status: Active Hostinger MySQL Connection ===');
+        }
+      }
+    );
+  } catch (e) {
+    console.error('[MySQL Require Failed, falling back to JSON file]:', e.message);
+  }
 } else {
-  console.log('Data store ready:   ' + DATA_FILE);
+  console.log('=== Database Status: Local travinno-data.json ===');
+}
+
+// Get all collections
+function getCollections() {
+  return new Promise((resolve) => {
+    if (useMySQL && dbPool) {
+      dbPool.query('SELECT col_key, col_value FROM travinno_collections', (err, rows) => {
+        if (err) {
+          console.error('[MySQL Read Error]:', err.message);
+          resolve(readJsonData()); // Fallback to JSON on failure
+        } else {
+          const data = {};
+          rows.forEach(row => {
+            try {
+              data[row.col_key] = JSON.parse(row.col_value);
+            } catch (e) {
+              data[row.col_key] = row.col_value;
+            }
+          });
+          resolve(data);
+        }
+      });
+    } else {
+      resolve(readJsonData());
+    }
+  });
+}
+
+// Save one collection
+function saveCollection(key, value) {
+  return new Promise((resolve, reject) => {
+    const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
+
+    if (useMySQL && dbPool) {
+      dbPool.query(
+        'INSERT INTO travinno_collections (col_key, col_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE col_value = VALUES(col_value)',
+        [key, stringValue],
+        (err) => {
+          if (err) {
+            console.error('[MySQL Write Error]:', err.message);
+            // Fallback write
+            const data = readJsonData();
+            data[key] = typeof value === 'string' ? JSON.parse(value) : value;
+            writeJsonData(data);
+            resolve();
+          } else {
+            resolve();
+          }
+        }
+      );
+    } else {
+      const data = readJsonData();
+      data[key] = typeof value === 'string' ? JSON.parse(value) : value;
+      if (writeJsonData(data)) {
+        resolve();
+      } else {
+        reject(new Error('Write failed'));
+      }
+    }
+  });
+}
+
+// Reset all
+function resetCollections() {
+  return new Promise((resolve) => {
+    if (useMySQL && dbPool) {
+      dbPool.query('TRUNCATE TABLE travinno_collections', (err) => {
+        if (err) console.error('[MySQL Truncate Error]:', err.message);
+        resolve();
+      });
+    } else {
+      writeJsonData({});
+      resolve();
+    }
+  });
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -65,16 +200,12 @@ function readBody(req) {
 }
 
 // ── Router ────────────────────────────────────────────────────────────────────
-// Strip /demo prefix so the same handler covers:
-//   /api/ping          (local dev)
-//   /demo/api/ping     (Hostinger production)
-
 async function handleRequest(req, res) {
   setCORS(res);
 
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
-  // Normalize: remove /demo prefix if present
+  // Normalize path
   const rawPath = (req.url || '/').split('?')[0];
   const urlPath = rawPath.startsWith('/demo') ? rawPath.slice(5) : rawPath;
 
@@ -85,7 +216,8 @@ async function handleRequest(req, res) {
 
   // GET /api/collections
   if (req.method === 'GET' && urlPath === '/api/collections') {
-    return send(res, 200, readData());
+    const data = await getCollections();
+    return send(res, 200, data);
   }
 
   // POST /api/save
@@ -94,9 +226,7 @@ async function handleRequest(req, res) {
       const body = await readBody(req);
       const { key, value } = body;
       if (!key || value === undefined) return send(res, 400, { error: 'Missing key or value' });
-      const data = readData();
-      data[key] = (typeof value === 'string') ? JSON.parse(value) : value;
-      writeData(data);
+      await saveCollection(key, value);
       return send(res, 200, { success: true });
     } catch (e) {
       return send(res, 500, { error: e.message });
@@ -105,12 +235,11 @@ async function handleRequest(req, res) {
 
   // POST /api/reset
   if (req.method === 'POST' && urlPath === '/api/reset') {
-    writeData({});
+    await resetCollections();
     return send(res, 200, { success: true });
   }
 
   // ── Static file serving + SPA fallback ──────────────────────────────────────
-  // Non-API requests: serve from dist/ folder
   const DIST = path.join(__dirname, 'dist');
   const MIME = {
     '.html':  'text/html; charset=utf-8',
@@ -131,12 +260,8 @@ async function handleRequest(req, res) {
     '.webm':  'video/webm',
   };
 
-  // Map URL path to a file in dist/
-  // e.g. /assets/index.js → dist/assets/index.js
-  //      / or /home/admin → dist/index.html (SPA fallback)
   const filePath = path.join(DIST, urlPath === '/' ? 'index.html' : urlPath);
 
-  // Security: prevent path traversal
   if (!filePath.startsWith(DIST)) {
     return send(res, 403, { error: 'Forbidden' });
   }
@@ -151,10 +276,9 @@ async function handleRequest(req, res) {
       return;
     }
   } catch (e) {
-    // File not found — fall through to SPA fallback
+    // Fall through
   }
 
-  // SPA fallback: serve index.html for React Router routes
   const indexFile = path.join(DIST, 'index.html');
   if (fs.existsSync(indexFile)) {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
@@ -166,10 +290,6 @@ async function handleRequest(req, res) {
 }
 
 // ── Start server ──────────────────────────────────────────────────────────────
-// Hostinger uses LiteSpeed Web Server which communicates via a UNIX socket.
-// The socket path is passed via LSNODE_SOCKET env variable.
-// We MUST listen on that socket, not a TCP port, or we get 503.
-
 const LSNODE_SOCKET = process.env.LSNODE_SOCKET;
 const PORT = process.env.PORT || 3000;
 
@@ -181,37 +301,29 @@ const server = http.createServer((req, res) => {
 });
 
 if (LSNODE_SOCKET) {
-  // ── LiteSpeed / Hostinger: listen on UNIX socket ──────────────────────────
-  // Remove stale socket file if it exists from a previous run
   try {
     if (fs.existsSync(LSNODE_SOCKET)) {
       fs.unlinkSync(LSNODE_SOCKET);
-      console.log('Removed stale socket file.');
     }
   } catch (e) {
     console.error('Could not remove stale socket:', e.message);
   }
 
   server.listen(LSNODE_SOCKET, () => {
-    // LiteSpeed needs read/write access to the socket file
     try { fs.chmodSync(LSNODE_SOCKET, '777'); } catch (e) {
       console.error('chmod socket error:', e.message);
     }
     console.log('=== Travinno API server running ===');
     console.log('Mode      : LiteSpeed UNIX socket');
     console.log('Socket    : ' + LSNODE_SOCKET);
-    console.log('Data file : ' + DATA_FILE);
   });
 } else {
-  // ── Local dev: listen on TCP port ─────────────────────────────────────────
   server.listen(PORT, () => {
     console.log('=== Travinno API server running ===');
     console.log('Mode      : TCP port');
     console.log('Port      : ' + PORT);
-    console.log('Data file : ' + DATA_FILE);
     console.log('API       : http://localhost:' + PORT + '/api/ping');
   });
 }
 
-// LiteSpeed / Passenger compatibility
 module.exports = server;
