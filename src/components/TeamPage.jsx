@@ -64,7 +64,8 @@ export default function TeamPage() {
   }, []);
 
   useEffect(() => {
-    import('../lib/db').then(({ db }) => {
+    import('../lib/db').then(async ({ db }) => {
+      if (db.initPromise) await db.initPromise;
       setTeamList(db.getTeam());
       const handleUpdate = () => setTeamList(db.getTeam());
       window.addEventListener('travinno-db-update', handleUpdate);

@@ -140,7 +140,8 @@ function LogoCloudSection() {
   const [partners, setPartners] = useState([]);
 
   useEffect(() => {
-    import('../lib/db').then(({ db }) => {
+    import('../lib/db').then(async ({ db }) => {
+      if (db.initPromise) await db.initPromise;
       const dbLogos = db.getLogos();
       setPartners(dbLogos.map((src, i) => ({
         id: i,
