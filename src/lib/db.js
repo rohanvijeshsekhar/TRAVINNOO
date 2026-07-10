@@ -414,12 +414,12 @@ export const db = {
     // ── STEP 2: Fetch from server in background ───────────────────────────────
     this.initPromise = (async () => {
       try {
-        const pingRes = await fetch(`${API_BASE}/api/ping`).then(r => r.json()).catch(() => null);
+        const pingRes = await fetch(`${API_BASE}/api/ping?t=${Date.now()}`).then(r => r.json()).catch(() => null);
         if (pingRes && pingRes.success) {
           console.log(`Express server detected on ${API_BASE}. Syncing collections...`);
           this.serverActive = true;
 
-          const data = await fetch(`${API_BASE}/api/collections`).then(r => r.json()).catch(() => ({}));
+          const data = await fetch(`${API_BASE}/api/collections?t=${Date.now()}`).then(r => r.json()).catch(() => ({}));
 
           const collectionsToSync = [
             { key: 'travinno_destinations', defaultVal: INITIAL_DESTINATIONS },
@@ -435,16 +435,19 @@ export const db = {
           ];
 
           for (const item of collectionsToSync) {
-            if (data[item.key] && data[item.key].length > 0) {
+            if (data[item.key] !== undefined && data[item.key] !== null) {
               this.collections[item.key] = data[item.key];
               // Update session cache with fresh server data
               this._ssSet(item.key, data[item.key]);
             } else {
+              // Upload defaults because it's completely missing
               await fetch(`${API_BASE}/api/save`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ key: item.key, value: item.defaultVal })
               }).catch(() => null);
+              this.collections[item.key] = item.defaultVal;
+              this._ssSet(item.key, item.defaultVal);
             }
           }
 
@@ -466,7 +469,7 @@ export const db = {
   saveHeroSlides(list, activityMessage = null) {
     this.collections['travinno_hero_slides'] = list;
     this._ssSet('travinno_hero_slides', list);
-    if (this.serverActive) {
+    if (this.serverActive || import.meta.env.PROD) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -521,7 +524,7 @@ export const db = {
     const updatedLogs = [newLog, ...logs].slice(0, 100);
     this.collections['travinno_activities'] = updatedLogs;
     this._ssSet('travinno_activities', updatedLogs);
-    if (this.serverActive) {
+    if (this.serverActive || import.meta.env.PROD) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -535,7 +538,7 @@ export const db = {
   saveDestinations(data, activityMsg) {
     this.collections['travinno_destinations'] = data;
     this._ssSet('travinno_destinations', data);
-    if (this.serverActive) {
+    if (this.serverActive || import.meta.env.PROD) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_destinations', value: data })
@@ -547,7 +550,7 @@ export const db = {
   saveBlogs(data, activityMsg) {
     this.collections['travinno_blogs'] = data;
     this._ssSet('travinno_blogs', data);
-    if (this.serverActive) {
+    if (this.serverActive || import.meta.env.PROD) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_blogs', value: data })
@@ -559,7 +562,7 @@ export const db = {
   saveCareers(data, activityMsg) {
     this.collections['travinno_careers'] = data;
     this._ssSet('travinno_careers', data);
-    if (this.serverActive) {
+    if (this.serverActive || import.meta.env.PROD) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_careers', value: data })
@@ -571,7 +574,7 @@ export const db = {
   saveTeam(data, activityMsg) {
     this.collections['travinno_team'] = data;
     this._ssSet('travinno_team', data);
-    if (this.serverActive) {
+    if (this.serverActive || import.meta.env.PROD) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_team', value: data })
@@ -583,7 +586,7 @@ export const db = {
   saveTestimonials(data, activityMsg) {
     this.collections['travinno_testimonials'] = data;
     this._ssSet('travinno_testimonials', data);
-    if (this.serverActive) {
+    if (this.serverActive || import.meta.env.PROD) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_testimonials', value: data })
@@ -595,7 +598,7 @@ export const db = {
   saveLogos(data, activityMsg) {
     this.collections['travinno_logos'] = data;
     this._ssSet('travinno_logos', data);
-    if (this.serverActive) {
+    if (this.serverActive || import.meta.env.PROD) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_logos', value: data })
@@ -607,7 +610,7 @@ export const db = {
   saveInquiries(data, activityMsg) {
     this.collections['travinno_inquiries'] = data;
     this._ssSet('travinno_inquiries', data);
-    if (this.serverActive) {
+    if (this.serverActive || import.meta.env.PROD) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_inquiries', value: data })
@@ -619,7 +622,7 @@ export const db = {
   saveApplications(data, activityMsg) {
     this.collections['travinno_applications'] = data;
     this._ssSet('travinno_applications', data);
-    if (this.serverActive) {
+    if (this.serverActive || import.meta.env.PROD) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_applications', value: data })
