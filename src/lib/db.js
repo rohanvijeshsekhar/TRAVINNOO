@@ -360,24 +360,13 @@ const API_BASE = getApiUrl();
 export const db = {
   apiBase: API_BASE,
   serverActive: false,
-  collections: {
-    travinno_destinations: INITIAL_DESTINATIONS,
-    travinno_blogs: INITIAL_BLOGS,
-    travinno_careers: INITIAL_JOBS,
-    travinno_team: INITIAL_TEAM,
-    travinno_testimonials: INITIAL_TESTIMONIALS,
-    travinno_logos: INITIAL_LOGOS,
-    travinno_hero_slides: INITIAL_HERO_SLIDES,
-    travinno_inquiries: INITIAL_INQUIRIES,
-    travinno_applications: INITIAL_APPLICATIONS,
-    travinno_activities: INITIAL_ACTIVITIES
-  },
+  // Collections start EMPTY. MySQL is the ONLY source of truth.
+  // INITIAL_* constants are used as fallback for display only, never written to server.
+  collections: {},
   initialized: false,
   initPromise: null,
 
-  // ── Session cache helpers ─────────────────────────────────────────────────
-  // sessionStorage gives instant data on page load within the same session.
-  // It's cleared when the tab closes, so data is always fresh from server.
+  // ── Session cache helpers (write-only after MySQL fetch) ──────────────────
   _SS_PREFIX: 'tv_cache_',
   _ssGet(key) {
     try {
@@ -388,42 +377,33 @@ export const db = {
   _ssSet(key, value) {
     try { sessionStorage.setItem(this._SS_PREFIX + key, JSON.stringify(value)); } catch(e) {}
   },
+  _ssClear() {
+    try {
+      const keys = Object.keys(sessionStorage).filter(k => k.startsWith(this._SS_PREFIX));
+      keys.forEach(k => sessionStorage.removeItem(k));
+    } catch(e) {}
+  },
 
   init() {
     if (this.initialized) return;
     this.initialized = true;
 
-    // ── STEP 1: Instant pre-load from sessionStorage (synchronous, zero delay) ─
-    // On all visits after the first, this gives correct data before any render.
-    const ALL_KEYS = [
-      'travinno_destinations', 'travinno_blogs', 'travinno_careers',
-      'travinno_team', 'travinno_testimonials', 'travinno_logos',
-      'travinno_hero_slides', 'travinno_inquiries',
-      'travinno_applications', 'travinno_activities'
-    ];
-    let sessionHit = false;
-    ALL_KEYS.forEach(key => {
-      const cached = this._ssGet(key);
-      if (cached !== null) {
-        this.collections[key] = cached;
-        sessionHit = true;
-      }
-    });
-    if (sessionHit) broadcastChange(); // Instantly render with cached data
-
-    // ── STEP 2: Fetch from server in background ───────────────────────────────
+    // ── Fetch from MySQL via server (single source of truth) ─────────────────
     this.initPromise = (async () => {
       try {
         const pingRes = await fetch(`${API_BASE}/api/ping?t=${Date.now()}`).then(r => r.json()).catch(() => null);
         if (pingRes && pingRes.success) {
-          console.log(`Express server detected on ${API_BASE}. Syncing collections...`);
+          console.log(`[db] Server active. Loading from MySQL...`);
           this.serverActive = true;
 
-          // Fetch collections, throw on network/HTTP errors to prevent overwriting with {}
+          // Fetch all collections from MySQL. Hard-fail on any network/HTTP error.
           const data = await fetch(`${API_BASE}/api/collections?t=${Date.now()}`).then(r => {
-            if (!r.ok) throw new Error('HTTP status ' + r.status);
+            if (!r.ok) throw new Error('HTTP ' + r.status);
             return r.json();
           });
+
+          // Clear any stale sessionStorage so old data cannot come back
+          this._ssClear();
 
           const collectionsToSync = [
             { key: 'travinno_destinations', defaultVal: INITIAL_DESTINATIONS },
@@ -439,24 +419,50 @@ export const db = {
           ];
 
           for (const item of collectionsToSync) {
+            // MySQL data always wins — no fallback writes to server ever
             if (data[item.key] !== undefined && data[item.key] !== null) {
               this.collections[item.key] = data[item.key];
-              // Update session cache with fresh server data
-              this._ssSet(item.key, data[item.key]);
             } else {
-              // Just load defaults in-memory, DO NOT write them to the server.
-              // This protects user database records from startup race conditions.
+              // Key missing in MySQL: use INITIAL_* for display only, do NOT upload
               this.collections[item.key] = item.defaultVal;
-              this._ssSet(item.key, item.defaultVal);
             }
           }
 
           broadcastChange();
         } else {
-          console.warn('No API server detected. Operating in in-memory mode.');
+          // Server unreachable: use INITIAL_* for display, wait for next load
+          console.warn('[db] Server unreachable. Showing default data until server is ready.');
+          const collectionsToSync = [
+            { key: 'travinno_destinations', defaultVal: INITIAL_DESTINATIONS },
+            { key: 'travinno_blogs', defaultVal: INITIAL_BLOGS },
+            { key: 'travinno_careers', defaultVal: INITIAL_JOBS },
+            { key: 'travinno_team', defaultVal: INITIAL_TEAM },
+            { key: 'travinno_testimonials', defaultVal: INITIAL_TESTIMONIALS },
+            { key: 'travinno_logos', defaultVal: INITIAL_LOGOS },
+            { key: 'travinno_hero_slides', defaultVal: INITIAL_HERO_SLIDES },
+            { key: 'travinno_inquiries', defaultVal: INITIAL_INQUIRIES },
+            { key: 'travinno_applications', defaultVal: INITIAL_APPLICATIONS },
+            { key: 'travinno_activities', defaultVal: INITIAL_ACTIVITIES }
+          ];
+          collectionsToSync.forEach(item => { this.collections[item.key] = item.defaultVal; });
+          broadcastChange();
         }
       } catch (e) {
-        console.warn('API connection failed or timed out. Keeping current states.', e.message);
+        console.warn('[db] Fetch error. Showing default data.', e.message);
+        const collectionsToSync = [
+          { key: 'travinno_destinations', defaultVal: INITIAL_DESTINATIONS },
+          { key: 'travinno_blogs', defaultVal: INITIAL_BLOGS },
+          { key: 'travinno_careers', defaultVal: INITIAL_JOBS },
+          { key: 'travinno_team', defaultVal: INITIAL_TEAM },
+          { key: 'travinno_testimonials', defaultVal: INITIAL_TESTIMONIALS },
+          { key: 'travinno_logos', defaultVal: INITIAL_LOGOS },
+          { key: 'travinno_hero_slides', defaultVal: INITIAL_HERO_SLIDES },
+          { key: 'travinno_inquiries', defaultVal: INITIAL_INQUIRIES },
+          { key: 'travinno_applications', defaultVal: INITIAL_APPLICATIONS },
+          { key: 'travinno_activities', defaultVal: INITIAL_ACTIVITIES }
+        ];
+        collectionsToSync.forEach(item => { this.collections[item.key] = item.defaultVal; });
+        broadcastChange();
       }
     })();
   },

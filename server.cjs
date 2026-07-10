@@ -72,7 +72,12 @@ if (process.env.DB_NAME && process.env.DB_USER) {
       queueLimit: 0
     });
 
-    // Test database connection and create table if not exists
+    // Set useMySQL=true IMMEDIATELY — do not wait for async callback.
+    // This ensures the very first /api/collections request goes to MySQL.
+    useMySQL = true;
+    console.log('=== Database Status: Active Hostinger MySQL Connection ===');
+
+    // Ensure the table exists (async, non-blocking — server is already ready)
     dbPool.query(
       `CREATE TABLE IF NOT EXISTS travinno_collections (
         col_key VARCHAR(255) PRIMARY KEY,
@@ -80,15 +85,13 @@ if (process.env.DB_NAME && process.env.DB_USER) {
       )`,
       (err) => {
         if (err) {
-          console.error('[MySQL Init Failed, falling back to JSON file]:', err.message);
-        } else {
-          useMySQL = true;
-          console.log('=== Database Status: Active Hostinger MySQL Connection ===');
+          console.error('[MySQL Table Init Error]:', err.message);
         }
       }
     );
   } catch (e) {
     console.error('[MySQL Require Failed, falling back to JSON file]:', e.message);
+    useMySQL = false;
   }
 } else {
   console.log('=== Database Status: Local travinno-data.json ===');
