@@ -108,19 +108,13 @@ async function handleRequest(req, res) {
 }
 
 // ── Start server ──────────────────────────────────────────────────────────────
-// Log ALL env vars so we can see what Passenger/Hostinger injects
-console.log('=== ENV VARS ===');
-const importantEnv = ['PORT', 'PASSENGER_BASE_URI', 'PASSENGER_SOCKET', 'SOCKET', 'NODE_ENV', 'HOST', 'BIND_ADDRESS'];
-importantEnv.forEach(k => {
-  if (process.env[k] !== undefined) console.log(k + ' = ' + process.env[k]);
-});
-// Also dump any PORT-like env vars
-Object.keys(process.env).filter(k => k.toLowerCase().includes('port') || k.toLowerCase().includes('socket') || k.toLowerCase().includes('passenger')).forEach(k => {
-  console.log('[ENV] ' + k + ' = ' + process.env[k]);
-});
-console.log('=== END ENV ===');
+// Hostinger uses LiteSpeed Web Server which communicates via a UNIX socket.
+// The socket path is passed via LSNODE_SOCKET env variable.
+// We MUST listen on that socket, not a TCP port, or we get 503.
 
+const LSNODE_SOCKET = process.env.LSNODE_SOCKET;
 const PORT = process.env.PORT || 3000;
+
 const server = http.createServer((req, res) => {
   handleRequest(req, res).catch(err => {
     console.error('[unhandled]', err.message);
@@ -128,13 +122,38 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log('=== Travinno API server running ===');
-  console.log('Port      : ' + PORT);
-  console.log('Data file : ' + DATA_FILE);
-  console.log('Local API : http://localhost:' + PORT + '/api/ping');
-  console.log('Prod  API : https://fazo.in/demo/api/ping');
-});
+if (LSNODE_SOCKET) {
+  // ── LiteSpeed / Hostinger: listen on UNIX socket ──────────────────────────
+  // Remove stale socket file if it exists from a previous run
+  try {
+    if (fs.existsSync(LSNODE_SOCKET)) {
+      fs.unlinkSync(LSNODE_SOCKET);
+      console.log('Removed stale socket file.');
+    }
+  } catch (e) {
+    console.error('Could not remove stale socket:', e.message);
+  }
 
-// Passenger compatibility (export for Passenger's require())
+  server.listen(LSNODE_SOCKET, () => {
+    // LiteSpeed needs read/write access to the socket file
+    try { fs.chmodSync(LSNODE_SOCKET, '777'); } catch (e) {
+      console.error('chmod socket error:', e.message);
+    }
+    console.log('=== Travinno API server running ===');
+    console.log('Mode      : LiteSpeed UNIX socket');
+    console.log('Socket    : ' + LSNODE_SOCKET);
+    console.log('Data file : ' + DATA_FILE);
+  });
+} else {
+  // ── Local dev: listen on TCP port ─────────────────────────────────────────
+  server.listen(PORT, () => {
+    console.log('=== Travinno API server running ===');
+    console.log('Mode      : TCP port');
+    console.log('Port      : ' + PORT);
+    console.log('Data file : ' + DATA_FILE);
+    console.log('API       : http://localhost:' + PORT + '/api/ping');
+  });
+}
+
+// LiteSpeed / Passenger compatibility
 module.exports = server;
