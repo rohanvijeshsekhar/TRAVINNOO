@@ -375,6 +375,17 @@ export const db = {
   initialized: false,
   initPromise: null,
 
+  // ── localStorage helpers ──────────────────────────────────────────────────
+  _lsGet(key) {
+    try {
+      const v = localStorage.getItem(key);
+      return v ? JSON.parse(v) : null;
+    } catch(e) { return null; }
+  },
+  _lsSet(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {}
+  },
+
   init() {
     if (this.initialized) return;
     this.initialized = true;
@@ -384,7 +395,7 @@ export const db = {
       try {
         const pingRes = await fetch(`${API_BASE}/api/ping`).then(r => r.json()).catch(() => null);
         if (pingRes && pingRes.success) {
-          console.log(`MySQL Express server detected on ${API_BASE}. Syncing collections...`);
+          console.log(`Express server detected on ${API_BASE}. Syncing collections...`);
           this.serverActive = true;
           
           const data = await fetch(`${API_BASE}/api/collections`).then(r => r.json()).catch(() => ({}));
@@ -406,7 +417,7 @@ export const db = {
             if (data[item.key] && data[item.key].length > 0) {
               this.collections[item.key] = data[item.key];
             } else {
-              // Upload initial templates if MySQL database is empty/fresh
+              // Upload initial templates if database is empty/fresh
               await fetch(`${API_BASE}/api/save`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -417,10 +428,38 @@ export const db = {
           
           broadcastChange();
         } else {
-          console.warn("No API server detected. Operating in in-memory simulation mode.");
+          // ── Server not available: load from localStorage ──────────────────
+          console.warn('No API server — using localStorage persistence.');
+          const keys = [
+            'travinno_destinations','travinno_blogs','travinno_careers',
+            'travinno_team','travinno_testimonials','travinno_logos',
+            'travinno_hero_slides','travinno_inquiries',
+            'travinno_applications','travinno_activities'
+          ];
+          let loaded = false;
+          keys.forEach(key => {
+            const stored = this._lsGet(key);
+            if (stored !== null) {
+              this.collections[key] = stored;
+              loaded = true;
+            }
+          });
+          if (loaded) broadcastChange();
         }
       } catch (e) {
-        console.warn("Connection to Express API server failed. Operating in in-memory simulation mode.", e);
+        // ── On error: also try localStorage ──────────────────────────────────
+        console.warn('API connection failed — using localStorage persistence.', e);
+        const keys = [
+          'travinno_destinations','travinno_blogs','travinno_careers',
+          'travinno_team','travinno_testimonials','travinno_logos',
+          'travinno_hero_slides','travinno_inquiries',
+          'travinno_applications','travinno_activities'
+        ];
+        keys.forEach(key => {
+          const stored = this._lsGet(key);
+          if (stored !== null) this.collections[key] = stored;
+        });
+        broadcastChange();
       }
     })();
   },
@@ -432,12 +471,13 @@ export const db = {
   },
   saveHeroSlides(list, activityMessage = null) {
     this.collections['travinno_hero_slides'] = list;
+    this._lsSet('travinno_hero_slides', list);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_hero_slides', value: list })
-      }).catch(err => console.error("Error writing hero slides to server:", err));
+      }).catch(err => console.error('Error writing hero slides to server:', err));
     }
     if (activityMessage) {
       this.logActivity(activityMessage);
@@ -492,12 +532,13 @@ export const db = {
     };
     const updatedLogs = [newLog, ...logs].slice(0, 100);
     this.collections['travinno_activities'] = updatedLogs;
+    this._lsSet('travinno_activities', updatedLogs);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_activities', value: updatedLogs })
-      }).catch(err => console.error("Error writing activity logs to server:", err));
+      }).catch(err => console.error('Error writing activity logs to server:', err));
     }
     broadcastChange();
   },
@@ -505,96 +546,104 @@ export const db = {
   // SAVE ALL
   saveDestinations(data, activityMsg) {
     this.collections['travinno_destinations'] = data;
+    this._lsSet('travinno_destinations', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_destinations', value: data })
-      }).catch(err => console.error("Error writing destinations to server:", err));
+      }).catch(err => console.error('Error writing destinations to server:', err));
     }
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
   saveBlogs(data, activityMsg) {
     this.collections['travinno_blogs'] = data;
+    this._lsSet('travinno_blogs', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_blogs', value: data })
-      }).catch(err => console.error("Error writing blogs to server:", err));
+      }).catch(err => console.error('Error writing blogs to server:', err));
     }
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
   saveCareers(data, activityMsg) {
     this.collections['travinno_careers'] = data;
+    this._lsSet('travinno_careers', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_careers', value: data })
-      }).catch(err => console.error("Error writing careers to server:", err));
+      }).catch(err => console.error('Error writing careers to server:', err));
     }
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
   saveTeam(data, activityMsg) {
     this.collections['travinno_team'] = data;
+    this._lsSet('travinno_team', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_team', value: data })
-      }).catch(err => console.error("Error writing team to server:", err));
+      }).catch(err => console.error('Error writing team to server:', err));
     }
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
   saveTestimonials(data, activityMsg) {
     this.collections['travinno_testimonials'] = data;
+    this._lsSet('travinno_testimonials', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_testimonials', value: data })
-      }).catch(err => console.error("Error writing testimonials to server:", err));
+      }).catch(err => console.error('Error writing testimonials to server:', err));
     }
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
   saveLogos(data, activityMsg) {
     this.collections['travinno_logos'] = data;
+    this._lsSet('travinno_logos', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_logos', value: data })
-      }).catch(err => console.error("Error writing logos to server:", err));
+      }).catch(err => console.error('Error writing logos to server:', err));
     }
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
   saveInquiries(data, activityMsg) {
     this.collections['travinno_inquiries'] = data;
+    this._lsSet('travinno_inquiries', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_inquiries', value: data })
-      }).catch(err => console.error("Error writing inquiries to server:", err));
+      }).catch(err => console.error('Error writing inquiries to server:', err));
     }
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
   saveApplications(data, activityMsg) {
     this.collections['travinno_applications'] = data;
+    this._lsSet('travinno_applications', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_applications', value: data })
-      }).catch(err => console.error("Error writing applications to server:", err));
+      }).catch(err => console.error('Error writing applications to server:', err));
     }
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
