@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
+import { db } from '../lib/db';
 
 const DEFAULT_DESTINATIONS = [
   {
@@ -134,16 +135,13 @@ const DEFAULT_DESTINATIONS = [
 export default function DestinationsPage() {
   const [selectedRegion, setSelectedRegion] = useState('All');
   const [activeDestination, setActiveDestination] = useState(null);
-  const [destinationsData, setDestinationsData] = useState([]);
+  const [destinationsData, setDestinationsData] = useState(() => db.getDestinations());
 
   // Load and subscribe to DB updates
   useEffect(() => {
-    import('../lib/db').then(({ db }) => {
-      setDestinationsData(db.getDestinations());
-      const handleUpdate = () => setDestinationsData(db.getDestinations());
-      window.addEventListener('travinno-db-update', handleUpdate);
-      return () => window.removeEventListener('travinno-db-update', handleUpdate);
-    });
+    const handleUpdate = () => setDestinationsData(db.getDestinations());
+    window.addEventListener('travinno-db-update', handleUpdate);
+    return () => window.removeEventListener('travinno-db-update', handleUpdate);
   }, []);
 
   // Sync scroll on open/close

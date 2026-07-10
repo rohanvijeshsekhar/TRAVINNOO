@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
+import { db } from '../lib/db';
 
 // Use smaller Unsplash images on mobile — 2400px originals are ~400 KB each
 const IS_MOBILE = typeof window !== 'undefined'
@@ -23,7 +24,19 @@ const getDestinationAltText = (name) => {
 
 export default function CinematicHero() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [destinations, setDestinations] = useState([]);
+  const [destinations, setDestinations] = useState(() => {
+    const slides = db.getHeroSlides();
+    if (slides.length > 0) {
+      const loopSlide = {
+        ...slides[0],
+        name: `${slides[0].name} Duplicate`,
+        duration: 1.8,
+        effect: { scaleStart: 1.05, scaleEnd: 1.0686, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 }
+      };
+      return [...slides, loopSlide];
+    }
+    return [];
+  });
   const [isMobileView, setIsMobileView] = useState(false);
   
   const slideRefs = useRef([]);
@@ -48,34 +61,20 @@ export default function CinematicHero() {
   }, []);
 
   useEffect(() => {
-    import('../lib/db').then(({ db }) => {
-      const slides = db.getHeroSlides();
-      if (slides.length > 0) {
-        // Append loop wrap duplicate of first slide
+    const handleUpdate = () => {
+      const updated = db.getHeroSlides();
+      if (updated.length > 0) {
         const loopSlide = {
-          ...slides[0],
-          name: `${slides[0].name} Duplicate`,
+          ...updated[0],
+          name: `${updated[0].name} Duplicate`,
           duration: 1.8,
           effect: { scaleStart: 1.05, scaleEnd: 1.0686, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 }
         };
-        setDestinations([...slides, loopSlide]);
+        setDestinations([...updated, loopSlide]);
       }
-      
-      const handleUpdate = () => {
-        const updated = db.getHeroSlides();
-        if (updated.length > 0) {
-          const loopSlide = {
-            ...updated[0],
-            name: `${updated[0].name} Duplicate`,
-            duration: 1.8,
-            effect: { scaleStart: 1.05, scaleEnd: 1.0686, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 }
-          };
-          setDestinations([...updated, loopSlide]);
-        }
-      };
-      window.addEventListener('travinno-db-update', handleUpdate);
-      return () => window.removeEventListener('travinno-db-update', handleUpdate);
-    });
+    };
+    window.addEventListener('travinno-db-update', handleUpdate);
+    return () => window.removeEventListener('travinno-db-update', handleUpdate);
   }, []);
 
   // Pause timeline when off-screen to save CPU/GPU resources

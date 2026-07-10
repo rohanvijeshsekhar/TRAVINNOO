@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { db } from '../lib/db';
 
 // Travinno location pin coordinates from scratch_logo_paths.json
 const PIN_PATHS = {
@@ -137,28 +138,26 @@ const BackgroundIllustrations = () => {
 
 function LogoCloudSection() {
   const marqueeRef = useRef(null);
-  const [partners, setPartners] = useState([]);
+  const [partners, setPartners] = useState(() => {
+    const dbLogos = db.getLogos();
+    return dbLogos.map((src, i) => ({
+      id: i,
+      src,
+      alt: PARTNER_NAMES[i] || `Luxury Travel Partner ${i + 1}`
+    }));
+  });
 
   useEffect(() => {
-    import('../lib/db').then(({ db }) => {
-      const dbLogos = db.getLogos();
-      setPartners(dbLogos.map((src, i) => ({
+    const handleUpdate = () => {
+      const updated = db.getLogos();
+      setPartners(updated.map((src, i) => ({
         id: i,
         src,
         alt: PARTNER_NAMES[i] || `Luxury Travel Partner ${i + 1}`
       })));
-      
-      const handleUpdate = () => {
-        const updated = db.getLogos();
-        setPartners(updated.map((src, i) => ({
-          id: i,
-          src,
-          alt: PARTNER_NAMES[i] || `Luxury Travel Partner ${i + 1}`
-        })));
-      };
-      window.addEventListener('travinno-db-update', handleUpdate);
-      return () => window.removeEventListener('travinno-db-update', handleUpdate);
-    });
+    };
+    window.addEventListener('travinno-db-update', handleUpdate);
+    return () => window.removeEventListener('travinno-db-update', handleUpdate);
   }, []);
 
   // Pause the CSS marquee animation when the section is off-screen

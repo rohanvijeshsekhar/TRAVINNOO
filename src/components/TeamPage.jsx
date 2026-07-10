@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Globe, Users, Gem, ShieldCheck, Compass, Map, Wind, Activity, Anchor } from 'lucide-react';
+import { db } from '../lib/db';
 
 const HERO_IMAGE = 'images/team_hero.png';
 
@@ -45,7 +46,7 @@ const renderLocationIcon = (locName) => {
 };
 
 export default function TeamPage() {
-  const [teamList, setTeamList] = useState([]);
+  const [teamList, setTeamList] = useState(() => db.getTeam());
   const [ctaStars, setCtaStars] = useState([]);
 
   useEffect(() => {
@@ -64,12 +65,9 @@ export default function TeamPage() {
   }, []);
 
   useEffect(() => {
-    import('../lib/db').then(({ db }) => {
-      setTeamList(db.getTeam());
-      const handleUpdate = () => setTeamList(db.getTeam());
-      window.addEventListener('travinno-db-update', handleUpdate);
-      return () => window.removeEventListener('travinno-db-update', handleUpdate);
-    });
+    const handleUpdate = () => setTeamList(db.getTeam());
+    window.addEventListener('travinno-db-update', handleUpdate);
+    return () => window.removeEventListener('travinno-db-update', handleUpdate);
   }, []);
 
   const resolveImgPath = (src) => {

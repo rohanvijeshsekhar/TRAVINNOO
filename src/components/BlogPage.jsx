@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Clock, Calendar, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
+import { db } from '../lib/db';
 
 const DEFAULT_BLOGS = [
   {
@@ -195,17 +196,14 @@ const DEFAULT_BLOGS = [
 
 export default function BlogPage() {
   const [selectedPost, setSelectedPost] = useState(null);
-  const [blogPosts, setBlogPosts] = useState([]);
+  const [blogPosts, setBlogPosts] = useState(() => db.getBlogs());
   const viewportRef = useRef(null);
 
   // Load and subscribe to DB updates
   useEffect(() => {
-    import('../lib/db').then(({ db }) => {
-      setBlogPosts(db.getBlogs());
-      const handleUpdate = () => setBlogPosts(db.getBlogs());
-      window.addEventListener('travinno-db-update', handleUpdate);
-      return () => window.removeEventListener('travinno-db-update', handleUpdate);
-    });
+    const handleUpdate = () => setBlogPosts(db.getBlogs());
+    window.addEventListener('travinno-db-update', handleUpdate);
+    return () => window.removeEventListener('travinno-db-update', handleUpdate);
   }, []);
 
   // Reset scroll position to top when a post is opened/closed

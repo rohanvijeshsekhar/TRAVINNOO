@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Briefcase, Clock, Upload, X, CheckCircle, ArrowRight } from 'lucide-react';
+import { db } from '../lib/db';
 
 // Future-proof, modifiable job listings data structure
 const INITIAL_JOBS = [
@@ -39,15 +40,12 @@ const INITIAL_JOBS = [
 ];
 
 export default function CareersPage() {
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState(() => db.getCareers());
 
   useEffect(() => {
-    import('../lib/db').then(({ db }) => {
-      setJobs(db.getCareers());
-      const handleUpdate = () => setJobs(db.getCareers());
-      window.addEventListener('travinno-db-update', handleUpdate);
-      return () => window.removeEventListener('travinno-db-update', handleUpdate);
-    });
+    const handleUpdate = () => setJobs(db.getCareers());
+    window.addEventListener('travinno-db-update', handleUpdate);
+    return () => window.removeEventListener('travinno-db-update', handleUpdate);
   }, []);
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -155,20 +153,18 @@ export default function CareersPage() {
       return;
     }
 
-    import('../lib/db').then(({ db }) => {
-      const newApp = {
-        id: 'app_' + Date.now(),
-        jobTitle: selectedJob ? selectedJob.title : 'General Inquiry',
-        fullName: formData.fullName,
-        email: formData.email,
-        phone: formData.phone,
-        coverLetter: formData.coverLetter || '',
-        fileName: selectedFile ? selectedFile.name : 'resume.pdf',
-        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-      };
-      const list = db.getApplications();
-      db.saveApplications([...list, newApp], `New job application from ${newApp.fullName} for ${newApp.jobTitle}`);
-    });
+    const newApp = {
+      id: 'app_' + Date.now(),
+      jobTitle: selectedJob ? selectedJob.title : 'General Inquiry',
+      fullName: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+      coverLetter: formData.coverLetter || '',
+      fileName: selectedFile ? selectedFile.name : 'resume.pdf',
+      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    };
+    const list = db.getApplications();
+    db.saveApplications([...list, newApp], `New job application from ${newApp.fullName} for ${newApp.jobTitle}`);
 
     setFormSubmitted(true);
   };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Phone, Mail, ArrowRight, CheckCircle2, ChevronDown } from 'lucide-react';
+import { db } from '../lib/db';
 
 const faderTransition = { duration: 1.2, ease: [0.25, 1, 0.5, 1] };
 
@@ -75,21 +76,18 @@ export default function ContactPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      // Lazy load/run db saving
-      import('../lib/db').then(({ db }) => {
-        const newInq = {
-          id: 'inq_' + Date.now(),
-          name: formData.fullName,
-          email: formData.email,
-          phone: formData.phoneNumber,
-          agencyName: formData.agencyName,
-          message: formData.message,
-          date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-          read: false
-        };
-        const currentList = db.getInquiries();
-        db.saveInquiries([newInq, ...currentList], `New contact inquiry received from ${newInq.name}`);
-      });
+      const newInq = {
+        id: 'inq_' + Date.now(),
+        name: formData.fullName,
+        email: formData.email,
+        phone: formData.phoneNumber,
+        agencyName: formData.agencyName,
+        message: formData.message,
+        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+        read: false
+      };
+      const currentList = db.getInquiries();
+      db.saveInquiries([newInq, ...currentList], `New contact inquiry received from ${newInq.name}`);
 
       setIsSubmitted(true);
       setFormData({
