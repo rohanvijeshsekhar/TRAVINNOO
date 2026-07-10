@@ -375,11 +375,43 @@ export const db = {
   initialized: false,
   initPromise: null,
 
+  // ── Session cache helpers ─────────────────────────────────────────────────
+  // sessionStorage gives instant data on page load within the same session.
+  // It's cleared when the tab closes, so data is always fresh from server.
+  _SS_PREFIX: 'tv_cache_',
+  _ssGet(key) {
+    try {
+      const v = sessionStorage.getItem(this._SS_PREFIX + key);
+      return v ? JSON.parse(v) : null;
+    } catch(e) { return null; }
+  },
+  _ssSet(key, value) {
+    try { sessionStorage.setItem(this._SS_PREFIX + key, JSON.stringify(value)); } catch(e) {}
+  },
+
   init() {
     if (this.initialized) return;
     this.initialized = true;
 
-    // Ping Express backend server and load collections
+    // ── STEP 1: Instant pre-load from sessionStorage (synchronous, zero delay) ─
+    // On all visits after the first, this gives correct data before any render.
+    const ALL_KEYS = [
+      'travinno_destinations', 'travinno_blogs', 'travinno_careers',
+      'travinno_team', 'travinno_testimonials', 'travinno_logos',
+      'travinno_hero_slides', 'travinno_inquiries',
+      'travinno_applications', 'travinno_activities'
+    ];
+    let sessionHit = false;
+    ALL_KEYS.forEach(key => {
+      const cached = this._ssGet(key);
+      if (cached !== null) {
+        this.collections[key] = cached;
+        sessionHit = true;
+      }
+    });
+    if (sessionHit) broadcastChange(); // Instantly render with cached data
+
+    // ── STEP 2: Fetch from server in background ───────────────────────────────
     this.initPromise = (async () => {
       try {
         const pingRes = await fetch(`${API_BASE}/api/ping`).then(r => r.json()).catch(() => null);
@@ -405,6 +437,8 @@ export const db = {
           for (const item of collectionsToSync) {
             if (data[item.key] && data[item.key].length > 0) {
               this.collections[item.key] = data[item.key];
+              // Update session cache with fresh server data
+              this._ssSet(item.key, data[item.key]);
             } else {
               await fetch(`${API_BASE}/api/save`, {
                 method: 'POST',
@@ -431,6 +465,7 @@ export const db = {
   },
   saveHeroSlides(list, activityMessage = null) {
     this.collections['travinno_hero_slides'] = list;
+    this._ssSet('travinno_hero_slides', list);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
@@ -485,6 +520,7 @@ export const db = {
     const newLog = { id: 'act_' + Date.now(), text, date: new Date().toLocaleString() };
     const updatedLogs = [newLog, ...logs].slice(0, 100);
     this.collections['travinno_activities'] = updatedLogs;
+    this._ssSet('travinno_activities', updatedLogs);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
@@ -498,6 +534,7 @@ export const db = {
   // SAVE ALL
   saveDestinations(data, activityMsg) {
     this.collections['travinno_destinations'] = data;
+    this._ssSet('travinno_destinations', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -509,6 +546,7 @@ export const db = {
   },
   saveBlogs(data, activityMsg) {
     this.collections['travinno_blogs'] = data;
+    this._ssSet('travinno_blogs', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -520,6 +558,7 @@ export const db = {
   },
   saveCareers(data, activityMsg) {
     this.collections['travinno_careers'] = data;
+    this._ssSet('travinno_careers', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -531,6 +570,7 @@ export const db = {
   },
   saveTeam(data, activityMsg) {
     this.collections['travinno_team'] = data;
+    this._ssSet('travinno_team', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -542,6 +582,7 @@ export const db = {
   },
   saveTestimonials(data, activityMsg) {
     this.collections['travinno_testimonials'] = data;
+    this._ssSet('travinno_testimonials', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -553,6 +594,7 @@ export const db = {
   },
   saveLogos(data, activityMsg) {
     this.collections['travinno_logos'] = data;
+    this._ssSet('travinno_logos', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -564,6 +606,7 @@ export const db = {
   },
   saveInquiries(data, activityMsg) {
     this.collections['travinno_inquiries'] = data;
+    this._ssSet('travinno_inquiries', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -575,6 +618,7 @@ export const db = {
   },
   saveApplications(data, activityMsg) {
     this.collections['travinno_applications'] = data;
+    this._ssSet('travinno_applications', data);
     if (this.serverActive) {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },

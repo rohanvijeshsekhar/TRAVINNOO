@@ -138,8 +138,7 @@ export default function DestinationsPage() {
 
   // Load and subscribe to DB updates
   useEffect(() => {
-    import('../lib/db').then(async ({ db }) => {
-      if (db.initPromise) await db.initPromise;
+    import('../lib/db').then(({ db }) => {
       setDestinationsData(db.getDestinations());
       const handleUpdate = () => setDestinationsData(db.getDestinations());
       window.addEventListener('travinno-db-update', handleUpdate);

@@ -42,8 +42,7 @@ export default function CareersPage() {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
-    import('../lib/db').then(async ({ db }) => {
-      if (db.initPromise) await db.initPromise;
+    import('../lib/db').then(({ db }) => {
       setJobs(db.getCareers());
       const handleUpdate = () => setJobs(db.getCareers());
       window.addEventListener('travinno-db-update', handleUpdate);

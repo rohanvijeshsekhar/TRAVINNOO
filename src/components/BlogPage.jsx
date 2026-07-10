@@ -200,8 +200,7 @@ export default function BlogPage() {
 
   // Load and subscribe to DB updates
   useEffect(() => {
-    import('../lib/db').then(async ({ db }) => {
-      if (db.initPromise) await db.initPromise;
+    import('../lib/db').then(({ db }) => {
       setBlogPosts(db.getBlogs());
       const handleUpdate = () => setBlogPosts(db.getBlogs());
       window.addEventListener('travinno-db-update', handleUpdate);

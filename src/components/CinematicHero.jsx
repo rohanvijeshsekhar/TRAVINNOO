@@ -48,8 +48,7 @@ export default function CinematicHero() {
   }, []);
 
   useEffect(() => {
-    import('../lib/db').then(async ({ db }) => {
-      if (db.initPromise) await db.initPromise;
+    import('../lib/db').then(({ db }) => {
       const slides = db.getHeroSlides();
       if (slides.length > 0) {
         // Append loop wrap duplicate of first slide

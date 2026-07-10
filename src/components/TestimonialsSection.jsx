@@ -88,8 +88,7 @@ function TestimonialsSection() {
   const [testimonialsData, setTestimonialsData] = useState([]);
 
   useEffect(() => {
-    import('../lib/db').then(async ({ db }) => {
-      if (db.initPromise) await db.initPromise;
+    import('../lib/db').then(({ db }) => {
       setTestimonialsData(db.getTestimonials());
       const handleUpdate = () => setTestimonialsData(db.getTestimonials());
       window.addEventListener('travinno-db-update', handleUpdate);
