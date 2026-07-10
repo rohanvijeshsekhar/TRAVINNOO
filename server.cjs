@@ -1,16 +1,14 @@
-// CommonJS server — works on Hostinger Passenger regardless of "type": "module"
-const express = require('express');
-const cors = require('cors');
+// Pure Node.js — ZERO external dependencies.
+// Uses only built-in 'http', 'fs', 'path' modules.
+// This eliminates ALL npm install / Express / Passenger compatibility issues.
+
+'use strict';
+
+const http = require('http');
+const fs   = require('fs');
 const path = require('path');
-const fs = require('fs');
 
-const app = express();
-
-app.use(cors());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
-
-// ─── JSON File Storage ────────────────────────────────────────────────────────
+// ── Data store ────────────────────────────────────────────────────────────────
 const DATA_FILE = path.join(__dirname, 'travinno-data.json');
 
 function readData() {
@@ -18,9 +16,7 @@ function readData() {
     if (fs.existsSync(DATA_FILE)) {
       return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
     }
-  } catch (e) {
-    console.error('Read error:', e.message);
-  }
+  } catch (e) { console.error('[readData]', e.message); }
   return {};
 }
 
@@ -28,77 +24,105 @@ function writeData(data) {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
     return true;
-  } catch (e) {
-    console.error('Write error:', e.message);
-    return false;
-  }
+  } catch (e) { console.error('[writeData]', e.message); return false; }
 }
 
 if (!fs.existsSync(DATA_FILE)) {
   writeData({});
   console.log('Created data store: ' + DATA_FILE);
 } else {
-  console.log('Data store ready: ' + DATA_FILE);
+  console.log('Data store ready:   ' + DATA_FILE);
 }
 
-// ─── API Routes ───────────────────────────────────────────────────────────────
-const apiRouter = express.Router();
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function setCORS(res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Content-Type', 'application/json');
+}
 
-apiRouter.get('/ping', (req, res) => {
-  res.json({ success: true });
-});
+function send(res, code, obj) {
+  res.writeHead(code);
+  res.end(JSON.stringify(obj));
+}
 
-apiRouter.get('/collections', (req, res) => {
-  try {
-    res.json(readData());
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', c => { body += c; if (body.length > 52428800) reject(new Error('Too large')); });
+    req.on('end', () => {
+      try { resolve(JSON.parse(body)); } catch (e) { reject(e); }
+    });
+    req.on('error', reject);
+  });
+}
+
+// ── Router ────────────────────────────────────────────────────────────────────
+// Strip /demo prefix so the same handler covers:
+//   /api/ping          (local dev)
+//   /demo/api/ping     (Hostinger production)
+
+async function handleRequest(req, res) {
+  setCORS(res);
+
+  if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+
+  // Normalize: remove /demo prefix if present
+  const rawPath = (req.url || '/').split('?')[0];
+  const urlPath = rawPath.startsWith('/demo') ? rawPath.slice(5) : rawPath;
+
+  // GET /api/ping
+  if (req.method === 'GET' && urlPath === '/api/ping') {
+    return send(res, 200, { success: true });
   }
-});
 
-apiRouter.post('/save', (req, res) => {
-  const { key, value } = req.body;
-  if (!key || value === undefined) {
-    return res.status(400).json({ error: 'Missing key or value' });
+  // GET /api/collections
+  if (req.method === 'GET' && urlPath === '/api/collections') {
+    return send(res, 200, readData());
   }
-  try {
-    const data = readData();
-    data[key] = typeof value === 'string' ? JSON.parse(value) : value;
-    writeData(data);
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
-apiRouter.post('/reset', (req, res) => {
-  try {
+  // POST /api/save
+  if (req.method === 'POST' && urlPath === '/api/save') {
+    try {
+      const body = await readBody(req);
+      const { key, value } = body;
+      if (!key || value === undefined) return send(res, 400, { error: 'Missing key or value' });
+      const data = readData();
+      data[key] = (typeof value === 'string') ? JSON.parse(value) : value;
+      writeData(data);
+      return send(res, 200, { success: true });
+    } catch (e) {
+      return send(res, 500, { error: e.message });
+    }
+  }
+
+  // POST /api/reset
+  if (req.method === 'POST' && urlPath === '/api/reset') {
     writeData({});
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    return send(res, 200, { success: true });
   }
-});
 
-// Mount API at both paths to cover all routing scenarios
-app.use('/api', apiRouter);
-app.use('/demo/api', apiRouter);
+  // 404
+  send(res, 404, { error: 'Not found', path: urlPath });
+}
 
-// ─── Static Files + SPA Fallback ─────────────────────────────────────────────
-const distPath = path.join(__dirname, 'dist');
-app.use('/demo', express.static(distPath));
-app.get('/demo/*', (req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'));
-});
-app.get('/demo', (req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'));
-});
-
-// ─── Start ────────────────────────────────────────────────────────────────────
+// ── Start server ──────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
-  console.log('Server started on port ' + PORT);
+const server = http.createServer((req, res) => {
+  handleRequest(req, res).catch(err => {
+    console.error('[unhandled]', err.message);
+    try { send(res, 500, { error: 'Internal server error' }); } catch(_) {}
+  });
 });
 
-// CommonJS export for Passenger
-module.exports = app;
+server.listen(PORT, () => {
+  console.log('=== Travinno API server running ===');
+  console.log('Port      : ' + PORT);
+  console.log('Data file : ' + DATA_FILE);
+  console.log('Local API : http://localhost:' + PORT + '/api/ping');
+  console.log('Prod  API : https://fazo.in/demo/api/ping');
+});
+
+// Passenger compatibility (export for Passenger's require())
+module.exports = server;
