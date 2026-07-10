@@ -11,20 +11,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 5001;
 
+// ─── Middleware ────────────────────────────────────────────────────────────────
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Resolve paths
-const distPath = path.resolve(__dirname, 'dist');
-const dbPath = path.resolve(__dirname, './travinno.db');
-
-// Serve built React frontend static assets under /demo/
-app.use('/demo', express.static(distPath));
-
 // ─── SQLite Setup ──────────────────────────────────────────────────────────────
+// Use absolute path so it works correctly regardless of working directory
+const dbPath = path.resolve(__dirname, 'travinno.db');
 
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
@@ -65,7 +60,9 @@ async function initDb() {
 initDb();
 
 // ─── API Router ────────────────────────────────────────────────────────────────
-// Mount at BOTH /api (local dev) and /demo/api (production via fazo.in/demo/)
+// On Hostinger Passenger, all requests are routed through server.js.
+// Apache serves /demo/ static files directly; Passenger handles /demo/api/*
+// Mount at both /api (local dev) and /demo/api (Hostinger production)
 
 const apiRouter = express.Router();
 
@@ -125,23 +122,34 @@ apiRouter.post('/reset', async (req, res) => {
   }
 });
 
-// Mount the same router at both prefixes
-app.use('/api', apiRouter);       // local dev:  http://localhost:5001/api/...
-app.use('/demo/api', apiRouter);  // production: https://fazo.in/demo/api/...
+// Mount API router at both paths:
+//   /api        → local dev (http://localhost:5001/api/...)
+//   /demo/api   → Hostinger production (https://fazo.in/demo/api/...)
+app.use('/api', apiRouter);
+app.use('/demo/api', apiRouter);
 
-// ─── SPA Fallback ──────────────────────────────────────────────────────────────
-// All /demo/* routes that aren't /demo/api/* get index.html (React Router support)
+// ─── Static + SPA Fallback ─────────────────────────────────────────────────────
+// On Hostinger, Apache already serves static files in public_html/demo/
+// But we still serve dist/ here so the app works in local dev too.
+// The SPA fallback ensures React Router works for direct URL access.
+const distPath = path.resolve(__dirname, 'dist');
+app.use('/demo', express.static(distPath));
 app.get('/demo/*', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
-
-// Also handle bare /demo (no trailing slash)
 app.get('/demo', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
+// ─── Start Server ──────────────────────────────────────────────────────────────
+// On Hostinger Passenger, the PORT env variable is injected automatically.
+// Locally, defaults to 5001.
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
-  console.log(`Express SQLite server running on http://localhost:${PORT}`);
-  console.log(`  Local dev API:  http://localhost:${PORT}/api/ping`);
-  console.log(`  Production API: https://fazo.in/demo/api/ping`);
+  console.log(`Server running on port ${PORT}`);
+  console.log(`  Local:  http://localhost:${PORT}/api/ping`);
+  console.log(`  Prod:   https://fazo.in/demo/api/ping`);
 });
+
+// Passenger compatibility — export app for Passenger's require() mode
+export default app;
