@@ -419,7 +419,11 @@ export const db = {
           console.log(`Express server detected on ${API_BASE}. Syncing collections...`);
           this.serverActive = true;
 
-          const data = await fetch(`${API_BASE}/api/collections?t=${Date.now()}`).then(r => r.json()).catch(() => ({}));
+          // Fetch collections, throw on network/HTTP errors to prevent overwriting with {}
+          const data = await fetch(`${API_BASE}/api/collections?t=${Date.now()}`).then(r => {
+            if (!r.ok) throw new Error('HTTP status ' + r.status);
+            return r.json();
+          });
 
           const collectionsToSync = [
             { key: 'travinno_destinations', defaultVal: INITIAL_DESTINATIONS },
@@ -440,12 +444,8 @@ export const db = {
               // Update session cache with fresh server data
               this._ssSet(item.key, data[item.key]);
             } else {
-              // Upload defaults because it's completely missing
-              await fetch(`${API_BASE}/api/save`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ key: item.key, value: item.defaultVal })
-              }).catch(() => null);
+              // Just load defaults in-memory, DO NOT write them to the server.
+              // This protects user database records from startup race conditions.
               this.collections[item.key] = item.defaultVal;
               this._ssSet(item.key, item.defaultVal);
             }
@@ -456,7 +456,7 @@ export const db = {
           console.warn('No API server detected. Operating in in-memory mode.');
         }
       } catch (e) {
-        console.warn('API connection failed. Operating in in-memory mode.', e);
+        console.warn('API connection failed or timed out. Keeping current states.', e.message);
       }
     })();
   },
