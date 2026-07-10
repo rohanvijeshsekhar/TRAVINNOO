@@ -108,7 +108,19 @@ async function handleRequest(req, res) {
 }
 
 // ── Start server ──────────────────────────────────────────────────────────────
-const PORT = process.env.PORT || 5001;
+// Log ALL env vars so we can see what Passenger/Hostinger injects
+console.log('=== ENV VARS ===');
+const importantEnv = ['PORT', 'PASSENGER_BASE_URI', 'PASSENGER_SOCKET', 'SOCKET', 'NODE_ENV', 'HOST', 'BIND_ADDRESS'];
+importantEnv.forEach(k => {
+  if (process.env[k] !== undefined) console.log(k + ' = ' + process.env[k]);
+});
+// Also dump any PORT-like env vars
+Object.keys(process.env).filter(k => k.toLowerCase().includes('port') || k.toLowerCase().includes('socket') || k.toLowerCase().includes('passenger')).forEach(k => {
+  console.log('[ENV] ' + k + ' = ' + process.env[k]);
+});
+console.log('=== END ENV ===');
+
+const PORT = process.env.PORT || 3000;
 const server = http.createServer((req, res) => {
   handleRequest(req, res).catch(err => {
     console.error('[unhandled]', err.message);
