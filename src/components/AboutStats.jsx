@@ -342,7 +342,7 @@ export default function AboutStats() {
           Offers <span className="stats-highlight">personalized</span> travel solutions for{' '}
           <span className="stats-cursive-highlight">UAE</span>,{' '}
           <span className="stats-cursive-highlight">Thailand</span> and{' '}
-          <span className="stats-cursive-highlight">Kerala</span>.
+          <span className="stats-cursive-highlight">Vietnam</span>.
         </motion.h2>
 
         {/* Animated stats grid */}

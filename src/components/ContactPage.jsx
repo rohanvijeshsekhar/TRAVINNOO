@@ -33,7 +33,7 @@ export default function ContactPage() {
     },
     {
       q: "Which destinations does Travinno handle?",
-      a: "We focus on key travel destinations such as Dubai (UAE), Thailand, and Kerala, offering well-curated experiences for leisure, business, and group travelers."
+      a: "We focus on key travel destinations such as Dubai (UAE), Thailand, and Vietnam, offering well-curated experiences for leisure, business, and group travelers."
     },
     {
       q: "Can Travinno handle large group bookings and MICE events?",
