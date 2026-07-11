@@ -513,7 +513,7 @@ export default function DestinationsPage() {
           background: rgba(255, 255, 255, 0.018);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(245, 242, 236, 0.07);
+          border: 1px solid rgba(193, 18, 31, 0.55);
           border-radius: 20px;
           padding: 32px 24px;
           display: flex;
@@ -522,7 +522,7 @@ export default function DestinationsPage() {
           text-align: center;
           aspect-ratio: 1 / 1;
           justify-content: center;
-          box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+          box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), 0 0 15px rgba(193, 18, 31, 0.06);
           transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
           position: relative;
           overflow: hidden;
@@ -798,65 +798,30 @@ export default function DestinationsPage() {
               if (activeServices.length === 0) return null;
 
               return (
-                <div className="services-included-section" style={{ marginTop: '56px', marginBottom: '64px' }}>
-                  <div style={{ marginBottom: '28px' }}>
-                    <span
-                      style={{
-                        fontFamily: 'var(--font-sans)',
-                        fontSize: '0.72rem',
-                        fontWeight: 600,
-                        letterSpacing: '0.15em',
-                        color: '#C1121F',
-                        textTransform: 'uppercase',
-                        display: 'block',
-                        marginBottom: '8px'
-                      }}
-                    >
-                      Our Services
-                    </span>
-                    <h2
-                      style={{
-                        fontFamily: 'var(--font-heading)',
-                        fontSize: '1.8rem',
-                        fontWeight: 450,
-                        color: '#F5F2EC',
-                        margin: '0 0 10px 0',
-                        letterSpacing: '-0.3px'
-                      }}
-                    >
-                      Travel Services Available
-                    </h2>
-                    <p
-                      style={{
-                        fontFamily: 'var(--font-sans)',
-                        fontSize: '0.9rem',
-                        lineHeight: 1.5,
-                        color: 'rgba(245, 242, 236, 0.55)',
-                        margin: 0,
-                        maxWidth: '600px',
-                        fontWeight: 300
-                      }}
-                    >
-                      Every destination is supported by carefully curated travel services designed to deliver a seamless experience.
-                    </p>
-                  </div>
-
-                  <div
-                    className="services-grid-container"
-                    style={{
-                      gridTemplateColumns: `repeat(${activeServices.length}, 1fr)`
-                    }}
-                  >
-                    {activeServices.map((service) => (
-                      <div key={service.key} className="premium-service-card">
-                        <div className="premium-service-icon-wrapper">
-                          {service.icon}
-                        </div>
-                        <h3 className="premium-service-title">{service.title}</h3>
-                        <p className="premium-service-desc">{service.desc}</p>
+                <div
+                  className="services-grid-container"
+                  style={{
+                    gridTemplateColumns: `repeat(${activeServices.length}, 1fr)`,
+                    marginTop: '44px',
+                    marginBottom: '56px'
+                  }}
+                >
+                  {activeServices.map((service) => (
+                    <div key={service.key} className="premium-service-card">
+                      <div
+                        className="premium-service-icon-wrapper"
+                        style={{
+                          color: '#C1121F',
+                          backgroundColor: 'rgba(193, 18, 31, 0.05)',
+                          borderColor: 'rgba(193, 18, 31, 0.2)'
+                        }}
+                      >
+                        {service.icon}
                       </div>
-                    ))}
-                  </div>
+                      <h3 className="premium-service-title">{service.title}</h3>
+                      <p className="premium-service-desc">{service.desc}</p>
+                    </div>
+                  ))}
                 </div>
               );
             })()}
