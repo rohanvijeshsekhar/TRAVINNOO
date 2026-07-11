@@ -646,43 +646,7 @@ function Footer() {
             <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.84rem', color: 'rgba(245, 242, 236, 0.65)', lineHeight: 1.5 }}>
               Kerala ( India) <span style={{ fontSize: '0.62rem', color: 'rgba(245, 242, 236, 0.4)', marginLeft: '3px', verticalAlign: 'super' }}>IN</span>
             </div>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '8px', borderTop: '1px solid rgba(245, 242, 236, 0.05)', paddingTop: '10px' }}>
-              <a
-                href="mailto:hello@travinno.com"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.8rem',
-                  color: 'rgba(245, 242, 236, 0.55)',
-                  textDecoration: 'none',
-                  transition: 'color 0.2s ease'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#C1121F'}
-                onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(245, 242, 236, 0.55)'}
-              >
-                <Mail size={13} /> hello@travinno.com
-              </a>
-              <a
-                href="tel:+97141234567"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontFamily: 'var(--font-sans)',
-                  fontSize: '0.8rem',
-                  color: 'rgba(245, 242, 236, 0.55)',
-                  textDecoration: 'none',
-                  transition: 'color 0.2s ease'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#C1121F'}
-                onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(245, 242, 236, 0.55)'}
-              >
-                <Phone size={13} /> +971 4 123 4567
-              </a>
-            </div>
+
           </div>
         </div>
       </div>
