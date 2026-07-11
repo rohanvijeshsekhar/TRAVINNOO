@@ -29,7 +29,7 @@ const journalPages = [
     coordinates: '9.9312° N, 76.2673° E',
     title: 'EXPANSION',
     action: 'Dubai Mainland & India Offices',
-    story: 'Transitioning to a mainland Dubai license allowed us to scale up. Simultaneously, opening our operational headquarters in Kerala, India, bridged our execution capabilities directly with the ground team.',
+    story: 'Transitioning to a mainland Dubai license allowed us to scale up. Simultaneously, opening our operational headquarters in Vietnam, bridged our execution capabilities directly with the ground team.',
     quote: '"Borders are lines on a map; our mission is to build the bridges between them."',
     photo: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=800&q=80',
     stampColor: '#1a365d',

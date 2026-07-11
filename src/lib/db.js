@@ -236,7 +236,7 @@ const INITIAL_TESTIMONIALS = [
     company: "Aura Creative",
     location: "Milan, Italy",
     rating: 5,
-    text: "The custom Kerala route they designed for our VIP clients was spectacular. Their local expertise and responsiveness are unmatched in B2B travel."
+    text: "The custom Vietnam route they designed for our VIP clients was spectacular. Their local expertise and responsiveness are unmatched in B2B travel."
   },
   {
     id: 3,

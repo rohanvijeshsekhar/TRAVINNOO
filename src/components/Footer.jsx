@@ -644,7 +644,7 @@ function Footer() {
               Thailand <span style={{ fontSize: '0.62rem', color: 'rgba(245, 242, 236, 0.4)', marginLeft: '3px', verticalAlign: 'super' }}>TH</span>
             </div>
             <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.84rem', color: 'rgba(245, 242, 236, 0.65)', lineHeight: 1.5 }}>
-              Kerala ( India) <span style={{ fontSize: '0.62rem', color: 'rgba(245, 242, 236, 0.4)', marginLeft: '3px', verticalAlign: 'super' }}>IN</span>
+              Vietnam <span style={{ fontSize: '0.62rem', color: 'rgba(245, 242, 236, 0.4)', marginLeft: '3px', verticalAlign: 'super' }}>VN</span>
             </div>
 
           </div>
