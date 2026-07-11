@@ -629,34 +629,26 @@ function Footer() {
           <h4
             style={{
               fontFamily: 'var(--font-heading)',
-              fontSize: '1rem',
+              fontSize: '1.05rem',
               fontWeight: 500,
               letterSpacing: '0.05em',
               color: '#F5F2EC',
               margin: 0
             }}
           >
-            Contact & Hubs
+            Global Offices
           </h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-              <MapPin size={15} style={{ color: '#C1121F', marginTop: '3px', flexShrink: 0 }} />
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', lineHeight: 1.4, color: 'rgba(245, 242, 236, 0.65)' }}>
-                <strong>Dubai (HQ):</strong> Level 15, The Gate District, DIFC, UAE
-              </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.84rem', color: 'rgba(245, 242, 236, 0.65)', lineHeight: 1.5 }}>
+              Dubai ( United Arab Emirates)<span style={{ fontSize: '0.62rem', color: 'rgba(245, 242, 236, 0.4)', marginLeft: '3px', verticalAlign: 'super' }}>AE</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-              <MapPin size={15} style={{ color: 'rgba(245, 242, 236, 0.4)', marginTop: '3px', flexShrink: 0 }} />
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', lineHeight: 1.4, color: 'rgba(245, 242, 236, 0.55)' }}>
-                <strong>Bangkok:</strong> Sukhumvit Road, Khlong Toei, Thailand
-              </div>
+            <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.84rem', color: 'rgba(245, 242, 236, 0.65)', lineHeight: 1.5 }}>
+              Thailand <span style={{ fontSize: '0.62rem', color: 'rgba(245, 242, 236, 0.4)', marginLeft: '3px', verticalAlign: 'super' }}>TH</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-              <MapPin size={15} style={{ color: 'rgba(245, 242, 236, 0.4)', marginTop: '3px', flexShrink: 0 }} />
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', lineHeight: 1.4, color: 'rgba(245, 242, 236, 0.55)' }}>
-                <strong>New Delhi:</strong> Connaught Place, New Delhi, India
-              </div>
+            <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.84rem', color: 'rgba(245, 242, 236, 0.65)', lineHeight: 1.5 }}>
+              Kerala ( India) <span style={{ fontSize: '0.62rem', color: 'rgba(245, 242, 236, 0.4)', marginLeft: '3px', verticalAlign: 'super' }}>IN</span>
             </div>
+            
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '8px', borderTop: '1px solid rgba(245, 242, 236, 0.05)', paddingTop: '10px' }}>
               <a
                 href="mailto:hello@travinno.com"
@@ -665,15 +657,15 @@ function Footer() {
                   alignItems: 'center',
                   gap: '8px',
                   fontFamily: 'var(--font-sans)',
-                  fontSize: '0.84rem',
-                  color: 'rgba(245, 242, 236, 0.75)',
+                  fontSize: '0.8rem',
+                  color: 'rgba(245, 242, 236, 0.55)',
                   textDecoration: 'none',
                   transition: 'color 0.2s ease'
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.color = '#C1121F'}
-                onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(245, 242, 236, 0.75)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(245, 242, 236, 0.55)'}
               >
-                <Mail size={14} /> hello@travinno.com
+                <Mail size={13} /> hello@travinno.com
               </a>
               <a
                 href="tel:+97141234567"
@@ -682,15 +674,15 @@ function Footer() {
                   alignItems: 'center',
                   gap: '8px',
                   fontFamily: 'var(--font-sans)',
-                  fontSize: '0.84rem',
-                  color: 'rgba(245, 242, 236, 0.75)',
+                  fontSize: '0.8rem',
+                  color: 'rgba(245, 242, 236, 0.55)',
                   textDecoration: 'none',
                   transition: 'color 0.2s ease'
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.color = '#C1121F'}
-                onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(245, 242, 236, 0.75)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(245, 242, 236, 0.55)'}
               >
-                <Phone size={14} /> +971 4 123 4567
+                <Phone size={13} /> +971 4 123 4567
               </a>
             </div>
           </div>
@@ -723,10 +715,14 @@ function Footer() {
           &copy; {new Date().getFullYear()} TRAVINNO. All rights reserved.
         </div>
         <div style={{ display: 'flex', gap: '20px' }}>
-          {['Privacy Policy', 'Terms of Service', 'Cookie Settings'].map((text, idx) => (
+          {[
+            { text: 'Privacy Policy', href: '#privacy' },
+            { text: 'Terms of Service', href: '#company' },
+            { text: 'Cookie Settings', href: '#company' }
+          ].map((link, idx) => (
             <a
               key={idx}
-              href="#company"
+              href={link.href}
               style={{
                 fontFamily: 'var(--font-sans)',
                 fontSize: '0.78rem',
@@ -737,7 +733,7 @@ function Footer() {
               onMouseEnter={(e) => e.currentTarget.style.color = '#F5F2EC'}
               onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(245, 242, 236, 0.4)'}
             >
-              {text}
+              {link.text}
             </a>
           ))}
         </div>
