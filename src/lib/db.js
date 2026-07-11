@@ -9,7 +9,8 @@ const INITIAL_DESTINATIONS = [
     region: 'Middle East',
     tagline: 'Futuristic architectural marvels meet ancient desert sands.',
     image: 'images/destinations/dubai.webp',
-    description: 'Dubai stands as a monumental oasis of modern ambition and timeless allure, where futuristic architectural marvels rise dramatically from the golden sands of the Arabian Desert. Beyond the gleaming glass towers and ultra-luxury shopping domains lies a destination of rich cultural contrasts—from heritage souks and traditional dhows sailing the historic creek to private yacht charters along the modern marina. Visitors can transition seamlessly from the dynamic energy of world-class Michelin-starred dining to the absolute stillness of a private luxury conservation camp nestled deep within the desert dunes under a canopy of stars.'
+    description: 'Dubai stands as a monumental oasis of modern ambition and timeless allure, where futuristic architectural marvels rise dramatically from the golden sands of the Arabian Desert. Beyond the gleaming glass towers and ultra-luxury shopping domains lies a destination of rich cultural contrasts—from heritage souks and traditional dhows sailing the historic creek to private yacht charters along the modern marina. Visitors can transition seamlessly from the dynamic energy of world-class Michelin-starred dining to the absolute stillness of a private luxury conservation camp nestled deep within the desert dunes under a canopy of stars.',
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
     id: 'kenya',
@@ -17,7 +18,8 @@ const INITIAL_DESTINATIONS = [
     region: 'East Africa',
     tagline: 'Witness the majesty of the great wilderness.',
     image: 'images/destinations/kenya.webp',
-    description: 'Kenya is the cradle of the wild, an untamed land of sweeping savannahs, ancient acacia trees, and dramatic volcanic landscapes that capture the raw essence of East Africa. It is a sanctuary where the rhythm of life is dictated by the great migration, and where the air is filled with the calls of the wild at daybreak. From eco-luxury tented camps situated along private conservancies to personalized hot air balloon safaris over the Maasai Mara, Kenya offers an intimate, slow-paced journey into nature, guided by Maasai warriors who share their deep ancestral knowledge and heritage.'
+    description: 'Kenya is the cradle of the wild, an untamed land of sweeping savannahs, ancient acacia trees, and dramatic volcanic landscapes that capture the raw essence of East Africa. It is a sanctuary where the rhythm of life is dictated by the great migration, and where the air is filled with the calls of the wild at daybreak. From eco-luxury tented camps situated along private conservancies to personalized hot air balloon safaris over the Maasai Mara, Kenya offers an intimate, slow-paced journey into nature, guided by Maasai warriors who share their deep ancestral knowledge and heritage.',
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
     id: 'bali',
@@ -25,7 +27,8 @@ const INITIAL_DESTINATIONS = [
     region: 'Southeast Asia',
     tagline: 'Immersive spiritual rituals in tropical sanctuaries.',
     image: 'images/destinations/bali.webp',
-    description: 'Bali is a spiritual sanctuary where deep-rooted Hindu traditions blend seamlessly with tropical volcanic peaks, sacred rivers, and pristine coastal shores. Known as the Island of the Gods, it is a landscape carpeted in emerald-green rice terraces and dotted with stone temples shrouded in morning mist. Visitors are invited to immerse themselves in purification rituals at holy springs, walk through rainforest canopies in Ubud, and stay in magnificent private pool villas that overlook deep river gorges, offering a profound sense of peace, healing, and cultural discovery.'
+    description: 'Bali is a spiritual sanctuary where deep-rooted Hindu traditions blend seamlessly with tropical volcanic peaks, sacred rivers, and pristine coastal shores. Known as the Island of the Gods, it is a landscape carpeted in emerald-green rice terraces and dotted with stone temples shrouded in morning mist. Visitors are invited to immerse themselves in purification rituals at holy springs, walk through rainforest canopies in Ubud, and stay in magnificent private pool villas that overlook deep river gorges, offering a profound sense of peace, healing, and cultural discovery.',
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
     id: 'thailand',
@@ -33,7 +36,8 @@ const INITIAL_DESTINATIONS = [
     region: 'Southeast Asia',
     tagline: 'Sailing emerald coves and tasting vibrant cultures.',
     image: 'images/destinations/thailand.webp',
-    description: 'Thailand is a sensory marvel of gold-leaf temples, bustling night markets, and pristine archipelagos rising from clear turquoise waters. From the historic capital of Bangkok to the secluded white-sand shores of Koh Samui, the kingdom offers an extraordinary balance of high-end indulgence and authentic heritage. Private catamaran charters navigate the limestone karsts of Phang Nga Bay, while custom cooking masterclasses with master chefs reveal the intricate balance of sweet, sour, salty, and spicy flavors that define the country’s revered culinary tradition.'
+    description: 'Thailand is a sensory marvel of gold-leaf temples, bustling night markets, and pristine archipelagos rising from clear turquoise waters. From the historic capital of Bangkok to the secluded white-sand shores of Koh Samui, the kingdom offers an extraordinary balance of high-end indulgence and authentic heritage. Private catamaran charters navigate the limestone karsts of Phang Nga Bay, while custom cooking masterclasses with master chefs reveal the intricate balance of sweet, sour, salty, and spicy flavors that define the country’s revered culinary tradition.',
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
     id: 'singapore',
@@ -41,7 +45,8 @@ const INITIAL_DESTINATIONS = [
     region: 'Southeast Asia',
     tagline: 'Exploring biophilic skyscrapers and smart architecture.',
     image: 'images/destinations/singapore.webp',
-    description: 'Singapore is a futuristic biophilic metropolis where steel-and-glass skyscrapers are enveloped in vertical gardens and sprawling rain forests. This island city-state is a global hub of innovation, culinary excellence, and rich multi-cultural heritage, seamlessly linking historical shophouses with high-altitude rooftop lounges. From after-hours tours of the iconic Gardens by the Bay domes to bespoke heritage walking trails through historic districts, Singapore offers a refined, hyper-modern urban experience unlike any other.'
+    description: 'Singapore is a futuristic biophilic metropolis where steel-and-glass skyscrapers are enveloped in vertical gardens and sprawling rain forests. This island city-state is a global hub of innovation, culinary excellence, and rich multi-cultural heritage, seamlessly linking historical shophouses with high-altitude rooftop lounges. From after-hours tours of the iconic Gardens by the Bay domes to bespoke heritage walking trails through historic districts, Singapore offers a refined, hyper-modern urban experience unlike any other.',
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
     id: 'vietnam',
@@ -49,7 +54,8 @@ const INITIAL_DESTINATIONS = [
     region: 'Southeast Asia',
     tagline: 'Intimate tea rituals and dynamic culinary paths.',
     image: 'images/destinations/vietnam.webp',
-    description: 'Vietnam is a country of quiet elegance and spectacular natural beauty, defined by misty mountain peaks, emerald rice paddies, and thousands of towering limestone islands in Halong Bay. Its rich history is woven into the fabric of lantern-lit ancient trading towns and imperial cities, where traditional tea ceremonies offer a window into a graceful heritage. The country’s cuisine is a masterclass in fresh herbs and delicate balance, offering sophisticated travelers an authentic, multi-layered journey through time and culture.'
+    description: 'Vietnam is a country of quiet elegance and spectacular natural beauty, defined by misty mountain peaks, emerald rice paddies, and thousands of towering limestone islands in Halong Bay. Its rich history is woven into the fabric of lantern-lit ancient trading towns and imperial cities, where traditional tea ceremonies offer a window into a graceful heritage. The country’s cuisine is a masterclass in fresh herbs and delicate balance, offering sophisticated travelers an authentic, multi-layered journey through time and culture.',
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
     id: 'malaysia',
@@ -57,7 +63,8 @@ const INITIAL_DESTINATIONS = [
     region: 'Southeast Asia',
     tagline: 'Ancient rainforests meet dynamic culture.',
     image: 'images/destinations/malaysia.webp',
-    description: 'Malaysia is a vibrant tapestry of prehistoric tropical rainforests, colonial heritage towns, and hyper-modern skylines that reflect a diverse multi-cultural identity. From the towering spires of Kuala Lumpur to the pristine, ancient jungles of Taman Negara, it is a destination where nature and cosmopolitan sophistication exist side-by-side. Guests can explore the culinary streets and rich Peranakan history of Penang, charter a private helicopter to the pristine beaches of Langkawi, or walk along night-canopy suspension bridges in the heart of the world\'s oldest jungle.'
+    description: 'Malaysia is a vibrant tapestry of prehistoric tropical rainforests, colonial heritage towns, and hyper-modern skylines that reflect a diverse multi-cultural identity. From the towering spires of Kuala Lumpur to the pristine, ancient jungles of Taman Negara, it is a destination where nature and cosmopolitan sophistication exist side-by-side. Guests can explore the culinary streets and rich Peranakan history of Penang, charter a private helicopter to the pristine beaches of Langkawi, or walk along night-canopy suspension bridges in the heart of the world\'s oldest jungle.',
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   }
 ];
 

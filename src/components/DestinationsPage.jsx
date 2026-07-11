@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle, Luggage, Hotel, Car, Users } from 'lucide-react';
 import { db } from '../lib/db';
 
 const DEFAULT_DESTINATIONS = [
@@ -20,7 +20,8 @@ const DEFAULT_DESTINATIONS = [
       { day: 1, title: 'Arrival & Skyline Check-in', desc: 'Chauffeur arrival to your beachfront penthouse. Evening cocktail reception overlooking the Dubai Marina.' },
       { day: 2, title: 'Private Desert Safari Expedition', desc: '4x4 dunes exploration in the Conservation Reserve, followed by falconry demonstrations and a custom tented dinner.' },
       { day: 3, title: 'Bespoke Yacht Charter', desc: 'A full-day luxury catamaran cruise with private chef lunch and sunset harbor docking.' }
-    ]
+    ],
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
     id: 'kenya',
@@ -38,7 +39,8 @@ const DEFAULT_DESTINATIONS = [
       { day: 1, title: 'Acacia Lodge Arrival', desc: 'Fly in by private charter to the Mara conservancy. Afternoon game drive followed by a sundowner drink.' },
       { day: 2, title: 'Sunrise Balloon Safari & Bush Breakfast', desc: 'Soar above the migrating herds, then land for a champagne breakfast in the open savannah.' },
       { day: 3, title: 'Cultural Expedition', desc: 'An intimate, respectful afternoon sharing stories and local history in a traditional Maasai homestead.' }
-    ]
+    ],
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
     id: 'bali',
@@ -46,7 +48,7 @@ const DEFAULT_DESTINATIONS = [
     region: 'Southeast Asia',
     tagline: 'Immersive spiritual rituals in tropical sanctuaries.',
     image: 'images/destinations/bali.webp',
-    description: 'Bali is a spiritual sanctuary where deep-rooted Hindu traditions blend seamlessly with tropical volcanic peaks, sacred rivers, and pristine coastal shores. Known as the Island of the Gods, it is a landscape carpeted in emerald-green rice terraces and dotted with stone temples shrouded in morning mist. Visitors are invited to immerse themselves in purification rituals at holy springs, walk through lush rainforest canopies in Ubud, and stay in magnificent private pool villas that overlook deep river gorges, offering a profound sense of peace, healing, and cultural discovery.',
+    description: 'Bali is a spiritual sanctuary where deep-rooted Hindu traditions blend seamlessly with tropical volcanic peaks, sacred rivers, and pristine coastal shores. Known as the Island of the Gods, it is a landscape carpeted in emerald-green rice terraces and dotted with stone temples shrouded in morning mist. Visitors are invited to immerse themselves in purification rituals at holy springs, walk through rainforest canopies in Ubud, and stay in magnificent private pool villas that overlook deep river gorges, offering a profound sense of peace, healing, and cultural discovery.',
     experiences: [
       'Private purification ceremony at Tirta Empul',
       'Guided mountain trekking through volcanic craters',
@@ -56,7 +58,8 @@ const DEFAULT_DESTINATIONS = [
       { day: 1, title: 'Forest Sanctuary Check-in', desc: 'Arrive at your valley-facing pool villa in Ubud. Evening sound healing meditation session.' },
       { day: 2, title: 'Purification & Cultural History', desc: 'A private guide leads you through Tirta Empul water temple rituals and ancient carvings.' },
       { day: 3, title: 'Tropical Coastline Cruise', desc: 'Sail to the nearby Gili islands on a classic wooden yacht, snorkeling with sea turtles.' }
-    ]
+    ],
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
     id: 'thailand',
@@ -74,7 +77,8 @@ const DEFAULT_DESTINATIONS = [
       { day: 1, title: 'Arrival in Phuket', desc: 'Luxury yacht transfer to your private island beach villa. Sunset dinner on the shore.' },
       { day: 2, title: 'Phang Nga Hongs Sea Caves', desc: 'Explore hidden sea caves and bays by private sea-kayak with a naturalist guide.' },
       { day: 3, title: 'Gastronomy Discovery', desc: 'A tailored tour through ancient food markets followed by a private cooking masterclass.' }
-    ]
+    ],
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
     id: 'singapore',
@@ -82,7 +86,7 @@ const DEFAULT_DESTINATIONS = [
     region: 'Southeast Asia',
     tagline: 'Exploring biophilic skyscrapers and smart architecture.',
     image: 'images/destinations/singapore.webp',
-    description: 'Singapore is a futuristic biophilic metropolis where steel-and-glass skyscrapers are enveloped in lush vertical gardens and sprawling rain forests. This island city-state is a global hub of innovation, culinary excellence, and rich multi-cultural heritage, seamlessly linking historical shophouses with high-altitude rooftop lounges. From after-hours tours of the iconic Gardens by the Bay domes to bespoke heritage walking trails through historic districts, Singapore offers a refined, hyper-modern urban experience unlike any other.',
+    description: 'Singapore is a futuristic biophilic metropolis where steel-and-glass skyscrapers are enveloped in vertical gardens and sprawling rain forests. This island city-state is a global hub of innovation, culinary excellence, and rich multi-cultural heritage, seamlessly linking historical shophouses with high-altitude rooftop lounges. From after-hours tours of the iconic Gardens by the Bay domes to bespoke heritage walking trails through historic districts, Singapore offers a refined, hyper-modern urban experience unlike any other.',
     experiences: [
       'Private evening tour of Gardens by the Bay dome',
       'Exclusive rooftop mixology sessions in Marina Bay',
@@ -92,7 +96,8 @@ const DEFAULT_DESTINATIONS = [
       { day: 1, title: 'Sleek Sky-suite Check-in', desc: 'Arrive at your high-altitude suite. Evening champagne toast at Marina Bay Sands.' },
       { day: 2, title: 'Gardens & Future Architecture', desc: 'An private after-hours walkthrough of the Cloud Forest and Flower Dome biophilic spaces.' },
       { day: 3, title: 'Historical Heritage Trail', desc: 'Explore historic shophouses, tasting award-winning local dishes and modern fusion cuisine.' }
-    ]
+    ],
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
     id: 'vietnam',
@@ -100,7 +105,7 @@ const DEFAULT_DESTINATIONS = [
     region: 'Southeast Asia',
     tagline: 'Intimate tea rituals and dynamic culinary paths.',
     image: 'images/destinations/vietnam.webp',
-    description: 'Vietnam is a country of quiet elegance and spectacular natural beauty, defined by misty mountain peaks, endless emerald rice paddies, and thousands of towering limestone islands in Halong Bay. Its rich history is woven into the fabric of lantern-lit ancient trading towns and imperial cities, where traditional tea ceremonies offer a window into a graceful heritage. The country’s cuisine is a masterclass in fresh herbs and delicate balance, offering sophisticated travelers an authentic, multi-layered journey through time and culture.',
+    description: 'Vietnam is a country of quiet elegance and spectacular natural beauty, defined by misty mountain peaks, emerald rice paddies, and thousands of towering limestone islands in Halong Bay. Its rich history is woven into the fabric of lantern-lit ancient trading towns and imperial cities, where traditional tea ceremonies offer a window into a graceful heritage. The country’s cuisine is a masterclass in fresh herbs and delicate balance, offering sophisticated travelers an authentic, multi-layered journey through time and culture.',
     experiences: [
       'Private junk boat cruise in Halong Bay',
       'Kaiseki-inspired royal cuisine tour in Hue',
@@ -110,7 +115,8 @@ const DEFAULT_DESTINATIONS = [
       { day: 1, title: 'Halong Bay Boarding', desc: 'Embark on a luxury classic wooden junk boat. Cruise past the towering karsts.' },
       { day: 2, title: 'Imperial Gastronomy in Hue', desc: 'Flight to Hue. Evening tasting of imperial multi-course banquets.' },
       { day: 3, title: 'Master Tea Ceremony', desc: 'Learn the slow art of traditional Vietnamese tea brewing in a silent pavilion.' }
-    ]
+    ],
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
     id: 'malaysia',
@@ -128,7 +134,8 @@ const DEFAULT_DESTINATIONS = [
       { day: 1, title: 'Penang Mansion Check-in', desc: 'Check in to a restored heritage mansion. Traditional Peranakan dinner experience.' },
       { day: 2, title: 'Rainforest Canopy Walk', desc: 'Private transfer to the prehistoric jungle. Guided trek spotting rare birdlife and flora.' },
       { day: 3, title: 'Langkawi Archipelago flight', desc: 'Helicopter tour over the 99 islands of Langkawi, docking at a quiet beach resort.' }
-    ]
+    ],
+    services: { tours: true, hotels: true, transfers: true, corporate: true }
   }
 ];
 
@@ -476,6 +483,133 @@ export default function DestinationsPage() {
           padding-left: 24px;
         }
 
+        /* Services Included Section Styles */
+        .services-included-section {
+          margin-top: 48px;
+          margin-bottom: 56px;
+        }
+
+        .services-grid-container {
+          display: grid;
+          gap: 20px;
+          margin-top: 32px;
+        }
+
+        @media (max-width: 1024px) {
+          .services-grid-container {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 20px;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .services-grid-container {
+            grid-template-columns: 1fr !important;
+            gap: 16px;
+          }
+        }
+
+        .premium-service-card {
+          background: rgba(255, 255, 255, 0.018);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(245, 242, 236, 0.07);
+          border-radius: 20px;
+          padding: 32px 24px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          aspect-ratio: 1 / 1;
+          justify-content: center;
+          box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          position: relative;
+          overflow: hidden;
+          box-sizing: border-box;
+        }
+
+        @media (max-width: 640px) {
+          .premium-service-card {
+            aspect-ratio: auto;
+            min-height: 180px;
+            padding: 24px 20px;
+          }
+        }
+
+        .premium-service-card::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(circle at center, rgba(193, 18, 31, 0) 0%, rgba(193, 18, 31, 0) 100%);
+          transition: background 0.4s ease;
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .premium-service-card:hover {
+          transform: translateY(-8px);
+          border-color: #C1121F;
+          box-shadow: 0 12px 40px rgba(193, 18, 31, 0.12), 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .premium-service-card:hover::before {
+          background: radial-gradient(circle at center, rgba(193, 18, 31, 0.035) 0%, transparent 70%);
+        }
+
+        .premium-service-icon-wrapper {
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          background: rgba(245, 242, 236, 0.02);
+          border: 1px solid rgba(245, 242, 236, 0.06);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 20px;
+          color: rgba(245, 242, 236, 0.7);
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          z-index: 1;
+        }
+
+        .premium-service-card:hover .premium-service-icon-wrapper {
+          color: #C1121F;
+          background: rgba(193, 18, 31, 0.08);
+          border-color: rgba(193, 18, 31, 0.25);
+          transform: scale(1.1);
+        }
+
+        .premium-service-title {
+          font-family: var(--font-sans);
+          font-size: 1.05rem;
+          font-weight: 500;
+          color: #F5F2EC;
+          margin: 0 0 10px 0;
+          letter-spacing: -0.1px;
+          z-index: 1;
+          transition: color 0.3s ease;
+        }
+
+        .premium-service-card:hover .premium-service-title {
+          color: #FFFFFF;
+        }
+
+        .premium-service-desc {
+          font-family: var(--font-sans);
+          font-size: 0.76rem;
+          line-height: 1.5;
+          color: rgba(245, 242, 236, 0.45);
+          margin: 0;
+          font-weight: 300;
+          z-index: 1;
+          transition: color 0.3s ease;
+        }
+
+        .premium-service-card:hover .premium-service-desc {
+          color: rgba(245, 242, 236, 0.7);
+        }
+
+
         .detail-sections-grid {
           display: grid;
           grid-template-columns: 1fr 1.1fr;
@@ -629,6 +763,103 @@ export default function DestinationsPage() {
             <p className="destination-detail-desc" style={{ marginBottom: '64px' }}>
               {activeDestination.description}
             </p>
+
+            {/* Services Available Section */}
+            {(() => {
+              const services = activeDestination.services || { tours: true, hotels: true, transfers: true, corporate: true };
+              const availableServices = [
+                {
+                  key: 'tours',
+                  title: 'Tour Packages',
+                  desc: 'Custom-tailored sightseeing, excursions, and guided itineraries.',
+                  icon: <Luggage size={24} strokeWidth={1.2} />
+                },
+                {
+                  key: 'hotels',
+                  title: 'Hotel Bookings',
+                  desc: 'Exclusive reservations at handpicked 5-star luxury resorts and villas.',
+                  icon: <Hotel size={24} strokeWidth={1.2} />
+                },
+                {
+                  key: 'transfers',
+                  title: 'Airport Transfers',
+                  desc: 'Chauffeur services and private premium vehicle transfers.',
+                  icon: <Car size={24} strokeWidth={1.2} />
+                },
+                {
+                  key: 'corporate',
+                  title: 'Corporate & Group Travel',
+                  desc: 'Tailored meetings, team retreats, and coordinated group journeys.',
+                  icon: <Users size={24} strokeWidth={1.2} />
+                }
+              ];
+              const activeServices = availableServices.filter(s => services[s.key] !== false);
+
+              if (activeServices.length === 0) return null;
+
+              return (
+                <div className="services-included-section" style={{ marginTop: '56px', marginBottom: '64px' }}>
+                  <div style={{ marginBottom: '28px' }}>
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-sans)',
+                        fontSize: '0.72rem',
+                        fontWeight: 600,
+                        letterSpacing: '0.15em',
+                        color: '#C1121F',
+                        textTransform: 'uppercase',
+                        display: 'block',
+                        marginBottom: '8px'
+                      }}
+                    >
+                      Our Services
+                    </span>
+                    <h2
+                      style={{
+                        fontFamily: 'var(--font-heading)',
+                        fontSize: '1.8rem',
+                        fontWeight: 450,
+                        color: '#F5F2EC',
+                        margin: '0 0 10px 0',
+                        letterSpacing: '-0.3px'
+                      }}
+                    >
+                      Travel Services Available
+                    </h2>
+                    <p
+                      style={{
+                        fontFamily: 'var(--font-sans)',
+                        fontSize: '0.9rem',
+                        lineHeight: 1.5,
+                        color: 'rgba(245, 242, 236, 0.55)',
+                        margin: 0,
+                        maxWidth: '600px',
+                        fontWeight: 300
+                      }}
+                    >
+                      Every destination is supported by carefully curated travel services designed to deliver a seamless experience.
+                    </p>
+                  </div>
+
+                  <div
+                    className="services-grid-container"
+                    style={{
+                      gridTemplateColumns: `repeat(${activeServices.length}, 1fr)`
+                    }}
+                  >
+                    {activeServices.map((service) => (
+                      <div key={service.key} className="premium-service-card">
+                        <div className="premium-service-icon-wrapper">
+                          {service.icon}
+                        </div>
+                        <h3 className="premium-service-title">{service.title}</h3>
+                        <p className="premium-service-desc">{service.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Inquiry Call to Action */}
             <div style={{ display: 'flex', justifyContent: 'center' }}>
