@@ -328,25 +328,6 @@ function EditorialSection() {
             padding: 70px 0;
           }
           .editorial-container {
-            gap: 20px 0;
-            padding: 0 35px;
-          }
-          .editorial-left-header {
-            padding-right: 25px;
-          }
-          .editorial-left-globe {
-            padding-right: 25px;
-          }
-          .editorial-right-text {
-            padding-left: 25px;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .editorial-section {
-            padding: 50px 0;
-          }
-          .editorial-container {
             grid-template-columns: 1fr;
             grid-template-areas:
               "left-header"
@@ -354,7 +335,7 @@ function EditorialSection() {
               "right-text";
             row-gap: 25px;
             column-gap: 0px;
-            padding: 0 25px;
+            padding: 0 35px;
           }
           .editorial-left-globe {
             margin-top: -25px !important;
@@ -367,8 +348,8 @@ function EditorialSection() {
           }
           .editorial-globe-canvas {
             position: relative !important;
-            width: 280px !important;
-            height: 280px !important;
+            width: 320px !important;
+            height: 320px !important;
             left: auto !important;
             top: auto !important;
             transform: none !important;
@@ -390,14 +371,32 @@ function EditorialSection() {
             gap: 12px;
           }
           .editorial-stat-number {
-            width: 85px;
-            height: 38px;
-            font-size: 1.15rem;
+            width: 95px;
+            height: 40px;
+            font-size: 1.25rem;
             margin-bottom: 8px;
           }
           .editorial-left-header {
             top: 0;
             padding-right: 0;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .editorial-section {
+            padding: 50px 0;
+          }
+          .editorial-container {
+            padding: 0 20px;
+          }
+          .editorial-globe-canvas {
+            width: 270px !important;
+            height: 270px !important;
+          }
+          .editorial-stat-number {
+            width: 80px;
+            height: 36px;
+            font-size: 1.1rem;
           }
         }
       `}</style>
