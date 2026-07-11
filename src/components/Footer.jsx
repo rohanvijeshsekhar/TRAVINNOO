@@ -417,18 +417,16 @@ function Footer() {
                 stroke="none"
               />
             </svg>
-            <span
+            <img
+              src={`${import.meta.env.BASE_URL}images/logo_loading.png`}
+              alt="Travinno"
               style={{
-                fontFamily: 'var(--font-sans)',
-                fontWeight: 600,
-                fontSize: '1.25rem',
-                letterSpacing: '0.15em',
-                color: '#F5F2EC',
-                textTransform: 'uppercase'
+                height: '20px',
+                objectFit: 'contain',
+                display: 'block',
+                userSelect: 'none'
               }}
-            >
-              TRAVINNO
-            </span>
+            />
           </div>
           <p
             style={{
