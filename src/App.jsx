@@ -26,6 +26,8 @@ const BlogPage = lazy(() => import('./components/BlogPage'));
 const DestinationsPage = lazy(() => import('./components/DestinationsPage'));
 const AdminPanel = lazy(() => import('./components/AdminPanel'));
 const PrivacyPage = lazy(() => import('./components/PrivacyPage'));
+const TermsPage = lazy(() => import('./components/TermsPage'));
+
 
 
 
@@ -143,6 +145,8 @@ function App() {
           setCurrentView('destinations');
         } else if (hash === '#privacy') {
           setCurrentView('privacy');
+        } else if (hash === '#terms') {
+          setCurrentView('terms');
         } else {
           // All other hashes: show home page
           // If the hash is a home section anchor (e.g. #services, #testimonials, #contact, #why, #journey),
@@ -299,6 +303,8 @@ function App() {
             <Suspense fallback={null}><DestinationsPage /></Suspense>
           ) : currentView === 'privacy' ? (
             <Suspense fallback={null}><PrivacyPage /></Suspense>
+          ) : currentView === 'terms' ? (
+            <Suspense fallback={null}><TermsPage /></Suspense>
           ) : (
             <>
           {/* Hero Section Container (100% Viewport Height) */}

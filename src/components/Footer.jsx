@@ -717,7 +717,7 @@ function Footer() {
         <div style={{ display: 'flex', gap: '20px' }}>
           {[
             { text: 'Privacy Policy', href: '#privacy' },
-            { text: 'Terms of Service', href: '#company' },
+            { text: 'Terms of Service', href: '#terms' },
             { text: 'Cookie Settings', href: '#company' }
           ].map((link, idx) => (
             <a
