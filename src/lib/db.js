@@ -367,9 +367,18 @@ const API_BASE = getApiUrl();
 export const db = {
   apiBase: API_BASE,
   serverActive: false,
-  // Collections start EMPTY. MySQL is the ONLY source of truth.
-  // INITIAL_* constants are used as fallback for display only, never written to server.
-  collections: {},
+  collections: {
+    'travinno_destinations': INITIAL_DESTINATIONS,
+    'travinno_blogs': INITIAL_BLOGS,
+    'travinno_careers': INITIAL_JOBS,
+    'travinno_team': INITIAL_TEAM,
+    'travinno_testimonials': INITIAL_TESTIMONIALS,
+    'travinno_logos': INITIAL_LOGOS,
+    'travinno_hero_slides': INITIAL_HERO_SLIDES,
+    'travinno_inquiries': INITIAL_INQUIRIES,
+    'travinno_applications': INITIAL_APPLICATIONS,
+    'travinno_activities': INITIAL_ACTIVITIES
+  },
   initialized: false,
   initPromise: null,
 
