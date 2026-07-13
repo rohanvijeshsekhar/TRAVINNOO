@@ -40,15 +40,6 @@ const destinations: Destination[] = [
     image: `${BASE}images/destinations/dubai.webp`
   },
   {
-    title: "Malaysia",
-    region: "Southeast Asia",
-    countryName: "Malaysia",
-    heading: "Vibrant Cultures & Rainforest Escapes",
-    description: "Discover a rich tapestry of history, modern capital luxury, and pristine ancient rainforest canopies home to unique biodiversity.",
-    highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: `${BASE}images/destinations/malaysia.webp`
-  },
-  {
     title: "Thailand",
     region: "Southeast Asia",
     countryName: "Thailand",
@@ -56,6 +47,33 @@ const destinations: Destination[] = [
     description: "Immerse yourself in the warm hospitality of golden temple cities and white sand archipelago islands with tailored beachfront luxury.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
     image: `${BASE}images/destinations/thailand.webp`
+  },
+  {
+    title: "Vietnam",
+    region: "Southeast Asia",
+    countryName: "Vietnam",
+    heading: "Historic Cities & Dramatic Karst Bays",
+    description: "Cruise the emerald waters of Ha Long Bay and explore French colonial cities, combining rich historic heritage with luxury maritime travel.",
+    highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
+    image: `${BASE}images/destinations/vietnam.webp`
+  },
+  {
+    title: "Kenya",
+    region: "East Africa",
+    countryName: "Kenya",
+    heading: "Untamed Wildlife & Savannah Reserves",
+    description: "Witness the great wilderness migration on the plains of Masai Mara, pairing raw nature with five-star luxury tented camp reserves.",
+    highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
+    image: `${BASE}images/destinations/kenya.webp`
+  },
+  {
+    title: "Malaysia",
+    region: "Southeast Asia",
+    countryName: "Malaysia",
+    heading: "Vibrant Cultures & Rainforest Escapes",
+    description: "Discover a rich tapestry of history, modern capital luxury, and pristine ancient rainforest canopies home to unique biodiversity.",
+    highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
+    image: `${BASE}images/destinations/malaysia.webp`
   },
   {
     title: "Singapore",
@@ -74,24 +92,6 @@ const destinations: Destination[] = [
     description: "Reconnect in the spiritual capital of volcanic lake vistas, iconic terraced valleys, and private pool luxury villas.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
     image: `${BASE}images/destinations/bali.webp`
-  },
-  {
-    title: "Kenya",
-    region: "East Africa",
-    countryName: "Kenya",
-    heading: "Untamed Wildlife & Savannah Reserves",
-    description: "Witness the great wilderness migration on the plains of Masai Mara, pairing raw nature with five-star luxury tented camp reserves.",
-    highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: `${BASE}images/destinations/kenya.webp`
-  },
-  {
-    title: "Vietnam",
-    region: "Southeast Asia",
-    countryName: "Vietnam",
-    heading: "Historic Cities & Dramatic Karst Bays",
-    description: "Cruise the emerald waters of Ha Long Bay and explore French colonial cities, combining rich historic heritage with luxury maritime travel.",
-    highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: `${BASE}images/destinations/vietnam.webp`
   }
 ];
 
