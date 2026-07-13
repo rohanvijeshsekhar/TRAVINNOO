@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Globe, Users, Gem, ShieldCheck, Compass, Map, Wind, Activity, Anchor } from 'lucide-react';
@@ -53,13 +55,13 @@ export default function TeamPage() {
     setCtaStars(
       Array.from({ length: 25 }).map((_, i) => ({
         id: i,
-        top: `${Math.random() * 100}%`,
-        left: `${Math.random() * 100}%`,
-        size: Math.random() * 2 + 1,
-        delay: `${Math.random() * 8}s`,
-        duration: `${6 + Math.random() * 8}s`,
-        driftX: (Math.random() - 0.5) * 40,
-        driftY: (Math.random() - 0.5) * 40
+        top: `${(i * 4973 + 13) % 100}%`,
+        left: `${(i * 7919 + 7) % 100}%`,
+        size: ((i * 3 + 1) % 20) / 10 + 1,
+        delay: `${(i * 6271 + 3) % 8}s`,
+        duration: `${6 + (i * 5381 + 5) % 8}s`,
+        driftX: (((i * 2053 + 11) % 40) - 20),
+        driftY: (((i * 1777 + 17) % 40) - 20)
       }))
     );
   }, []);
@@ -73,7 +75,7 @@ export default function TeamPage() {
   const resolveImgPath = (src) => {
     if (!src) return '';
     if (src.startsWith('data:') || src.startsWith('http')) return src;
-    return `${import.meta.env.BASE_URL}${src}`;
+    return `${'/'}${src}`;
   };
 
   // Sort team list by display order (ascending)

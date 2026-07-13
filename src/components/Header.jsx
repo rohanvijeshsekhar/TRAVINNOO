@@ -1,5 +1,8 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import Link from 'next/link';
 import { Home, Compass, Users, Mail, MapPin, Briefcase, MessageSquare, BookOpen, Shield } from 'lucide-react';
 
 const innerTPath = "M 78.80,88.83 L 77.99,89.92 L 76.90,91.00 L 76.09,92.08 L 75.00,92.62 L 73.91,93.17 L 72.83,93.44 L 71.74,93.71 L 70.65,93.98 L 69.57,93.98 L 68.48,94.25 L 67.39,94.25 L 66.30,93.98 L 65.22,93.71 L 64.13,93.44 L 63.04,92.90 L 61.96,92.08 L 61.14,91.00 L 60.60,89.92 L 60.33,88.83 L 60.05,87.75 L 59.78,86.67 L 59.78,85.58 L 59.78,84.50 L 59.78,83.42 L 59.78,82.33 L 59.78,81.25 L 59.78,80.17 L 59.78,79.08 L 59.78,78.00 L 59.78,76.92 L 59.78,75.83 L 59.78,74.75 L 59.78,73.67 L 59.78,72.58 L 59.78,71.50 L 59.78,70.42 L 59.78,69.33 L 59.78,68.25 L 59.78,67.17 L 59.78,66.08 L 59.78,65.00 L 59.78,63.92 L 59.78,62.83 L 59.78,61.75 L 59.78,60.67 L 59.78,59.58 L 60.05,58.50 L 61.14,58.50 L 62.23,58.50 L 63.32,58.50 L 64.40,58.50 L 65.49,58.50 L 66.58,58.50 L 67.66,58.50 L 68.75,58.50 L 69.84,58.50 L 70.92,58.50 L 72.01,58.50 L 73.10,58.50 L 74.18,58.50 L 75.27,58.50 L 76.36,58.23 L 76.36,57.15 L 76.36,56.06 L 76.36,54.98 L 76.36,53.90 L 76.36,52.81 L 76.36,51.73 L 76.36,50.65 L 76.36,49.56 L 76.36,48.48 L 76.36,47.40 L 76.36,46.31 L 76.36,45.23 L 76.36,44.15 L 75.27,43.88 L 74.18,43.88 L 73.10,43.88 L 72.01,43.88 L 70.92,43.88 L 69.84,43.88 L 68.75,43.88 L 67.66,43.88 L 66.58,43.88 L 65.49,43.88 L 64.40,43.88 L 63.32,43.88 L 62.23,43.88 L 61.14,43.88 L 60.05,43.88 L 59.78,42.79 L 59.78,41.71 L 59.78,40.62 L 59.78,39.54 L 59.78,38.46 L 59.78,37.38 L 59.78,36.29 L 59.78,35.21 L 59.78,34.12 L 59.78,33.04 L 59.78,31.96 L 59.78,30.88 L 59.78,29.79 L 59.78,28.71 L 59.51,27.62 L 58.42,27.62 L 57.34,27.62 L 56.25,27.62 L 55.16,27.62 L 54.08,27.62 L 52.99,27.62 L 51.90,27.62 L 50.82,27.62 L 49.73,27.62 L 48.64,27.62 L 47.55,27.62 L 46.47,27.62 L 45.38,27.62 L 44.29,27.62 L 43.21,27.62 L 42.12,27.62 L 41.03,27.62 L 40.22,28.17 L 40.22,29.25 L 40.22,30.33 L 40.22,31.42 L 40.22,32.50 L 40.22,33.58 L 40.22,34.67 L 40.22,35.75 L 40.22,36.83 L 40.22,37.92 L 40.22,39.00 L 40.22,40.08 L 40.22,41.17 L 40.22,42.25 L 40.22,43.33 L 40.22,44.42 L 40.22,45.50 L 40.22,46.58 L 40.22,47.67 L 40.22,48.75 L 40.22,49.83 L 40.22,50.92 L 40.22,52.00 L 40.22,53.08 L 40.22,54.17 L 40.22,55.25 L 40.22,56.33 L 40.22,57.42 L 40.22,58.50 L 40.22,59.58 L 40.22,60.67 L 40.22,61.75 L 40.22,62.83 L 40.22,63.92 L 40.22,65.00 L 40.22,66.08 L 40.22,67.17 L 40.22,68.25 L 40.22,69.33 L 40.22,70.42 L 40.22,71.50 L 40.22,72.58 L 40.22,73.67 L 40.22,74.75 L 40.22,75.83 L 40.22,76.92 L 40.22,78.00 L 40.22,79.08 L 40.22,80.17 L 40.22,81.25 L 40.22,82.33 L 40.22,83.42 L 40.22,84.50 L 40.22,85.58 L 40.22,86.67 L 40.22,87.75 L 40.49,88.83 L 40.49,89.92 L 40.76,91.00 L 40.76,92.08 L 41.03,93.17 L 41.30,94.25 L 41.58,95.33 L 42.12,96.42 L 42.66,97.50";
@@ -86,12 +89,12 @@ export default function Header() {
   const logoColor = useTransform(scrollY, [0, 650], ['#FFFFFF', '#C1121F']);
 
   const companyItems = [
-    { name: 'About Us', href: '#about' },
-    { name: 'Team', href: '#team' },
-    { name: 'Services', href: '#services' },
-    { name: 'Testimonials', href: '#testimonials' },
-    { name: 'Careers', href: '#careers' },
-    { name: 'Blog', href: '#blog' }
+    { name: 'About Us', href: '/about' },
+    { name: 'Team', href: '/team' },
+    { name: 'Services', href: '/#services' },
+    { name: 'Testimonials', href: '/#testimonials' },
+    { name: 'Careers', href: '/careers' },
+    { name: 'Blog', href: '/blog' }
   ];
 
   const destinationItems = [
@@ -108,19 +111,19 @@ export default function Header() {
     setIsMobileMenuOpen(false);
     setHoveredMenu(null);
     
-    if (href && href.startsWith('#')) {
-      const targetId = href.substring(1);
-      const isHomeSection = ['services', 'testimonials', 'contact', 'why', 'journey', 'destinations'].includes(targetId);
+    const hashMatch = href && href.includes('#') ? href.split('#')[1] : null;
+    
+    if (hashMatch) {
+      const isHomeSection = ['services', 'testimonials', 'contact', 'why', 'journey', 'destinations'].includes(hashMatch);
       
       if (isHomeSection) {
-        e.preventDefault(); // Always take full control of home section navigation
-
-        if (window.lenis) {
-          // Already on home page — scroll using true document Y (offsetParent traversal)
-          window.location.hash = targetId;
+        const isOnHomePage = typeof window !== 'undefined' && window.location.pathname === '/';
+        
+        if (isOnHomePage && window.lenis) {
+          e.preventDefault();
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-              const el = document.getElementById(targetId);
+              const el = document.getElementById(hashMatch);
               if (!el) return;
               let absoluteTop = 0;
               let node = el;
@@ -130,9 +133,7 @@ export default function Header() {
             });
           });
         } else {
-          // On another page — store target so Lenis init picks it up after home mounts
-          sessionStorage.setItem('travinno_pending_scroll', targetId);
-          window.location.hash = targetId; // triggers handleHashChange → setCurrentView('home')
+          sessionStorage.setItem('travinno_pending_scroll', hashMatch);
         }
       }
     }
@@ -197,7 +198,7 @@ export default function Header() {
         }}
       >
         <a
-          href={import.meta.env.BASE_URL}
+          href={'/'}
           aria-label="Go to Travinno Homepage"
           style={{
             display: 'flex',
@@ -254,7 +255,7 @@ export default function Header() {
 
           {/* Link: Home */}
           <a
-            href={import.meta.env.BASE_URL}
+            href={'/'}
             style={{
               fontFamily: 'var(--font-sans)',
               fontSize: '0.75rem',

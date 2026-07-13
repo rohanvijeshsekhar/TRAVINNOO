@@ -1,7 +1,6 @@
-// Database Manager for Travinno CMS
-// Manages CRUD actions on localStorage with immediate change notification events
+// Database Manager for Travinno CMS (Client-side adapter for Next.js SSR)
+// Manages CRUD actions on localStorage/sessionCache and synchronizes with Next.js api routes.
 
-// 1. Initial Static Data Templates
 const INITIAL_DESTINATIONS = [
   {
     id: 'dubai',
@@ -350,20 +349,16 @@ const INITIAL_ACTIVITIES = [
   { id: 'act_2', text: 'Sample partner contract inquiry received from Sterling Luxury Travels', date: 'July 01, 2026 12:05 PM' }
 ];
 
-// Helper to broadcast state changes
+// Helper to broadcast state changes to active components
 const broadcastChange = () => {
-  window.dispatchEvent(new CustomEvent('travinno-db-update'));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('travinno-db-update'));
+  }
 };
 
-const getApiUrl = () => {
-  // In production the app is served under /demo/, so API routes are at /demo/api/...
-  if (import.meta.env.PROD) return '/demo';
-  // In local dev, use VITE_API_URL from .env, or fall back to localhost:5001
-  return import.meta.env.VITE_API_URL || 'http://localhost:5001';
-};
-const API_BASE = getApiUrl();
+const API_BASE = '';
 
-// 2. Database Core Interface
+// 2. Database Core Interface (synchronized with Next.js server actions / API routes)
 export const db = {
   apiBase: API_BASE,
   serverActive: false,
@@ -378,22 +373,25 @@ export const db = {
     'travinno_inquiries': INITIAL_INQUIRIES,
     'travinno_applications': INITIAL_APPLICATIONS,
     'travinno_activities': INITIAL_ACTIVITIES
-  },
+  } as Record<string, any[]>,
   initialized: false,
-  initPromise: null,
+  initPromise: null as Promise<void> | null,
 
   // ── Session cache helpers (write-only after MySQL fetch) ──────────────────
   _SS_PREFIX: 'tv_cache_',
-  _ssGet(key) {
+  _ssGet(key: string) {
+    if (typeof window === 'undefined') return null;
     try {
       const v = sessionStorage.getItem(this._SS_PREFIX + key);
       return v ? JSON.parse(v) : null;
     } catch(e) { return null; }
   },
-  _ssSet(key, value) {
+  _ssSet(key: string, value: any) {
+    if (typeof window === 'undefined') return;
     try { sessionStorage.setItem(this._SS_PREFIX + key, JSON.stringify(value)); } catch(e) {}
   },
   _ssClear() {
+    if (typeof window === 'undefined') return;
     try {
       const keys = Object.keys(sessionStorage).filter(k => k.startsWith(this._SS_PREFIX));
       keys.forEach(k => sessionStorage.removeItem(k));
@@ -404,21 +402,21 @@ export const db = {
     if (this.initialized) return;
     this.initialized = true;
 
-    // ── Fetch from MySQL via server (single source of truth) ─────────────────
+    // ── Fetch from API (single source of truth on the client) ─────────────────
     this.initPromise = (async () => {
+      if (typeof window === 'undefined') return;
       try {
         const pingRes = await fetch(`${API_BASE}/api/ping?t=${Date.now()}`).then(r => r.json()).catch(() => null);
         if (pingRes && pingRes.success) {
-          console.log(`[db] Server active. Loading from MySQL...`);
+          console.log(`[db] Server active. Loading from API...`);
           this.serverActive = true;
 
-          // Fetch all collections from MySQL. Hard-fail on any network/HTTP error.
+          // Fetch all collections. Hard-fail on any network/HTTP error.
           const data = await fetch(`${API_BASE}/api/collections?t=${Date.now()}`).then(r => {
             if (!r.ok) throw new Error('HTTP ' + r.status);
             return r.json();
           });
 
-          // Clear any stale sessionStorage so old data cannot come back
           this._ssClear();
 
           const collectionsToSync = [
@@ -435,52 +433,40 @@ export const db = {
           ];
 
           for (const item of collectionsToSync) {
-            // MySQL data always wins — no fallback writes to server ever
             if (data[item.key] !== undefined && data[item.key] !== null) {
               this.collections[item.key] = data[item.key];
             } else {
-              // Key missing in MySQL: use INITIAL_* for display only, do NOT upload
               this.collections[item.key] = item.defaultVal;
             }
           }
 
           broadcastChange();
         } else {
-          // Server unreachable: use INITIAL_* for display, wait for next load
           console.warn('[db] Server unreachable. Showing default data until server is ready.');
-          const collectionsToSync = [
-            { key: 'travinno_destinations', defaultVal: INITIAL_DESTINATIONS },
-            { key: 'travinno_blogs', defaultVal: INITIAL_BLOGS },
-            { key: 'travinno_careers', defaultVal: INITIAL_JOBS },
-            { key: 'travinno_team', defaultVal: INITIAL_TEAM },
-            { key: 'travinno_testimonials', defaultVal: INITIAL_TESTIMONIALS },
-            { key: 'travinno_logos', defaultVal: INITIAL_LOGOS },
-            { key: 'travinno_hero_slides', defaultVal: INITIAL_HERO_SLIDES },
-            { key: 'travinno_inquiries', defaultVal: INITIAL_INQUIRIES },
-            { key: 'travinno_applications', defaultVal: INITIAL_APPLICATIONS },
-            { key: 'travinno_activities', defaultVal: INITIAL_ACTIVITIES }
-          ];
-          collectionsToSync.forEach(item => { this.collections[item.key] = item.defaultVal; });
-          broadcastChange();
+          this._loadDefaults();
         }
-      } catch (e) {
+      } catch (e: any) {
         console.warn('[db] Fetch error. Showing default data.', e.message);
-        const collectionsToSync = [
-          { key: 'travinno_destinations', defaultVal: INITIAL_DESTINATIONS },
-          { key: 'travinno_blogs', defaultVal: INITIAL_BLOGS },
-          { key: 'travinno_careers', defaultVal: INITIAL_JOBS },
-          { key: 'travinno_team', defaultVal: INITIAL_TEAM },
-          { key: 'travinno_testimonials', defaultVal: INITIAL_TESTIMONIALS },
-          { key: 'travinno_logos', defaultVal: INITIAL_LOGOS },
-          { key: 'travinno_hero_slides', defaultVal: INITIAL_HERO_SLIDES },
-          { key: 'travinno_inquiries', defaultVal: INITIAL_INQUIRIES },
-          { key: 'travinno_applications', defaultVal: INITIAL_APPLICATIONS },
-          { key: 'travinno_activities', defaultVal: INITIAL_ACTIVITIES }
-        ];
-        collectionsToSync.forEach(item => { this.collections[item.key] = item.defaultVal; });
-        broadcastChange();
+        this._loadDefaults();
       }
     })();
+  },
+
+  _loadDefaults() {
+    const collectionsToSync = [
+      { key: 'travinno_destinations', defaultVal: INITIAL_DESTINATIONS },
+      { key: 'travinno_blogs', defaultVal: INITIAL_BLOGS },
+      { key: 'travinno_careers', defaultVal: INITIAL_JOBS },
+      { key: 'travinno_team', defaultVal: INITIAL_TEAM },
+      { key: 'travinno_testimonials', defaultVal: INITIAL_TESTIMONIALS },
+      { key: 'travinno_logos', defaultVal: INITIAL_LOGOS },
+      { key: 'travinno_hero_slides', defaultVal: INITIAL_HERO_SLIDES },
+      { key: 'travinno_inquiries', defaultVal: INITIAL_INQUIRIES },
+      { key: 'travinno_applications', defaultVal: INITIAL_APPLICATIONS },
+      { key: 'travinno_activities', defaultVal: INITIAL_ACTIVITIES }
+    ];
+    collectionsToSync.forEach(item => { this.collections[item.key] = item.defaultVal; });
+    broadcastChange();
   },
 
   // GET ALL
@@ -488,10 +474,10 @@ export const db = {
     this.init();
     return this.collections['travinno_hero_slides'] || [];
   },
-  saveHeroSlides(list, activityMessage = null) {
+  saveHeroSlides(list: any[], activityMessage: string | null = null) {
     this.collections['travinno_hero_slides'] = list;
     this._ssSet('travinno_hero_slides', list);
-    if (this.serverActive || import.meta.env.PROD) {
+    if (this.serverActive || process.env.NODE_ENV === 'production') {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -540,13 +526,13 @@ export const db = {
   },
 
   // WRITE & LOG ACTIVITY
-  logActivity(text) {
+  logActivity(text: string) {
     const logs = this.getActivities();
     const newLog = { id: 'act_' + Date.now(), text, date: new Date().toLocaleString() };
     const updatedLogs = [newLog, ...logs].slice(0, 100);
     this.collections['travinno_activities'] = updatedLogs;
     this._ssSet('travinno_activities', updatedLogs);
-    if (this.serverActive || import.meta.env.PROD) {
+    if (this.serverActive || process.env.NODE_ENV === 'production') {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -557,10 +543,10 @@ export const db = {
   },
 
   // SAVE ALL
-  saveDestinations(data, activityMsg) {
+  saveDestinations(data: any[], activityMsg?: string) {
     this.collections['travinno_destinations'] = data;
     this._ssSet('travinno_destinations', data);
-    if (this.serverActive || import.meta.env.PROD) {
+    if (this.serverActive || process.env.NODE_ENV === 'production') {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_destinations', value: data })
@@ -569,10 +555,10 @@ export const db = {
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
-  saveBlogs(data, activityMsg) {
+  saveBlogs(data: any[], activityMsg?: string) {
     this.collections['travinno_blogs'] = data;
     this._ssSet('travinno_blogs', data);
-    if (this.serverActive || import.meta.env.PROD) {
+    if (this.serverActive || process.env.NODE_ENV === 'production') {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_blogs', value: data })
@@ -581,10 +567,10 @@ export const db = {
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
-  saveCareers(data, activityMsg) {
+  saveCareers(data: any[], activityMsg?: string) {
     this.collections['travinno_careers'] = data;
     this._ssSet('travinno_careers', data);
-    if (this.serverActive || import.meta.env.PROD) {
+    if (this.serverActive || process.env.NODE_ENV === 'production') {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_careers', value: data })
@@ -593,10 +579,10 @@ export const db = {
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
-  saveTeam(data, activityMsg) {
+  saveTeam(data: any[], activityMsg?: string) {
     this.collections['travinno_team'] = data;
     this._ssSet('travinno_team', data);
-    if (this.serverActive || import.meta.env.PROD) {
+    if (this.serverActive || process.env.NODE_ENV === 'production') {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_team', value: data })
@@ -605,10 +591,10 @@ export const db = {
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
-  saveTestimonials(data, activityMsg) {
+  saveTestimonials(data: any[], activityMsg?: string) {
     this.collections['travinno_testimonials'] = data;
     this._ssSet('travinno_testimonials', data);
-    if (this.serverActive || import.meta.env.PROD) {
+    if (this.serverActive || process.env.NODE_ENV === 'production') {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_testimonials', value: data })
@@ -617,10 +603,10 @@ export const db = {
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
-  saveLogos(data, activityMsg) {
+  saveLogos(data: any[], activityMsg?: string) {
     this.collections['travinno_logos'] = data;
     this._ssSet('travinno_logos', data);
-    if (this.serverActive || import.meta.env.PROD) {
+    if (this.serverActive || process.env.NODE_ENV === 'production') {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_logos', value: data })
@@ -629,10 +615,10 @@ export const db = {
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
-  saveInquiries(data, activityMsg) {
+  saveInquiries(data: any[], activityMsg?: string) {
     this.collections['travinno_inquiries'] = data;
     this._ssSet('travinno_inquiries', data);
-    if (this.serverActive || import.meta.env.PROD) {
+    if (this.serverActive || process.env.NODE_ENV === 'production') {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_inquiries', value: data })
@@ -641,10 +627,10 @@ export const db = {
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();
   },
-  saveApplications(data, activityMsg) {
+  saveApplications(data: any[], activityMsg?: string) {
     this.collections['travinno_applications'] = data;
     this._ssSet('travinno_applications', data);
-    if (this.serverActive || import.meta.env.PROD) {
+    if (this.serverActive || process.env.NODE_ENV === 'production') {
       fetch(`${API_BASE}/api/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_applications', value: data })
@@ -655,7 +641,9 @@ export const db = {
   }
 };
 
-// Trigger background initialization
-setTimeout(() => {
-  db.init();
-}, 0);
+// Trigger background initialization client-side
+if (typeof window !== 'undefined') {
+  setTimeout(() => {
+    db.init();
+  }, 0);
+}

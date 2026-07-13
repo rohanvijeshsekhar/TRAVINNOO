@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../lib/db';
 import { darkTheme, lightTheme } from '../lib/theme';
@@ -123,7 +125,7 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image", as
     const img = new window.Image();
     const resolvedSrc = imageSrc.startsWith('data:') || imageSrc.startsWith('http') 
       ? imageSrc 
-      : `${import.meta.env.BASE_URL}${imageSrc}`;
+      : `${'/'}${imageSrc}`;
     img.crossOrigin = "anonymous";
     img.src = resolvedSrc;
     img.onload = () => {
@@ -229,7 +231,7 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image", as
             alignItems: 'center'
           }}>
             <img
-              src={imageSrc.startsWith('data:') || imageSrc.startsWith('http') ? imageSrc : `${import.meta.env.BASE_URL}${imageSrc}`}
+              src={imageSrc.startsWith('data:') || imageSrc.startsWith('http') ? imageSrc : `${'/'}${imageSrc}`}
               alt="Preview"
               style={{
                 maxWidth: '100%',
@@ -449,7 +451,7 @@ export default function AdminPanel() {
   const currentTheme = theme === 'dark' ? darkTheme : lightTheme;
   const [passcode, setPasscode] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Schema state
@@ -486,6 +488,7 @@ export default function AdminPanel() {
       setIsAuthenticated(true);
       loadCollections();
     }
+    setIsMobile(window.innerWidth < 768);
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -1392,7 +1395,7 @@ export default function AdminPanel() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '150px', borderBottom: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
                   <div style={{ position: 'relative', overflow: 'hidden', height: '100%' }}>
                     {item.desktopImage ? (
-                      <img src={item.desktopImage.startsWith('data:') || item.desktopImage.startsWith('http') ? item.desktopImage : `${import.meta.env.BASE_URL}${item.desktopImage}`} alt="Desktop" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={item.desktopImage.startsWith('data:') || item.desktopImage.startsWith('http') ? item.desktopImage : `${'/'}${item.desktopImage}`} alt="Desktop" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
                       <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255,255,255,0.03)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.65rem' }}>No Desktop</div>
                     )}
@@ -1400,7 +1403,7 @@ export default function AdminPanel() {
                   </div>
                   <div style={{ position: 'relative', overflow: 'hidden', height: '100%', borderLeft: '1px solid rgba(255,255,255,0.08)' }}>
                     {item.mobileImage ? (
-                      <img src={item.mobileImage.startsWith('data:') || item.mobileImage.startsWith('http') ? item.mobileImage : `${import.meta.env.BASE_URL}${item.mobileImage}`} alt="Mobile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={item.mobileImage.startsWith('data:') || item.mobileImage.startsWith('http') ? item.mobileImage : `${'/'}${item.mobileImage}`} alt="Mobile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
                       <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255,255,255,0.03)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.65rem' }}>No Mobile</div>
                     )}
@@ -1998,7 +2001,7 @@ export default function AdminPanel() {
                     alignItems: 'center'
                   }}
                 >
-                  <img src={logo.startsWith('data:') || logo.startsWith('http') ? logo : `${import.meta.env.BASE_URL || '/'}${logo}`} alt="Partner Logo" style={{ maxWidth: '90%', maxHeight: '60px', objectFit: 'contain', opacity: 0.65 }} />
+                  <img src={logo.startsWith('data:') || logo.startsWith('http') ? logo : `${'/' || '/'}${logo}`} alt="Partner Logo" style={{ maxWidth: '90%', maxHeight: '60px', objectFit: 'contain', opacity: 0.65 }} />
                   <button
                     onClick={() => deleteLogo(idx)}
                     style={{
@@ -2572,7 +2575,7 @@ export default function AdminPanel() {
                       {teamForm.image ? (
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
                           <img
-                            src={teamForm.image.startsWith('data:') || teamForm.image.startsWith('http') ? teamForm.image : `${import.meta.env.BASE_URL}${teamForm.image}`}
+                            src={teamForm.image.startsWith('data:') || teamForm.image.startsWith('http') ? teamForm.image : `${'/'}${teamForm.image}`}
                             alt="Preview"
                             style={{ maxHeight: '160px', objectFit: 'contain', display: 'block', pointerEvents: 'none' }}
                           />

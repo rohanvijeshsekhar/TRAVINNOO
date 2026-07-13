@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -13,7 +15,7 @@ interface Destination {
   image: string;       // Image URL
 }
 
-const BASE = import.meta.env.BASE_URL;
+const BASE = '/';
 
 const getFlagEmoji = (title: string) => {
   switch (title) {
@@ -116,7 +118,7 @@ export default function DestinationStorySection() {
           let imgUrl = found.image;
           if (imgUrl && !imgUrl.startsWith('data:') && !imgUrl.startsWith('http') && !imgUrl.startsWith('https')) {
             const cleanPath = imgUrl.startsWith('/') ? imgUrl.substring(1) : imgUrl;
-            imgUrl = `${import.meta.env.BASE_URL}${cleanPath}`;
+            imgUrl = `${'/'}${cleanPath}`;
           }
           return {
             ...d,
@@ -274,7 +276,7 @@ export default function DestinationStorySection() {
       rafId1 = requestAnimationFrame(() => {
         rafId2 = requestAnimationFrame(() => {
           ScrollTrigger.refresh(true);
-          window.travinnoScrollTriggerReady = true;
+          (window as any).travinnoScrollTriggerReady = true;
           window.dispatchEvent(new CustomEvent('travinnoScrollTriggerReady'));
         });
       });
@@ -309,7 +311,7 @@ export default function DestinationStorySection() {
       }
       cancelAnimationFrame(rafId1);
       cancelAnimationFrame(rafId2);
-      window.travinnoScrollTriggerReady = false;
+      (window as any).travinnoScrollTriggerReady = false;
       if (ctx) {
         ctx.revert();
       }

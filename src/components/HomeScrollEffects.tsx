@@ -1,0 +1,83 @@
+'use client';
+
+import { useEffect } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Lenis from '@studio-freight/lenis';
+
+export default function HomeScrollEffects() {
+  useEffect(() => {
+    // Only run on client side
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ ignoreMobileResize: true });
+
+    const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+    // Initialize Lenis smooth scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: !isTouchDevice,
+      smoothTouch: false,
+      syncTouch: false,
+    } as any);
+    
+    // @ts-ignore
+    window.lenis = lenis;
+    // @ts-ignore
+    window.ScrollTrigger = ScrollTrigger;
+
+    // Update ScrollTrigger on Lenis scroll
+    lenis.on('scroll', ScrollTrigger.update);
+
+    // Sync Lenis with GSAP ticker
+    const tickerUpdate = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+    gsap.ticker.add(tickerUpdate);
+
+    // If a pending scroll target was stored in sessionStorage (cross-page nav), consume it
+    const pendingTarget = sessionStorage.getItem('travinno_pending_scroll');
+    if (pendingTarget) {
+      sessionStorage.removeItem('travinno_pending_scroll');
+      
+      const doScroll = () => {
+        const el = document.getElementById(pendingTarget);
+        if (!el) return;
+
+        let absoluteTop = 0;
+        let node: HTMLElement | null = el;
+        while (node) {
+          absoluteTop += node.offsetTop || 0;
+          node = node.offsetParent as HTMLElement | null;
+        }
+        absoluteTop = Math.max(0, absoluteTop - 80);
+        lenis.scrollTo(absoluteTop, { duration: 1.5 });
+      };
+
+      // @ts-ignore
+      if (window.travinnoScrollTriggerReady) {
+        doScroll();
+      } else {
+        let resolved = false;
+        const handleReady = () => {
+          if (resolved) return;
+          resolved = true;
+          window.removeEventListener('travinnoScrollTriggerReady', handleReady);
+          requestAnimationFrame(doScroll);
+        };
+        window.addEventListener('travinnoScrollTriggerReady', handleReady);
+        setTimeout(handleReady, 2500); // safety fallback timeout
+      }
+    }
+
+    return () => {
+      gsap.ticker.remove(tickerUpdate);
+      lenis.destroy();
+      // @ts-ignore
+      window.lenis = null;
+    };
+  }, []);
+
+  return null;
+}

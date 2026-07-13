@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -271,11 +273,11 @@ function AboutIntroBackground() {
       {/* Particles */}
       <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
         {[...Array(12)].map((_, i) => {
-          const size = Math.random() * 1.5 + 1.2;
-          const left = `${Math.random() * 95}%`;
-          const top = `${Math.random() * 95}%`;
-          const duration = `${Math.random() * 12 + 8}s`;
-          const delay = `${Math.random() * 5}s`;
+          const size = ((i * 3 + 1) % 15) / 10 + 1.2;
+          const left = `${(i * 7919 + 7) % 95}%`;
+          const top = `${(i * 4973 + 13) % 95}%`;
+          const duration = `${(i * 5381 + 7) % 12 + 8}s`;
+          const delay = `${(i * 6271 + 3) % 5}s`;
           return (
             <div 
               key={i}
@@ -349,7 +351,7 @@ export function ParallaxComponent() {
         }}>
           <img
             ref={heroImageRef}
-            src={`${import.meta.env.BASE_URL}images/about_hero.png`}
+            src={`${'/'}images/about_hero.png`}
             alt="Cinematic Silhouette on Mountain Ridge B&W"
             style={{
               width: '100%',

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowLeft, CheckCircle, Luggage, Hotel, Car, Users } from 'lucide-react';
@@ -142,7 +144,10 @@ const DEFAULT_DESTINATIONS = [
 export default function DestinationsPage() {
   const [selectedRegion, setSelectedRegion] = useState('All');
   const [activeDestination, setActiveDestination] = useState(null);
-  const [destinationsData, setDestinationsData] = useState(() => db.getDestinations());
+  const [destinationsData, setDestinationsData] = useState(() => {
+    const dbData = db.getDestinations();
+    return dbData && dbData.length > 0 ? dbData : DEFAULT_DESTINATIONS;
+  });
 
   // Load and subscribe to DB updates
   useEffect(() => {
@@ -159,20 +164,24 @@ export default function DestinationsPage() {
     }
   }, [activeDestination]);
 
-  // Synchronize state with URL hash (enables reload/back navigation to work seamlessly)
+  // Synchronize state with URL hash — consults DEFAULT_DESTINATIONS as fallback
   useEffect(() => {
+    const resolveById = (id) => {
+      const allData = destinationsData.length > 0 ? destinationsData : DEFAULT_DESTINATIONS;
+      return allData.find(d => d.id === id) || DEFAULT_DESTINATIONS.find(d => d.id === id);
+    };
+
     const handleHash = () => {
       const hash = window.location.hash;
       const match = hash.match(/^#destination-([^?#/]+)/);
       if (match) {
-        const id = match[1];
-        const dest = destinationsData.find(d => d.id === id);
-        if (dest) {
-          setActiveDestination(dest);
-          return;
-        }
+        const dest = resolveById(match[1]);
+        if (dest) { setActiveDestination(dest); return; }
       }
-      setActiveDestination(null);
+      // Only clear if hash is genuinely gone or points to the listing
+      if (!hash || hash === '#destinations' || hash === '#') {
+        setActiveDestination(null);
+      }
     };
 
     window.addEventListener('hashchange', handleHash);
@@ -725,7 +734,7 @@ export default function DestinationsPage() {
           {/* Header Image banner occupying 1/3 viewport height */}
           <div className="destination-detail-hero">
             <img
-              src={activeDestination.image && (activeDestination.image.startsWith('data:') || activeDestination.image.startsWith('http')) ? activeDestination.image : `${import.meta.env.BASE_URL}${activeDestination.image}`}
+              src={activeDestination.image && (activeDestination.image.startsWith('data:') || activeDestination.image.startsWith('http')) ? activeDestination.image : `${'/'}${activeDestination.image}`}
               alt={activeDestination.name}
             />
             <div className="destination-detail-hero-overlay">
@@ -925,7 +934,7 @@ export default function DestinationsPage() {
               }}
             >
               <img
-                src={`${import.meta.env.BASE_URL}images/destinations_hero.png`}
+                src={`${'/'}images/destinations_hero.png`}
                 alt="Global Destinations map compass"
                 style={{
                   width: '100%',
@@ -1068,7 +1077,7 @@ export default function DestinationsPage() {
                   >
                     <div className="destination-img-wrapper">
                       <img
-                        src={dest.image && (dest.image.startsWith('data:') || dest.image.startsWith('http')) ? dest.image : `${import.meta.env.BASE_URL}${dest.image}`}
+                        src={dest.image && (dest.image.startsWith('data:') || dest.image.startsWith('http')) ? dest.image : `${'/'}${dest.image}`}
                         alt={dest.name}
                       />
                     </div>

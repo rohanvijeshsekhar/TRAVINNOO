@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Phone, Mail, ArrowRight, CheckCircle2, ChevronDown } from 'lucide-react';
@@ -276,7 +278,7 @@ export default function ContactPage() {
           }}
         >
           <img
-            src={`${import.meta.env.BASE_URL}images/contact_hero.png`}
+            src={`${'/'}images/contact_hero.png`}
             alt="Contact Desk Workspace Editorial"
             style={{
               width: '100%',

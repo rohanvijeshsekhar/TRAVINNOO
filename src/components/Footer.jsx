@@ -1,3 +1,6 @@
+"use client";
+
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { ArrowUp, Mail, Phone, MapPin } from 'lucide-react';
@@ -418,7 +421,7 @@ function Footer() {
               />
             </svg>
             <img
-              src={`${import.meta.env.BASE_URL}images/logo_loading.png`}
+              src={`${'/'}images/logo_loading.png`}
               alt="Travinno"
               style={{
                 height: '20px',

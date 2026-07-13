@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Clock, Calendar, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
@@ -634,7 +636,7 @@ export default function BlogPage() {
           {/* Header/Hero Section occupying exactly 1/3 of the viewport */}
           <div className="editorial-detail-hero">
             <img
-              src={selectedPost.image && (selectedPost.image.startsWith('data:') || selectedPost.image.startsWith('http')) ? selectedPost.image : `${import.meta.env.BASE_URL}${selectedPost.image}`}
+              src={selectedPost.image && (selectedPost.image.startsWith('data:') || selectedPost.image.startsWith('http')) ? selectedPost.image : `${'/'}${selectedPost.image}`}
               alt={selectedPost.title}
             />
             <div className="editorial-detail-hero-overlay">
@@ -710,7 +712,7 @@ export default function BlogPage() {
               }}
             >
               <img
-                src={`${import.meta.env.BASE_URL}images/blog_hero.png`}
+                src={`${'/'}images/blog_hero.png`}
                 alt="Travel Planning Editorial"
                 style={{
                   width: '100%',
@@ -895,7 +897,7 @@ export default function BlogPage() {
                   >
                     <div className="card-image-wrapper">
                       <img
-                        src={post.image && (post.image.startsWith('data:') || post.image.startsWith('http')) ? post.image : `${import.meta.env.BASE_URL}${post.image}`}
+                        src={post.image && (post.image.startsWith('data:') || post.image.startsWith('http')) ? post.image : `${'/'}${post.image}`}
                         alt={post.title}
                       />
                     </div>

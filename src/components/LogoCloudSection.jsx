@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { db } from '../lib/db';
@@ -27,7 +29,7 @@ const PARTNERS_DATA = Array.from({ length: 52 }, (_, i) => {
   const num = i + 1;
   return {
     id: num,
-    src: `${import.meta.env.BASE_URL}partners/partner-${num}.webp`,
+    src: `${'/'}partners/partner-${num}.webp`,
     alt: PARTNER_NAMES[i] || `Luxury Travel Partner ${num}`
   };
 });
@@ -37,7 +39,7 @@ const PartnerLogo = ({ partner }) => {
   return (
     <div className="partner-logo-item">
       <img 
-        src={partner.src && (partner.src.startsWith('data:') || partner.src.startsWith('http')) ? partner.src : `${import.meta.env.BASE_URL || '/'}${partner.src}`} 
+        src={partner.src && (partner.src.startsWith('data:') || partner.src.startsWith('http')) ? partner.src : `${'/' || '/'}${partner.src}`} 
         alt={partner.alt} 
         className="partner-logo-img animate-fade-in"
         loading="lazy"

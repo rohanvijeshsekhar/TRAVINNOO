@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Briefcase, Clock, Upload, X, CheckCircle, ArrowRight } from 'lucide-react';
@@ -525,7 +527,7 @@ export default function CareersPage() {
           }}
         >
           <img
-            src={`${import.meta.env.BASE_URL}images/careers_hero.png`}
+            src={`${'/'}images/careers_hero.png`}
             alt="Executive Workspace Editorial"
             style={{
               width: '100%',

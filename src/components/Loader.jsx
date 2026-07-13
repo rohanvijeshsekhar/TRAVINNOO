@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 
@@ -201,7 +203,7 @@ export default function Loader({ onComplete }) {
             duration: 0.8,
             ease: "easeOut"
           }}
-          src={`${import.meta.env.BASE_URL}images/logo_loading.png`}
+          src={`${'/'}images/logo_loading.png`}
           alt="Travinno Logo"
           style={{
             height: '24px',

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { db } from '../lib/db';
@@ -48,7 +50,7 @@ export default function CinematicHero() {
   const resolveImgPath = (src) => {
     if (!src) return '';
     if (src.startsWith('data:') || src.startsWith('http')) return src;
-    return `${import.meta.env.BASE_URL}${src}`;
+    return `${'/'}${src}`;
   };
 
   useEffect(() => {

@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+"use client";
+
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, useInView } from 'framer-motion';
 import logoImg from '../assets/logo.webp';
 
@@ -559,19 +561,25 @@ export default function OurJourney() {
           }}
         />
 
-        {/* Floating Particles */}
+        {/* Floating Particles - rendered client-side only to avoid SSR hydration mismatch */}
         <div className="journey-particles">
-          {Array.from({ length: 15 }).map((_, i) => (
-            <div
-              key={`particle-${i}`}
-              className="journey-particle"
-              style={{
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 15}s`,
-                animationDuration: `${12 + Math.random() * 8}s`
-              }}
-            />
-          ))}
+          {typeof window !== 'undefined' && Array.from({ length: 15 }).map((_, i) => {
+            // Use a seeded deterministic approach: derive values from index
+            const seed1 = ((i * 7919 + 1) % 100);
+            const seed2 = ((i * 6271 + 3) % 15);
+            const seed3 = ((i * 5381 + 7) % 8);
+            return (
+              <div
+                key={`particle-${i}`}
+                className="journey-particle"
+                style={{
+                  left: `${seed1}%`,
+                  animationDelay: `${seed2}s`,
+                  animationDuration: `${12 + seed3}s`
+                }}
+              />
+            );
+          })}
         </div>
 
         {/* Camera Subtle Breathing Effect Wrapper */}

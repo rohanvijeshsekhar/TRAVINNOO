@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
@@ -13,13 +15,13 @@ function StarryBackground() {
     const count = IS_TOUCH ? 18 : 40;
     const starArray = Array.from({ length: count }).map((_, i) => ({
       id: i,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      size: Math.random() * 2 + 1,
-      delay: `${Math.random() * 8}s`,
-      duration: `${6 + Math.random() * 8}s`,
-      driftX: (Math.random() - 0.5) * 40,
-      driftY: (Math.random() - 0.5) * 40
+      top: `${(i * 4973 + 13) % 100}%`,
+      left: `${(i * 7919 + 7) % 100}%`,
+      size: ((i * 3 + 1) % 20) / 10 + 1,
+      delay: `${(i * 6271 + 3) % 8}s`,
+      duration: `${6 + (i * 5381 + 5) % 8}s`,
+      driftX: (((i * 2053 + 11) % 40) - 20),
+      driftY: (((i * 1777 + 17) % 40) - 20)
     }));
     setStars(starArray);
   }, []);
