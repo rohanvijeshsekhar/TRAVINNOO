@@ -7,13 +7,15 @@ interface DBHydratorProps {
 }
 
 export default function DBHydrator({ data }: DBHydratorProps) {
-  // Always hydrate during render to ensure each page route seeds client cache correctly.
-  // This is safe because db.collections is just an in-memory object — overwriting is idempotent.
+  // Initialize client-side database cache with sessionStorage and fallbacks first
+  db.init();
+
   if (data) {
     Object.keys(data).forEach((key) => {
-      db.collections[key] = data[key];
+      if (data[key] !== undefined && data[key] !== null) {
+        db.collections[key] = data[key];
+      }
     });
-    db.initialized = true;
   }
   return null;
 }

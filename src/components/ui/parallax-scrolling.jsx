@@ -351,7 +351,7 @@ export function ParallaxComponent() {
         }}>
           <img
             ref={heroImageRef}
-            src={`${'/'}images/about_hero.png`}
+            src="/demo/images/about_hero.png"
             alt="Cinematic Silhouette on Mountain Ridge B&W"
             style={{
               width: '100%',

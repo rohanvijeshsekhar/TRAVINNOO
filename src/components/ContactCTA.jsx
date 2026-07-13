@@ -103,6 +103,11 @@ function StarryBackground() {
 }
 
 function ContactCTA() {
+  const [isTouch, setIsTouch] = useState(false);
+  useEffect(() => {
+    setIsTouch(window.matchMedia('(hover: none) and (pointer: coarse)').matches);
+  }, []);
+
   return (
     <section
       id="contact"
@@ -160,7 +165,7 @@ function ContactCTA() {
         }}
       />
       {/* Glow orbs: blur(80px) is GPU-expensive — skip on mobile, use CSS gradient only */}
-      {!IS_TOUCH && (
+      {!isTouch && (
         <>
           <div 
             style={{

@@ -12,10 +12,17 @@ export default function Loader({ onComplete }) {
   // Lock scroll during loader
   useEffect(() => {
     document.body.style.overflow = 'hidden';
+
+    const timer = setTimeout(() => {
+      console.log('[loader] Backup fail-safe unmount timer fired.');
+      if (onComplete) onComplete();
+    }, 5000);
+
     return () => {
       document.body.style.overflow = '';
+      clearTimeout(timer);
     };
-  }, []);
+  }, [onComplete]);
 
   return (
     <motion.div

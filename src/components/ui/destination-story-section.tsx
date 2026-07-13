@@ -15,7 +15,7 @@ interface Destination {
   image: string;       // Image URL
 }
 
-const BASE = '/';
+const BASE = '/demo/';
 
 const getFlagEmoji = (title: string) => {
   switch (title) {
@@ -103,63 +103,50 @@ export default function DestinationStorySection() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const textContainerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const [destinationsList, setDestinationsList] = useState<Destination[]>(destinations);
-
-  useEffect(() => {
-    const loadData = () => {
-      const dbDests = db.getDestinations();
-      if (!dbDests || dbDests.length === 0) return;
-      const merged = destinations.map(d => {
-        const found = dbDests.find(dbD => 
-          dbD.name.toLowerCase() === d.title.toLowerCase() || 
-          dbD.id.toLowerCase() === d.title.toLowerCase()
-        );
-        if (found) {
-          let imgUrl = found.image;
-          if (imgUrl && !imgUrl.startsWith('data:') && !imgUrl.startsWith('http') && !imgUrl.startsWith('https')) {
-            const cleanPath = imgUrl.startsWith('/') ? imgUrl.substring(1) : imgUrl;
-            imgUrl = `${'/'}${cleanPath}`;
-          }
-          return {
-            ...d,
-            image: imgUrl || d.image
-          };
-        }
-        return d;
-      });
-      setDestinationsList(merged);
-    };
-
+  const [destinationsList] = useState<Destination[]>(() => {
     db.init();
-    loadData();
-
-    const handleUpdate = () => {
-      loadData();
-    };
-    window.addEventListener('travinno-db-update', handleUpdate);
-    return () => {
-      window.removeEventListener('travinno-db-update', handleUpdate);
-    };
-  }, []);
+    const dbDests = db.getDestinations();
+    if (!dbDests || dbDests.length === 0) return destinations;
+    return destinations.map(d => {
+      const found = dbDests.find(dbD => 
+        dbD.name.toLowerCase() === d.title.toLowerCase() || 
+        dbD.id.toLowerCase() === d.title.toLowerCase()
+      );
+      if (found) {
+        let imgUrl = found.image;
+        if (imgUrl && !imgUrl.startsWith('data:') && !imgUrl.startsWith('http') && !imgUrl.startsWith('https')) {
+          const cleanPath = imgUrl.startsWith('/') ? imgUrl.substring(1) : imgUrl;
+          imgUrl = `/demo/${cleanPath}`;
+        }
+        return {
+          ...d,
+          image: imgUrl || d.image
+        };
+      }
+      return d;
+    });
+  });
 
   useEffect(() => {
+    let isMounted = true;
     gsap.registerPlugin(ScrollTrigger);
 
     let ctx: any;
     let rafId1 = 0;
     let rafId2 = 0;
     let loaderListener: any;
+    let wasMobile = typeof window !== 'undefined' ? window.innerWidth < 1024 : false;
 
     const initScrollTrigger = () => {
+      if (!isMounted) return;
       const container = containerRef.current;
       const viewport = viewportRef.current;
       if (!container || !viewport) return;
 
-      const cards = cardRefs.current.filter((c): c is HTMLDivElement => c !== null);
-      const textContainers = textContainerRefs.current.filter((t): t is HTMLDivElement => t !== null);
+      const cards = cardRefs.current.filter((c): c is HTMLDivElement => c !== null && document.body.contains(c));
+      const textContainers = textContainerRefs.current.filter((t): t is HTMLDivElement => t !== null && document.body.contains(t));
       if (cards.length === 0) return;
 
-      // ─── Visual Viewport Measure Source of Truth ──────────────────────────
       const getVH = () => window.innerHeight;
 
       ctx = gsap.context(() => {
@@ -198,6 +185,7 @@ export default function DestinationStorySection() {
             end: () => `+=${scrollDistance()}`,
             pin: viewport,
             pinSpacing: true,
+            pinType: isMobile ? 'transform' : 'fixed',
             scrub: 1.2, // Reduced scrub lag for faster feedback
             invalidateOnRefresh: true,
             anticipatePin: 1
@@ -281,14 +269,29 @@ export default function DestinationStorySection() {
         });
       });
     };
+
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 1024;
+      if (isMobile !== wasMobile) {
+        wasMobile = isMobile;
+        if (ctx) {
+          ctx.revert();
+        }
+        initScrollTrigger();
+      }
+    };
  
     const checkAndInit = () => {
       const loader = document.querySelector('.fullscreen-loader');
-      if (loader) {
+      const hasLoadedThisSession = typeof window !== 'undefined' ? sessionStorage.getItem('travinno_session_loaded') : false;
+
+      if (loader && !hasLoadedThisSession) {
         loaderListener = () => {
           window.removeEventListener('travinnoLoaderComplete', loaderListener);
           if (document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(initScrollTrigger);
+            document.fonts.ready.then(() => {
+              if (isMounted) initScrollTrigger();
+            });
           } else {
             initScrollTrigger();
           }
@@ -296,7 +299,9 @@ export default function DestinationStorySection() {
         window.addEventListener('travinnoLoaderComplete', loaderListener);
       } else {
         if (document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(initScrollTrigger);
+          document.fonts.ready.then(() => {
+            if (isMounted) initScrollTrigger();
+          });
         } else {
           initScrollTrigger();
         }
@@ -304,19 +309,30 @@ export default function DestinationStorySection() {
     };
  
     checkAndInit();
+    window.addEventListener('resize', handleResize);
  
     return () => {
+      isMounted = false;
+      window.removeEventListener('resize', handleResize);
       if (loaderListener) {
         window.removeEventListener('travinnoLoaderComplete', loaderListener);
       }
       cancelAnimationFrame(rafId1);
       cancelAnimationFrame(rafId2);
       (window as any).travinnoScrollTriggerReady = false;
+
+      // Kill any ScrollTriggers bound to our container to prevent duplicate instances
+      ScrollTrigger.getAll().forEach(trigger => {
+        if (trigger.vars.trigger === containerRef.current || trigger.trigger === containerRef.current) {
+          trigger.kill();
+        }
+      });
+
       if (ctx) {
         ctx.revert();
       }
     };
-  }, []);
+  }, [destinationsList.length]);
 
   return (
     <div

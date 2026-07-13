@@ -117,7 +117,11 @@ export default function Header() {
       const isHomeSection = ['services', 'testimonials', 'contact', 'why', 'journey', 'destinations'].includes(hashMatch);
       
       if (isHomeSection) {
-        const isOnHomePage = typeof window !== 'undefined' && window.location.pathname === '/';
+        const isOnHomePage = typeof window !== 'undefined' && (
+          window.location.pathname === '/demo' || 
+          window.location.pathname === '/demo/' || 
+          window.location.pathname === '/'
+        );
         
         if (isOnHomePage && window.lenis) {
           e.preventDefault();
@@ -197,8 +201,8 @@ export default function Header() {
           transition: 'filter 0.3s ease'
         }}
       >
-        <a
-          href={'/'}
+        <Link
+          href="/"
           aria-label="Go to Travinno Homepage"
           style={{
             display: 'flex',
@@ -221,7 +225,7 @@ export default function Header() {
               stroke="none"
             />
           </svg>
-        </a>
+        </Link>
       </div>
 
       {/* Desktop Menu Navigation Links (matching screenshot layout) */}
@@ -254,8 +258,8 @@ export default function Header() {
         >
 
           {/* Link: Home */}
-          <a
-            href={'/'}
+          <Link
+            href="/"
             style={{
               fontFamily: 'var(--font-sans)',
               fontSize: '0.75rem',
@@ -278,7 +282,7 @@ export default function Header() {
             }}
           >
             Home
-          </a>
+          </Link>
 
           {/* Dropdown: Company */}
           <div
@@ -339,8 +343,8 @@ export default function Header() {
                     zIndex: 1000
                   }}
                 >
-                  {companyItems.map((item) => (
-                    <a
+                   {companyItems.map((item) => (
+                    <Link
                       key={item.name}
                       href={isLockedMode ? "#" : item.href}
                       onClick={(e) => {
@@ -386,7 +390,7 @@ export default function Header() {
                     >
                       <span>{item.name}</span>
                       {isLockedMode && <span style={{ fontSize: '0.65rem', opacity: 0.5 }}>🔒</span>}
-                    </a>
+                    </Link>
                   ))}
                 </motion.div>
               )}
@@ -399,8 +403,8 @@ export default function Header() {
             onMouseLeave={() => setHoveredMenu(null)}
             style={{ position: 'relative', paddingTop: '4px', paddingBottom: '4px' }}
           >
-            <a
-              href="#destinations"
+            <Link
+              href="/destinations"
               onClick={(e) => {
                 if (isLockedMode) {
                   e.preventDefault();
@@ -424,7 +428,7 @@ export default function Header() {
             >
               Destinations
               <span style={{ fontSize: '0.55rem', transition: 'transform 0.3s ease', transform: hoveredMenu === 'destinations' ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
-            </a>
+            </Link>
 
             <AnimatePresence>
               {hoveredMenu === 'destinations' && (
@@ -452,10 +456,10 @@ export default function Header() {
                     zIndex: 1000
                   }}
                 >
-                  {destinationItems.map((item) => (
-                    <a
+                   {destinationItems.map((item) => (
+                    <Link
                       key={item.name}
-                      href={isLockedMode ? "#" : `#destination-${item.name.toLowerCase()}`}
+                      href={isLockedMode ? "#" : `/destinations#destination-${item.name.toLowerCase()}`}
                       onClick={(e) => {
                         if (isLockedMode) {
                           e.preventDefault();
@@ -500,7 +504,7 @@ export default function Header() {
                     >
                       <span>{item.name}</span>
                       {isLockedMode && <span style={{ fontSize: '0.65rem', opacity: 0.5 }}>🔒</span>}
-                    </a>
+                    </Link>
                   ))}
                 </motion.div>
               )}
@@ -508,8 +512,8 @@ export default function Header() {
           </div>
 
           {/* Link: Contact */}
-          <a
-            href={isLockedMode ? "#" : "#contact"}
+          <Link
+            href="/contact"
             onClick={(e) => {
               if (isLockedMode) {
                 e.preventDefault();
@@ -545,7 +549,7 @@ export default function Header() {
             }}
           >
             Contact {isLockedMode && "🔒"}
-          </a>
+          </Link>
 
         </nav>
       </div>
@@ -770,8 +774,8 @@ export default function Header() {
                         borderBottomLeftRadius: '14px'
                       }} />
                     )}
-                    <a
-                      href="#"
+                    <Link
+                      href="/"
                       onClick={() => {
                         setActiveMobileItem('home');
                         setActiveTab('home');
@@ -792,7 +796,7 @@ export default function Header() {
                     >
                       <Home size={18} strokeWidth={2.2} />
                       Home
-                    </a>
+                    </Link>
                   </div>
 
                   {/* Link 2: Company Accordion */}
@@ -861,8 +865,8 @@ export default function Header() {
                             marginBottom: '10px'
                           }}
                         >
-                          {companyItems.map((item) => (
-                            <a
+                           {companyItems.map((item) => (
+                            <Link
                               key={item.name}
                               href={isLockedMode ? "#" : item.href}
                               onClick={(e) => {
@@ -892,7 +896,7 @@ export default function Header() {
                               }}
                             >
                               {item.name} {isLockedMode && "🔒"}
-                            </a>
+                            </Link>
                           ))}
                         </motion.div>
                       )}
@@ -953,7 +957,7 @@ export default function Header() {
                         <motion.div
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
+                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.25 }}
                           style={{
                             overflow: 'hidden',
@@ -965,8 +969,8 @@ export default function Header() {
                             marginBottom: '10px'
                           }}
                         >
-                          <a
-                            href={isLockedMode ? "#" : "#destinations"}
+                          <Link
+                            href="/destinations"
                             onClick={() => setIsMobileMenuOpen(false)}
                             style={{
                               color: 'rgba(255, 255, 255, 0.65)',
@@ -984,11 +988,11 @@ export default function Header() {
                             }}
                           >
                             Explore All Destinations
-                          </a>
+                          </Link>
                           {destinationItems.map((item) => (
-                            <a
+                            <Link
                               key={item.name}
-                              href={isLockedMode ? "#" : `#destination-${item.name.toLowerCase()}`}
+                              href={isLockedMode ? "#" : `/destinations#destination-${item.name.toLowerCase()}`}
                               onClick={(e) => {
                                 if (isLockedMode) {
                                   e.preventDefault();
@@ -1017,7 +1021,7 @@ export default function Header() {
                               }}
                             >
                               {item.name} {isLockedMode && "🔒"}
-                            </a>
+                            </Link>
                           ))}
                         </motion.div>
                       )}
@@ -1039,15 +1043,15 @@ export default function Header() {
                         borderBottomLeftRadius: '14px'
                       }} />
                     )}
-                    <a
-                      href={isLockedMode ? "#" : "#contact"}
+                    <Link
+                      href="/contact"
                       onClick={(e) => {
                         if (isLockedMode) {
                           e.preventDefault();
                         } else {
                           setActiveMobileItem('contact');
                           setActiveTab('contact');
-                          handleDropdownItemClick(e, '#contact');
+                          setIsMobileMenuOpen(false);
                         }
                       }}
                       style={{
@@ -1068,7 +1072,7 @@ export default function Header() {
                     >
                       <Mail size={18} strokeWidth={2.2} />
                       Contact {isLockedMode && "🔒"}
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

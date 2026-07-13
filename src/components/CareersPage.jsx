@@ -527,7 +527,7 @@ export default function CareersPage() {
           }}
         >
           <img
-            src={`${'/'}images/careers_hero.png`}
+            src="/demo/images/careers_hero.png"
             alt="Executive Workspace Editorial"
             style={{
               width: '100%',

@@ -734,7 +734,7 @@ export default function DestinationsPage() {
           {/* Header Image banner occupying 1/3 viewport height */}
           <div className="destination-detail-hero">
             <img
-              src={activeDestination.image && (activeDestination.image.startsWith('data:') || activeDestination.image.startsWith('http')) ? activeDestination.image : `${'/'}${activeDestination.image}`}
+              src={activeDestination.image && (activeDestination.image.startsWith('data:') || activeDestination.image.startsWith('http')) ? activeDestination.image : `/demo/${activeDestination.image.startsWith('/') ? activeDestination.image.slice(1) : activeDestination.image}`}
               alt={activeDestination.name}
             />
             <div className="destination-detail-hero-overlay">
@@ -934,7 +934,7 @@ export default function DestinationsPage() {
               }}
             >
               <img
-                src={`${'/'}images/destinations_hero.png`}
+                src="/demo/images/destinations_hero.png"
                 alt="Global Destinations map compass"
                 style={{
                   width: '100%',
@@ -1077,7 +1077,7 @@ export default function DestinationsPage() {
                   >
                     <div className="destination-img-wrapper">
                       <img
-                        src={dest.image && (dest.image.startsWith('data:') || dest.image.startsWith('http')) ? dest.image : `${'/'}${dest.image}`}
+                        src={dest.image && (dest.image.startsWith('data:') || dest.image.startsWith('http')) ? dest.image : `/demo/${dest.image.startsWith('/') ? dest.image.slice(1) : dest.image}`}
                         alt={dest.name}
                       />
                     </div>

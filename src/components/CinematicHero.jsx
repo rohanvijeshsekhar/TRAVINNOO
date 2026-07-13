@@ -50,7 +50,8 @@ export default function CinematicHero() {
   const resolveImgPath = (src) => {
     if (!src) return '';
     if (src.startsWith('data:') || src.startsWith('http')) return src;
-    return `${'/'}${src}`;
+    const clean = src.startsWith('/') ? src.slice(1) : src;
+    return `/demo/${clean}`;
   };
 
   useEffect(() => {

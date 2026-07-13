@@ -75,7 +75,8 @@ export default function TeamPage() {
   const resolveImgPath = (src) => {
     if (!src) return '';
     if (src.startsWith('data:') || src.startsWith('http')) return src;
-    return `${'/'}${src}`;
+    const clean = src.startsWith('/') ? src.slice(1) : src;
+    return `/demo/${clean}`;
   };
 
   // Sort team list by display order (ascending)

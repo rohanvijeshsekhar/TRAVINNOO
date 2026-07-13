@@ -21,9 +21,12 @@ export default async function HomePage() {
   // 1. Fetch collections from database on the server
   const collections = await getCollections();
 
-  // 2. Hydrate server-side db in-memory cache for this render pass
+  // 2. Load defaults first, then overwrite with server collections
+  db._loadDefaults();
   Object.keys(collections).forEach((key) => {
-    db.collections[key] = collections[key];
+    if (collections[key] !== undefined && collections[key] !== null) {
+      db.collections[key] = collections[key];
+    }
   });
   db.initialized = true;
 

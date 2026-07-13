@@ -40,16 +40,21 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# backups and local deployment files
-eslint.config.js.old
-vite.config.js.old
-package-old-csr.json
-package-lock-old-csr.json
+# Backups, Scratch Scripts and Temporary Build Artifacts
 /src-old-csr/
 /public-old-csr/
+/package-old-csr.json
+/package-lock-old-csr.json
+/hostinger-deploy/
+/hostinger-deploy.zip
 /dist/
-hostinger-deploy/
-hostinger-deploy.zip
-*.cjs
-travinno-data.json
+/*.cjs
+/*.old
+/walkthrough.md
+/travinno-data.json
+/inspect_diff.cjs
+/inspect_hero_slides.cjs
+/migrate-mysql-to-sqlite.cjs
+/migrate.cjs
+/temp_search_db.cjs
 

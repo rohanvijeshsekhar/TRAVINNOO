@@ -421,7 +421,7 @@ function Footer() {
               />
             </svg>
             <img
-              src={`${'/'}images/logo_loading.png`}
+              src="/demo/images/logo_loading.png"
               alt="Travinno"
               style={{
                 height: '20px',
@@ -540,16 +540,16 @@ function Footer() {
           </h4>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {[
-              { name: 'Dubai', href: '#destinations' },
-              { name: 'Kenya', href: '#destinations' },
-              { name: 'Thailand', href: '#destinations' },
-              { name: 'Bali', href: '#destinations' },
-              { name: 'Singapore', href: '#destinations' },
-              { name: 'Malaysia', href: '#destinations' },
-              { name: 'Vietnam', href: '#destinations' }
+              { name: 'Dubai', href: '/destinations#destination-dubai' },
+              { name: 'Kenya', href: '/destinations#destination-kenya' },
+              { name: 'Thailand', href: '/destinations#destination-thailand' },
+              { name: 'Bali', href: '/destinations#destination-bali' },
+              { name: 'Singapore', href: '/destinations#destination-singapore' },
+              { name: 'Malaysia', href: '/destinations#destination-malaysia' },
+              { name: 'Vietnam', href: '/destinations#destination-vietnam' }
             ].map((link, idx) => (
               <li key={idx}>
-                <a
+                <Link
                   href={link.href}
                   style={{
                     fontFamily: 'var(--font-sans)',
@@ -569,7 +569,7 @@ function Footer() {
                   }}
                 >
                   {link.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -591,15 +591,15 @@ function Footer() {
           </h4>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {[
-              { name: 'About Us', href: '#about' },
-              { name: 'Our Expertise', href: '#services' },
-              { name: 'Our Journey', href: '#journey' },
-              { name: 'Why Travinno', href: '#why' },
-              { name: 'Careers', href: '#careers' },
-              { name: 'Get in Touch', href: '#contact' }
+              { name: 'About Us', href: '/about' },
+              { name: 'Our Expertise', href: '/#services' },
+              { name: 'Our Journey', href: '/#journey' },
+              { name: 'Why Travinno', href: '/#why' },
+              { name: 'Careers', href: '/careers' },
+              { name: 'Get in Touch', href: '/contact' }
             ].map((link, idx) => (
               <li key={idx}>
-                <a
+                <Link
                   href={link.href}
                   style={{
                     fontFamily: 'var(--font-sans)',
@@ -619,7 +619,7 @@ function Footer() {
                   }}
                 >
                   {link.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -681,11 +681,11 @@ function Footer() {
         </div>
         <div style={{ display: 'flex', gap: '20px' }}>
           {[
-            { text: 'Privacy Policy', href: '#privacy' },
-            { text: 'Terms of Service', href: '#terms' },
+            { text: 'Privacy Policy', href: '/privacy' },
+            { text: 'Terms of Service', href: '/terms' },
             { text: 'Cookie Settings', href: '#company' }
           ].map((link, idx) => (
-            <a
+            <Link
               key={idx}
               href={link.href}
               style={{
@@ -699,7 +699,7 @@ function Footer() {
               onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(245, 242, 236, 0.4)'}
             >
               {link.text}
-            </a>
+            </Link>
           ))}
         </div>
 

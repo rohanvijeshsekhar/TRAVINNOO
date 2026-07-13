@@ -125,7 +125,7 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image", as
     const img = new window.Image();
     const resolvedSrc = imageSrc.startsWith('data:') || imageSrc.startsWith('http') 
       ? imageSrc 
-      : `${'/'}${imageSrc}`;
+      : `/demo/${imageSrc.startsWith('/') ? imageSrc.slice(1) : imageSrc}`;
     img.crossOrigin = "anonymous";
     img.src = resolvedSrc;
     img.onload = () => {
@@ -231,7 +231,7 @@ function ImageCropper({ onImageCropped, currentImage, title = "Upload Image", as
             alignItems: 'center'
           }}>
             <img
-              src={imageSrc.startsWith('data:') || imageSrc.startsWith('http') ? imageSrc : `${'/'}${imageSrc}`}
+              src={imageSrc.startsWith('data:') || imageSrc.startsWith('http') ? imageSrc : `/demo/${imageSrc.startsWith('/') ? imageSrc.slice(1) : imageSrc}`}
               alt="Preview"
               style={{
                 maxWidth: '100%',
@@ -1395,7 +1395,7 @@ export default function AdminPanel() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '150px', borderBottom: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
                   <div style={{ position: 'relative', overflow: 'hidden', height: '100%' }}>
                     {item.desktopImage ? (
-                      <img src={item.desktopImage.startsWith('data:') || item.desktopImage.startsWith('http') ? item.desktopImage : `${'/'}${item.desktopImage}`} alt="Desktop" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={item.desktopImage.startsWith('data:') || item.desktopImage.startsWith('http') ? item.desktopImage : `/demo/${item.desktopImage.startsWith('/') ? item.desktopImage.slice(1) : item.desktopImage}`} alt="Desktop" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
                       <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255,255,255,0.03)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.65rem' }}>No Desktop</div>
                     )}
@@ -1403,7 +1403,7 @@ export default function AdminPanel() {
                   </div>
                   <div style={{ position: 'relative', overflow: 'hidden', height: '100%', borderLeft: '1px solid rgba(255,255,255,0.08)' }}>
                     {item.mobileImage ? (
-                      <img src={item.mobileImage.startsWith('data:') || item.mobileImage.startsWith('http') ? item.mobileImage : `${'/'}${item.mobileImage}`} alt="Mobile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={item.mobileImage.startsWith('data:') || item.mobileImage.startsWith('http') ? item.mobileImage : `/demo/${item.mobileImage.startsWith('/') ? item.mobileImage.slice(1) : item.mobileImage}`} alt="Mobile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
                       <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255,255,255,0.03)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.65rem' }}>No Mobile</div>
                     )}
@@ -2575,7 +2575,7 @@ export default function AdminPanel() {
                       {teamForm.image ? (
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
                           <img
-                            src={teamForm.image.startsWith('data:') || teamForm.image.startsWith('http') ? teamForm.image : `${'/'}${teamForm.image}`}
+                            src={teamForm.image.startsWith('data:') || teamForm.image.startsWith('http') ? teamForm.image : `/demo/${teamForm.image.startsWith('/') ? teamForm.image.slice(1) : teamForm.image}`}
                             alt="Preview"
                             style={{ maxHeight: '160px', objectFit: 'contain', display: 'block', pointerEvents: 'none' }}
                           />

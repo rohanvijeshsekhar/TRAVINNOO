@@ -29,17 +29,23 @@ const PARTNERS_DATA = Array.from({ length: 52 }, (_, i) => {
   const num = i + 1;
   return {
     id: num,
-    src: `${'/'}partners/partner-${num}.webp`,
+    src: `/demo/partners/partner-${num}.webp`,
     alt: PARTNER_NAMES[i] || `Luxury Travel Partner ${num}`
   };
 });
 
 // Component for rendering WebP logos with proportional widths and hover filters
 const PartnerLogo = ({ partner }) => {
+  const finalSrc = partner.src && (partner.src.startsWith('data:') || partner.src.startsWith('http') || partner.src.startsWith('https:'))
+    ? partner.src
+    : (partner.src.startsWith('/demo/')
+        ? partner.src
+        : `/demo/${partner.src.startsWith('/') ? partner.src.slice(1) : partner.src}`);
+
   return (
     <div className="partner-logo-item">
       <img 
-        src={partner.src && (partner.src.startsWith('data:') || partner.src.startsWith('http')) ? partner.src : `${'/' || '/'}${partner.src}`} 
+        src={finalSrc} 
         alt={partner.alt} 
         className="partner-logo-img animate-fade-in"
         loading="lazy"

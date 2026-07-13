@@ -278,7 +278,7 @@ export default function ContactPage() {
           }}
         >
           <img
-            src={`${'/'}images/contact_hero.png`}
+            src="/demo/images/contact_hero.png"
             alt="Contact Desk Workspace Editorial"
             style={{
               width: '100%',

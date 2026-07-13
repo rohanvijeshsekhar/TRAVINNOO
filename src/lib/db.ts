@@ -356,7 +356,7 @@ const broadcastChange = () => {
   }
 };
 
-const API_BASE = '';
+const API_BASE = '/demo';
 
 // 2. Database Core Interface (synchronized with Next.js server actions / API routes)
 export const db = {

@@ -290,11 +290,13 @@ export default function OurJourney() {
   const [isMobile, setIsMobile] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const autoplayTimerRef = useRef(null);
   const hoverTimerRef = useRef(null);
 
   // Responsive detector
   useEffect(() => {
+    setIsMounted(true);
     const media = window.matchMedia('(max-width: 1024px)');
     setIsMobile(media.matches);
     const listener = (e) => setIsMobile(e.matches);
@@ -563,7 +565,7 @@ export default function OurJourney() {
 
         {/* Floating Particles - rendered client-side only to avoid SSR hydration mismatch */}
         <div className="journey-particles">
-          {typeof window !== 'undefined' && Array.from({ length: 15 }).map((_, i) => {
+          {isMounted && Array.from({ length: 15 }).map((_, i) => {
             // Use a seeded deterministic approach: derive values from index
             const seed1 = ((i * 7919 + 1) % 100);
             const seed2 = ((i * 6271 + 3) % 15);
@@ -768,7 +770,7 @@ export default function OurJourney() {
 
                   {/* Gliding Active Indicator Logo Pointer */}
                   <img
-                    src={logoImg}
+                    src={logoImg.src || logoImg}
                     alt=""
                     aria-hidden="true"
                     loading="lazy"
@@ -855,7 +857,7 @@ export default function OurJourney() {
                       {/* Active Indicator Pin / Dot on vertical line */}
                       {isActive ? (
                         <img
-                          src={logoImg}
+                          src={logoImg.src || logoImg}
                           alt=""
                           aria-hidden="true"
                           loading="lazy"
