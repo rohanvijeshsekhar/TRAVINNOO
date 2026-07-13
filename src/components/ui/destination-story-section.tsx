@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { db } from '../../lib/db';
 
 interface Destination {
   title: string;       // Destination Name (e.g. Dubai, Malaysia...)
@@ -99,6 +100,45 @@ export default function DestinationStorySection() {
   const viewportRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const textContainerRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const [destinationsList, setDestinationsList] = useState<Destination[]>(destinations);
+
+  useEffect(() => {
+    const loadData = () => {
+      const dbDests = db.getDestinations();
+      if (!dbDests || dbDests.length === 0) return;
+      const merged = destinations.map(d => {
+        const found = dbDests.find(dbD => 
+          dbD.name.toLowerCase() === d.title.toLowerCase() || 
+          dbD.id.toLowerCase() === d.title.toLowerCase()
+        );
+        if (found) {
+          let imgUrl = found.image;
+          if (imgUrl && !imgUrl.startsWith('data:') && !imgUrl.startsWith('http') && !imgUrl.startsWith('https')) {
+            const cleanPath = imgUrl.startsWith('/') ? imgUrl.substring(1) : imgUrl;
+            imgUrl = `${import.meta.env.BASE_URL}${cleanPath}`;
+          }
+          return {
+            ...d,
+            image: imgUrl || d.image
+          };
+        }
+        return d;
+      });
+      setDestinationsList(merged);
+    };
+
+    db.init();
+    loadData();
+
+    const handleUpdate = () => {
+      loadData();
+    };
+    window.addEventListener('travinno-db-update', handleUpdate);
+    return () => {
+      window.removeEventListener('travinno-db-update', handleUpdate);
+    };
+  }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -668,7 +708,7 @@ export default function DestinationStorySection() {
 
         {/* Floating Stack Container */}
         <div className="destinations-cards-container">
-          {destinations.map((dest, idx) => (
+          {destinationsList.map((dest, idx) => (
             <div
               key={`dest-story-${idx}`}
               ref={(el) => { cardRefs.current[idx] = el; }}
