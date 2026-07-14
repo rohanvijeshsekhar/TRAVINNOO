@@ -266,6 +266,8 @@ export default function CinematicHero() {
               alt={getDestinationAltText(dest.name)}
               loading={idx === 0 ? "eager" : "lazy"}
               {...(idx === 0 ? { fetchPriority: "high" } : { decoding: "async" })}
+              width="1920"
+              height="1080"
               style={{
                 width: '100%',
                 height: '100%',
