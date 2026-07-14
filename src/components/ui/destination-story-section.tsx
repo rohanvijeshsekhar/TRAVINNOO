@@ -290,8 +290,9 @@ export default function DestinationStorySection() {
     const checkAndInit = () => {
       const loader = document.querySelector('.fullscreen-loader');
       const hasLoadedThisSession = typeof window !== 'undefined' ? sessionStorage.getItem('travinno_session_loaded') : false;
+      const isLoaderCompleted = typeof window !== 'undefined' && (window as any).travinnoLoaderCompleted;
 
-      if (loader && !hasLoadedThisSession) {
+      if (loader && !hasLoadedThisSession && !isLoaderCompleted) {
         // First visit: wait for the loader animation to complete before initializing.
         loaderListener = () => {
           window.removeEventListener('travinnoLoaderComplete', loaderListener);

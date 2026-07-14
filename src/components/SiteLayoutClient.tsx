@@ -36,6 +36,9 @@ export default function SiteLayoutClient({ children }: { children: React.ReactNo
 
   const handleLoaderComplete = useCallback(() => {
     setShowLoader(false);
+    if (typeof window !== 'undefined') {
+      (window as any).travinnoLoaderCompleted = true;
+    }
     window.dispatchEvent(new Event('travinnoLoaderComplete'));
   }, []); // stable reference — never changes
 

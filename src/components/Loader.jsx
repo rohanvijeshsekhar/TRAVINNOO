@@ -220,10 +220,13 @@ export default function Loader({ onComplete }) {
             duration: 0.8,
             ease: "easeOut"
           }}
-          src={`${'/'}images/logo_loading.png`}
+          src="/demo/images/logo_loading.png"
           alt="Travinno Logo"
+          width="135"
+          height="24"
           style={{
             height: '24px',
+            width: 'auto',
             objectFit: 'contain',
             userSelect: 'none',
             marginBottom: '8px'
