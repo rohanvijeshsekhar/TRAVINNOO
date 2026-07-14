@@ -368,7 +368,6 @@ export default function DestinationStorySection() {
           position: relative;
           width: 100%;
           height: 100vh;
-          height: 100dvh;
           overflow: hidden;
           background-color: transparent;
           display: flex;
@@ -621,7 +620,6 @@ export default function DestinationStorySection() {
             position: relative;
             width: 100%;
             height: 100vh;
-            height: 100dvh;
             overflow: hidden;
             display: flex !important;
             justify-content: center !important;
