@@ -384,6 +384,10 @@ export default function DestinationStorySection() {
           align-items: center;
           box-sizing: border-box;
           padding: 0;
+          will-change: transform;
+          transform: translateZ(0);
+          -webkit-transform: translateZ(0);
+          overscroll-behavior: none;
         }
 
         .destinations-grid-bg {
@@ -412,6 +416,8 @@ export default function DestinationStorySection() {
           justify-content: center;
           align-items: center;
           z-index: 2;
+          transform: translateZ(0);
+          -webkit-transform: translateZ(0);
         }
 
         .destinations-story-card {
@@ -635,6 +641,10 @@ export default function DestinationStorySection() {
             align-items: flex-start !important;
             padding-top: 15px !important;
             box-sizing: border-box !important;
+            will-change: transform;
+            transform: translateZ(0) !important;
+            -webkit-transform: translateZ(0) !important;
+            overscroll-behavior: none !important;
           }
 
           .destinations-cards-container {
@@ -647,6 +657,8 @@ export default function DestinationStorySection() {
             gap: 0 !important;
             padding: 0 !important;
             box-sizing: border-box !important;
+            transform: translateZ(0) !important;
+            -webkit-transform: translateZ(0) !important;
           }
 
           .destinations-story-card {
