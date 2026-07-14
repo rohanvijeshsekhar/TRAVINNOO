@@ -147,15 +147,15 @@ export default function DestinationStorySection() {
       const textContainers = textContainerRefs.current.filter((t): t is HTMLDivElement => t !== null && document.body.contains(t));
       if (cards.length === 0) return;
 
-      const vh = window.innerHeight;
+      const getVH = () => window.innerHeight;
 
       ctx = gsap.context(() => {
         const isMobile = window.innerWidth < 1024;
 
-        // Set initial state: Card 0 visible at y:0, others visible but translated offscreen below (y:vh)
+        // Set initial state: Card 0 visible at y:0, others visible but translated offscreen below (y:getVH())
         cards.forEach((card, idx) => {
           gsap.set(card, {
-            y: idx === 0 ? 0 : vh,
+            y: idx === 0 ? 0 : () => getVH(),
             opacity: 1,
             scale: 1,
             visibility: 'visible',
@@ -177,7 +177,7 @@ export default function DestinationStorySection() {
         const totalDurationPerCard = transitionDuration + holdDuration;
         
         // End calculation based on dynamic layout scale - reduced to 0.6x to make transitions scroll faster
-        const scrollDistance = () => vh * (cards.length - 1) * 0.6;
+        const scrollDistance = () => getVH() * (cards.length - 1) * 0.6;
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -204,7 +204,7 @@ export default function DestinationStorySection() {
             // force3D:true ensures the card stays on its own GPU compositor layer
             // so the transform update never triggers a paint, preventing jitter.
             tl.fromTo(cards[i],
-              { y: vh, scale: 1, opacity: 1, force3D: true },
+              { y: () => getVH(), scale: 1, opacity: 1, force3D: true },
               {
                 y: i * yOffset,
                 scale: 1,
@@ -232,7 +232,7 @@ export default function DestinationStorySection() {
 
             // Incoming card (i) slides to y: 0
             tl.fromTo(cards[i],
-              { y: vh, scale: 1, opacity: 1, force3D: true },
+              { y: () => getVH(), scale: 1, opacity: 1, force3D: true },
               {
                 y: 0,
                 scale: 1,
