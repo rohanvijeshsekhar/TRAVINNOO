@@ -789,6 +789,8 @@ export default function DestinationStorySection() {
                     src={dest.image}
                     alt={dest.countryName}
                     loading={idx < 2 ? 'eager' : 'lazy'}
+                    width="900"
+                    height="600"
                     className="destination-img"
                   />
                 </div>

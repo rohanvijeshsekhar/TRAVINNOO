@@ -4,18 +4,21 @@ import { db } from '@/lib/db';
 import DBHydrator from '@/components/DBHydrator';
 import HomeScrollEffects from '@/components/HomeScrollEffects';
 import TwinklingStars from '@/components/TwinklingStars';
+import dynamic from 'next/dynamic';
 
-// Components
+// Above the fold - eagerly loaded
 import CinematicHero from '@/components/CinematicHero';
 import ScrollIndicator from '@/components/ScrollIndicator';
-import EditorialSection from '@/components/EditorialSection';
-import DestinationStorySection from '@/components/ui/destination-story-section';
-import ExpertiseSection from '@/components/ExpertiseSection';
-import TestimonialsSection from '@/components/TestimonialsSection';
-import OurJourney from '@/components/OurJourney';
-import LogoCloudSection from '@/components/LogoCloudSection';
-import WhyTravinno from '@/components/WhyTravinno';
-import ContactCTA from '@/components/ContactCTA';
+
+// Below the fold - dynamically lazy loaded to improve mobile TTI and Reduce JavaScript execution time
+const EditorialSection = dynamic(() => import('@/components/EditorialSection'), { ssr: true });
+const DestinationStorySection = dynamic(() => import('@/components/ui/destination-story-section'), { ssr: true });
+const ExpertiseSection = dynamic(() => import('@/components/ExpertiseSection'), { ssr: true });
+const TestimonialsSection = dynamic(() => import('@/components/TestimonialsSection'), { ssr: true });
+const OurJourney = dynamic(() => import('@/components/OurJourney'), { ssr: true });
+const LogoCloudSection = dynamic(() => import('@/components/LogoCloudSection'), { ssr: true });
+const WhyTravinno = dynamic(() => import('@/components/WhyTravinno'), { ssr: true });
+const ContactCTA = dynamic(() => import('@/components/ContactCTA'), { ssr: true });
 
 export default async function HomePage() {
   // 1. Fetch collections from database on the server
