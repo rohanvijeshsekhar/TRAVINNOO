@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Loader from '@/components/Loader';
@@ -33,10 +34,11 @@ export default function SiteLayoutClient({ children }: { children: React.ReactNo
     }
   }, []);
 
-  const handleLoaderComplete = () => {
+  const handleLoaderComplete = useCallback(() => {
     setShowLoader(false);
     window.dispatchEvent(new Event('travinnoLoaderComplete'));
-  };
+  }, []); // stable reference — never changes
+
 
   return (
     <div
