@@ -19,7 +19,7 @@ export default function HomeScrollEffects() {
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: !isTouchDevice,
       smoothTouch: false,
-      syncTouch: false,
+      syncTouch: true, // Sync touch events with the scroll/GSAP thread
     } as any);
     
     // @ts-ignore
@@ -76,6 +76,7 @@ export default function HomeScrollEffects() {
       lenis.destroy();
       // @ts-ignore
       window.lenis = null;
+      ScrollTrigger.normalizeScroll(false);
     };
   }, []);
 

@@ -186,9 +186,6 @@ export default function DestinationStorySection() {
             end: () => `+=${scrollDistance()}`,
             pin: viewport,
             pinSpacing: true,
-            // Use 'fixed' pinning on mobile to leverage the native compositor thread,
-            // which prevents main-thread scroll lag shaking.
-            pinType: 'fixed',
             // Mobile: use lower scrub to reduce lag that causes jitter when
             // combined with Lenis scroll events firing concurrently.
             scrub: isMobile ? 0.5 : 1.2,
@@ -367,13 +364,6 @@ export default function DestinationStorySection() {
           align-items: center;
           box-sizing: border-box;
           padding: 0;
-          /* GPU layer promotion — prevents the pinned container itself
-             from triggering repaints when ScrollTrigger applies its
-             pinType:transform matrix, which is the main cause of mobile jitter */
-          will-change: transform;
-          transform: translateZ(0);
-          -webkit-transform: translateZ(0);
-          overscroll-behavior: none;
         }
 
         .destinations-grid-bg {
@@ -402,10 +392,6 @@ export default function DestinationStorySection() {
           justify-content: center;
           align-items: center;
           z-index: 2;
-          /* Promote to its own compositor layer so card transforms
-             don't repaint the container background on every frame */
-          transform: translateZ(0);
-          -webkit-transform: translateZ(0);
         }
 
         .destinations-story-card {
