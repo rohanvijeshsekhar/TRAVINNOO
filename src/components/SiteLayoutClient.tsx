@@ -15,11 +15,10 @@ export default function SiteLayoutClient({ children }: { children: React.ReactNo
       window.matchMedia('(hover: none) and (pointer: coarse)').matches
     );
 
-    // 2. Gate the full-screen 3.7s loader to only run ONCE per browser session
-    const hasLoadedThisSession = sessionStorage.getItem('travinno_session_loaded');
-    if (hasLoadedThisSession) {
-      setShowLoader(false);
-    }
+    // 2. In Next.js SSR the layout is preserved across client-side navigations,
+    //    so React state alone handles the "show once" behaviour without sessionStorage:
+    //    - Full page load / refresh  → component remounts → showLoader resets to true ✅
+    //    - SPA navigation (Link)     → layout stays mounted → showLoader stays false ✅
 
     // 3. Register custom cursor-following coordinates (desktop/hover pointer devices only)
     if (window.matchMedia('(hover: hover)').matches) {
@@ -36,7 +35,6 @@ export default function SiteLayoutClient({ children }: { children: React.ReactNo
 
   const handleLoaderComplete = () => {
     setShowLoader(false);
-    sessionStorage.setItem('travinno_session_loaded', 'true');
     window.dispatchEvent(new Event('travinnoLoaderComplete'));
   };
 
