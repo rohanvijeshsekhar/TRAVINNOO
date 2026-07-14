@@ -7,6 +7,16 @@ import Lenis from '@studio-freight/lenis';
 
 export default function HomeScrollEffects() {
   useEffect(() => {
+    // Prevent the browser from automatically restoring scroll position on refresh.
+    // This ensures ScrollTrigger always calculates page offsets from a clean y=0 state,
+    // eliminating layout-shift calculations clashing on reload.
+    if (typeof window !== 'undefined') {
+      if (window.history && 'scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+    }
+
     // Only run on client side
     gsap.registerPlugin(ScrollTrigger);
     ScrollTrigger.config({ ignoreMobileResize: true });
@@ -77,6 +87,9 @@ export default function HomeScrollEffects() {
       // @ts-ignore
       window.lenis = null;
       ScrollTrigger.normalizeScroll(false);
+      if (typeof window !== 'undefined' && window.history && 'scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'auto';
+      }
     };
   }, []);
 
