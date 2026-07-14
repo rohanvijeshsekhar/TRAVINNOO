@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+
 import { motion } from 'framer-motion';
 
 // SVG paths generated from Travinno logo
@@ -9,12 +10,23 @@ const innerTPath = "M 78.80,88.83 L 77.99,89.92 L 76.90,91.00 L 76.09,92.08 L 75
 const outerPinPath = "M 42.66,97.50 L 43.48,99.12 L 44.57,100.75 L 45.92,102.38 L 47.28,103.73 L 48.91,105.08 L 50.54,106.17 L 52.17,106.98 L 53.80,107.52 L 55.43,108.06 L 57.07,108.60 L 58.15,109.15 L 56.52,110.50 L 54.89,111.85 L 53.26,113.48 L 51.63,114.83 L 50.00,116.19 L 48.37,115.10 L 46.74,113.48 L 45.11,112.12 L 43.48,110.50 L 41.85,109.15 L 40.22,107.52 L 38.59,106.17 L 36.96,104.54 L 35.33,103.19 L 33.70,101.56 L 32.07,100.21 L 30.43,98.58 L 28.80,96.96 L 27.17,95.33 L 25.54,93.71 L 23.91,92.08 L 22.55,90.46 L 20.92,88.83 L 19.57,87.21 L 18.21,85.58 L 17.12,83.96 L 15.76,82.33 L 14.67,80.71 L 13.59,79.08 L 12.50,77.46 L 11.68,75.83 L 10.87,74.21 L 10.05,72.58 L 9.24,70.96 L 8.70,69.33 L 8.15,67.71 L 7.61,66.08 L 7.34,64.46 L 7.07,62.83 L 6.79,61.21 L 6.52,59.58 L 6.52,57.96 L 6.52,56.33 L 6.52,54.71 L 6.52,53.08 L 6.79,51.46 L 7.07,49.83 L 7.34,48.21 L 7.61,46.58 L 8.15,44.96 L 8.70,43.33 L 9.24,41.71 L 9.78,40.08 L 10.60,38.46 L 11.41,36.83 L 12.23,35.21 L 13.32,33.58 L 14.40,31.96 L 15.76,30.33 L 17.12,28.71 L 18.48,27.08 L 20.11,25.73 L 21.74,24.10 L 23.37,23.02 L 25.00,21.67 L 26.63,20.58 L 28.26,19.77 L 29.89,18.69 L 31.52,18.15 L 33.15,17.33 L 34.78,16.79 L 36.41,15.98 L 38.04,15.71 L 39.67,15.17 L 41.30,14.90 L 42.93,14.62 L 44.57,14.35 L 45.92,14.08 L 47.55,14.08 L 49.18,14.08 L 50.82,14.08 L 52.45,14.08 L 54.08,14.08 L 55.71,14.35 L 57.34,14.62 L 58.97,14.90 L 60.60,15.44 L 62.23,15.71 L 63.86,16.25 L 65.49,16.79 L 67.12,17.60 L 68.75,18.15 L 70.38,18.96 L 72.01,20.04 L 73.64,20.85 L 75.27,21.94 L 76.90,23.29 L 78.53,24.65 L 80.16,26.00 L 81.79,27.62 L 83.15,29.25 L 84.51,30.88 L 85.60,32.50 L 86.68,34.12 L 87.77,35.75 L 88.59,37.38 L 89.40,39.00 L 90.22,40.62 L 90.76,42.25 L 91.30,43.88 L 91.85,45.50 L 92.12,47.12 L 92.66,48.75 L 92.93,50.38 L 92.93,52.00 L 93.21,53.62 L 93.21,55.25 L 93.21,56.88 L 93.21,58.50 L 93.21,60.12 L 92.93,61.75 L 92.66,63.38 L 92.39,65.00 L 91.85,66.62 L 91.30,68.25 L 90.76,69.88 L 90.22,71.50 L 89.40,73.12 L 88.59,74.75 L 87.77,76.38 L 86.96,78.00 L 85.87,79.62 L 84.78,81.25 L 83.70,82.88 L 82.34,84.50 L 81.25,86.12 L 79.89,87.75 L 79.08,88.56";
 
 export default function Loader({ onComplete }) {
-  // Lock scroll during loader and drive exit via a pure timer
-  // (avoids Framer Motion SSR/hydration onAnimationComplete firing prematurely)
+  const loaderRef = useRef(null);
+
+  // Lock scroll and drive the ENTIRE exit via pure JS timers.
+  // Do NOT rely on Framer Motion for the container opacity —
+  // FM v12 applies animate={opacity:0} immediately during SSR hydration.
   useEffect(() => {
     document.body.style.overflow = 'hidden';
 
-    // 3.7s animation delay + 0.8s fade-out = 4.5s total. Small buffer → 4600ms.
+    // Fade-out: start CSS transition at 3700ms
+    const fadeTimer = setTimeout(() => {
+      if (loaderRef.current) {
+        loaderRef.current.style.transition = 'opacity 0.8s ease-in-out';
+        loaderRef.current.style.opacity = '0';
+      }
+    }, 3700);
+
+    // Unmount: call onComplete at 4600ms (after fade finishes)
     const exitTimer = setTimeout(() => {
       document.body.style.overflow = '';
       if (onComplete) onComplete();
@@ -22,18 +34,18 @@ export default function Loader({ onComplete }) {
 
     return () => {
       document.body.style.overflow = '';
+      clearTimeout(fadeTimer);
       clearTimeout(exitTimer);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // ← empty deps: run ONCE on mount, never on update
+  }, []); // empty deps — runs once on mount only
 
   return (
-    <motion.div
-      initial={{ opacity: 1 }}
-      animate={{ opacity: 0 }}
-      transition={{ delay: 3.7, duration: 0.8, ease: "easeInOut" }}
+    <div
+      ref={loaderRef}
       className="fullscreen-loader"
       style={{
+        opacity: 1,           // always start fully visible — no FM involvement
         position: 'fixed',
         top: 0,
         left: 0,
@@ -269,6 +281,6 @@ export default function Loader({ onComplete }) {
           />
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
