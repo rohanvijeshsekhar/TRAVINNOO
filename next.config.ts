@@ -5,14 +5,22 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+
+  // Optimize images: serve WebP automatically, allow both relative and base64 images
+  images: {
+    formats: ['image/webp'],
+    deviceSizes: [390, 640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 31536000,
+  },
+
   async redirects() {
     return [
-      // Redirect bare root (outside basePath) → /demo
       {
         source: '/',
         destination: '/demo',
         permanent: false,
-        basePath: false, // apply outside the /demo basePath context
+        basePath: false,
       },
     ];
   },

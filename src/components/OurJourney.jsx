@@ -774,6 +774,8 @@ export default function OurJourney() {
                     alt=""
                     aria-hidden="true"
                     loading="lazy"
+                    width="26"
+                    height="26"
                     style={{
                       position: 'absolute',
                       left: `${(activeIndex / 6) * 100}%`,
@@ -861,6 +863,8 @@ export default function OurJourney() {
                           alt=""
                           aria-hidden="true"
                           loading="lazy"
+                          width="20"
+                          height="20"
                           style={{
                             position: 'absolute',
                             left: '-24px',

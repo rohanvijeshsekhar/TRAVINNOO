@@ -50,6 +50,8 @@ const PartnerLogo = ({ partner }) => {
         className="partner-logo-img animate-fade-in"
         loading="lazy"
         decoding="async"
+        width="120"
+        height="40"
       />
     </div>
   );

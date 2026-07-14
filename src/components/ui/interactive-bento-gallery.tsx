@@ -126,6 +126,8 @@ const MediaItem = ({ item, className, onClick }: { item: MediaItemType, classNam
             onClick={onClick} // Trigger onClick when the image is clicked
             loading="lazy" // Lazy load the image for performance
             decoding="async" // Decode the image asynchronously
+            width="800"
+            height="600"
         />
     );
 };

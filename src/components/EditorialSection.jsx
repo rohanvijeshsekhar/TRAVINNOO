@@ -2,12 +2,23 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { GlobePulse } from './ui/cobe-globe-pulse';
+import dynamic from 'next/dynamic';
+
+// Lazy-load the COBE globe (Three.js ~500KB) — only loads when needed,
+// not during initial page hydration. This directly improves mobile TTI.
+const GlobePulse = dynamic(
+  () => import('./ui/cobe-globe-pulse').then(m => ({ default: m.GlobePulse })),
+  { 
+    ssr: false,
+    loading: () => <div style={{ width: '100%', aspectRatio: '1', background: 'transparent' }} />
+  }
+);
 
 function CountUp({ to, suffix = "", duration = 1.8 }) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+
 
   useEffect(() => {
     if (!isInView) return;

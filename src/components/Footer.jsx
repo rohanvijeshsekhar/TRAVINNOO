@@ -423,8 +423,11 @@ function Footer() {
             <img
               src="/demo/images/logo_loading.png"
               alt="Travinno"
+              width="112"
+              height="20"
               style={{
                 height: '20px',
+                width: 'auto',
                 objectFit: 'contain',
                 display: 'block',
                 userSelect: 'none'
