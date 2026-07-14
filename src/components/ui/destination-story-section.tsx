@@ -147,15 +147,15 @@ export default function DestinationStorySection() {
       const textContainers = textContainerRefs.current.filter((t): t is HTMLDivElement => t !== null && document.body.contains(t));
       if (cards.length === 0) return;
 
-      const getVH = () => window.innerHeight;
+      const vh = window.innerHeight;
 
       ctx = gsap.context(() => {
         const isMobile = window.innerWidth < 1024;
 
-        // Set initial state: Card 0 visible at y:0, others visible but translated offscreen below (y:getVH())
+        // Set initial state: Card 0 visible at y:0, others visible but translated offscreen below (y:vh)
         cards.forEach((card, idx) => {
           gsap.set(card, {
-            y: idx === 0 ? 0 : () => getVH(),
+            y: idx === 0 ? 0 : vh,
             opacity: 1,
             scale: 1,
             visibility: 'visible',
@@ -177,7 +177,7 @@ export default function DestinationStorySection() {
         const totalDurationPerCard = transitionDuration + holdDuration;
         
         // End calculation based on dynamic layout scale - reduced to 0.6x to make transitions scroll faster
-        const scrollDistance = () => getVH() * (cards.length - 1) * 0.6;
+        const scrollDistance = () => vh * (cards.length - 1) * 0.6;
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -186,10 +186,12 @@ export default function DestinationStorySection() {
             end: () => `+=${scrollDistance()}`,
             pin: viewport,
             pinSpacing: true,
-            pinType: isMobile ? 'transform' : 'fixed',
+            // Use 'fixed' pinning on mobile to leverage the native compositor thread,
+            // which prevents main-thread scroll lag shaking.
+            pinType: 'fixed',
             // Mobile: use lower scrub to reduce lag that causes jitter when
             // combined with Lenis scroll events firing concurrently.
-            scrub: isMobile ? 0.8 : 1.2,
+            scrub: isMobile ? 0.5 : 1.2,
             invalidateOnRefresh: true,
             anticipatePin: 1
           }
@@ -205,7 +207,7 @@ export default function DestinationStorySection() {
             // force3D:true ensures the card stays on its own GPU compositor layer
             // so the transform update never triggers a paint, preventing jitter.
             tl.fromTo(cards[i],
-              { y: () => getVH(), scale: 1, opacity: 1, force3D: true },
+              { y: vh, scale: 1, opacity: 1, force3D: true },
               {
                 y: i * yOffset,
                 scale: 1,
@@ -233,7 +235,7 @@ export default function DestinationStorySection() {
 
             // Incoming card (i) slides to y: 0
             tl.fromTo(cards[i],
-              { y: () => getVH(), scale: 1, opacity: 1, force3D: true },
+              { y: vh, scale: 1, opacity: 1, force3D: true },
               {
                 y: 0,
                 scale: 1,
