@@ -186,9 +186,9 @@ export default function DestinationStorySection() {
             end: () => `+=${scrollDistance()}`,
             pin: viewport,
             pinSpacing: true,
-            // Mobile: use lower scrub to reduce lag that causes jitter when
-            // combined with Lenis scroll events firing concurrently.
-            scrub: isMobile ? 0.5 : 1.2,
+            // Use uniform 1.2 scrub (matching CSR version) to act as a layout stabilizer
+            // and absorb high-frequency micro-stuttering on scroll.
+            scrub: 1.2,
             invalidateOnRefresh: true,
             anticipatePin: 1
           }
@@ -307,22 +307,31 @@ export default function DestinationStorySection() {
         window.addEventListener('travinnoLoaderComplete', loaderListener);
       } else {
         // Subsequent refresh (loader skipped this session).
-        // Delay two animation frames so:
-        //   1. window.scrollTo(0, 0) in HomeScrollEffects has been applied
-        //   2. Browser scroll-restoration jump has fully settled
-        //   3. Layout is stable before GSAP measures offsets
-        requestAnimationFrame(() => {
+        // Wait for all stylesheet assets to be fully ready before measuring offsets.
+        const executeInit = () => {
           requestAnimationFrame(() => {
-            if (!isMounted) return;
-            if (document.fonts && document.fonts.ready) {
-              document.fonts.ready.then(() => {
-                if (isMounted) initScrollTrigger();
-              });
-            } else {
-              initScrollTrigger();
-            }
+            requestAnimationFrame(() => {
+              if (!isMounted) return;
+              if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(() => {
+                  if (isMounted) initScrollTrigger();
+                });
+              } else {
+                initScrollTrigger();
+              }
+            });
           });
-        });
+        };
+
+        if (document.readyState === 'complete') {
+          executeInit();
+        } else {
+          const loadListener = () => {
+            window.removeEventListener('load', loadListener);
+            executeInit();
+          };
+          window.addEventListener('load', loadListener);
+        }
       }
     };
  
