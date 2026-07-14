@@ -158,7 +158,8 @@ export default function DestinationStorySection() {
             y: idx === 0 ? 0 : () => getVH(),
             opacity: 1,
             scale: 1,
-            visibility: 'visible'
+            visibility: 'visible',
+            force3D: true,   // ensure GPU layer is promoted immediately
           });
           if (textContainers[idx]) {
             const children = textContainers[idx].querySelectorAll('.story-animate-el');
@@ -186,7 +187,9 @@ export default function DestinationStorySection() {
             pin: viewport,
             pinSpacing: true,
             pinType: isMobile ? 'transform' : 'fixed',
-            scrub: 1.2, // Reduced scrub lag for faster feedback
+            // Mobile: use lower scrub to reduce lag that causes jitter when
+            // combined with Lenis scroll events firing concurrently.
+            scrub: isMobile ? 0.8 : 1.2,
             invalidateOnRefresh: true,
             anticipatePin: 1
           }
@@ -199,15 +202,17 @@ export default function DestinationStorySection() {
 
           if (isMobile) {
             // Mobile: Card slides upward and stops at a static stacked offset (i * yOffset)
-            // Existing cards 0 to i-1 remain fixed and never move again.
+            // force3D:true ensures the card stays on its own GPU compositor layer
+            // so the transform update never triggers a paint, preventing jitter.
             tl.fromTo(cards[i],
-              { y: () => getVH(), scale: 1, opacity: 1 },
+              { y: () => getVH(), scale: 1, opacity: 1, force3D: true },
               {
                 y: i * yOffset,
                 scale: 1,
                 opacity: 1,
                 duration: transitionDuration,
-                ease: "power2.inOut"
+                ease: "power2.inOut",
+                force3D: true,
               },
               startPos
             );
@@ -221,19 +226,21 @@ export default function DestinationStorySection() {
                 y: finalY,
                 scale: finalScale,
                 duration: transitionDuration,
-                ease: "power2.inOut"
+                ease: "power2.inOut",
+                force3D: true,
               }, startPos);
             }
 
             // Incoming card (i) slides to y: 0
             tl.fromTo(cards[i],
-              { y: () => getVH(), scale: 1, opacity: 1 },
+              { y: () => getVH(), scale: 1, opacity: 1, force3D: true },
               {
                 y: 0,
                 scale: 1,
                 opacity: 1,
                 duration: transitionDuration,
-                ease: "power2.inOut"
+                ease: "power2.inOut",
+                force3D: true,
               },
               startPos
             );
@@ -358,6 +365,13 @@ export default function DestinationStorySection() {
           align-items: center;
           box-sizing: border-box;
           padding: 0;
+          /* GPU layer promotion — prevents the pinned container itself
+             from triggering repaints when ScrollTrigger applies its
+             pinType:transform matrix, which is the main cause of mobile jitter */
+          will-change: transform;
+          transform: translateZ(0);
+          -webkit-transform: translateZ(0);
+          overscroll-behavior: none;
         }
 
         .destinations-grid-bg {
@@ -386,6 +400,10 @@ export default function DestinationStorySection() {
           justify-content: center;
           align-items: center;
           z-index: 2;
+          /* Promote to its own compositor layer so card transforms
+             don't repaint the container background on every frame */
+          transform: translateZ(0);
+          -webkit-transform: translateZ(0);
         }
 
         .destinations-story-card {
