@@ -292,6 +292,7 @@ export default function DestinationStorySection() {
       const hasLoadedThisSession = typeof window !== 'undefined' ? sessionStorage.getItem('travinno_session_loaded') : false;
 
       if (loader && !hasLoadedThisSession) {
+        // First visit: wait for the loader animation to complete before initializing.
         loaderListener = () => {
           window.removeEventListener('travinnoLoaderComplete', loaderListener);
           if (document.fonts && document.fonts.ready) {
@@ -304,13 +305,23 @@ export default function DestinationStorySection() {
         };
         window.addEventListener('travinnoLoaderComplete', loaderListener);
       } else {
-        if (document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(() => {
-            if (isMounted) initScrollTrigger();
+        // Subsequent refresh (loader skipped this session).
+        // Delay two animation frames so:
+        //   1. window.scrollTo(0, 0) in HomeScrollEffects has been applied
+        //   2. Browser scroll-restoration jump has fully settled
+        //   3. Layout is stable before GSAP measures offsets
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            if (!isMounted) return;
+            if (document.fonts && document.fonts.ready) {
+              document.fonts.ready.then(() => {
+                if (isMounted) initScrollTrigger();
+              });
+            } else {
+              initScrollTrigger();
+            }
           });
-        } else {
-          initScrollTrigger();
-        }
+        });
       }
     };
  

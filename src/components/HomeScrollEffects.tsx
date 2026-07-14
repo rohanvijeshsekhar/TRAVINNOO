@@ -24,12 +24,16 @@ export default function HomeScrollEffects() {
     const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
     // Initialize Lenis smooth scroll
+    // IMPORTANT: smoothTouch and syncTouch must stay FALSE on real mobile devices.
+    // Enabling them intercepts native momentum scrolling and runs JS-driven scroll
+    // on the main thread, which creates severe jitter with GSAP ScrollTrigger pinning.
+    // (This is the same configuration as the working CSR version.)
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: !isTouchDevice,
       smoothTouch: false,
-      syncTouch: true, // Sync touch events with the scroll/GSAP thread
+      syncTouch: false,
     } as any);
     
     // @ts-ignore
@@ -74,7 +78,9 @@ export default function HomeScrollEffects() {
           if (resolved) return;
           resolved = true;
           window.removeEventListener('travinnoScrollTriggerReady', handleReady);
-          requestAnimationFrame(doScroll);
+          requestAnimationFrame(() => {
+            requestAnimationFrame(doScroll);
+          });
         };
         window.addEventListener('travinnoScrollTriggerReady', handleReady);
         setTimeout(handleReady, 2500); // safety fallback timeout
