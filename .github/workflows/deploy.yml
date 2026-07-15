@@ -1,4 +1,4 @@
-name: Build & Deploy to Hostinger
+name: Deploy to Hostinger
 
 on:
   push:
@@ -7,79 +7,40 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build Next.js app
-        run: npm run build
-        env:
-          NODE_ENV: production
-
-      - name: Install rsync
-        run: sudo apt-get install -y rsync sshpass
-
-      - name: Sync built files to Hostinger via rsync
-        env:
-          HOSTINGER_HOST: ${{ secrets.HOSTINGER_HOST }}
-          HOSTINGER_USERNAME: ${{ secrets.HOSTINGER_USERNAME }}
-          HOSTINGER_PASSWORD: ${{ secrets.HOSTINGER_PASSWORD }}
-        run: |
-          # Disable strict host key checking for first connection
-          mkdir -p ~/.ssh
-          ssh-keyscan -H "$HOSTINGER_HOST" >> ~/.ssh/known_hosts 2>/dev/null
-
-          # Sync the pre-built artifacts — skip node_modules (installed on server)
-          sshpass -p "$HOSTINGER_PASSWORD" rsync -az --delete \
-            --exclude='node_modules' \
-            --exclude='.git' \
-            --exclude='.env' \
-            --exclude='*.db' \
-            --exclude='travinno-data.json' \
-            .next/ "$HOSTINGER_USERNAME@$HOSTINGER_HOST:~/travinno/.next/"
-
-          sshpass -p "$HOSTINGER_PASSWORD" rsync -az \
-            package.json package-lock.json server.js next.config.ts tsconfig.json \
-            "$HOSTINGER_USERNAME@$HOSTINGER_HOST:~/travinno/"
-
-          sshpass -p "$HOSTINGER_PASSWORD" rsync -az --delete \
-            public/ "$HOSTINGER_USERNAME@$HOSTINGER_HOST:~/travinno/public/"
-
-          sshpass -p "$HOSTINGER_PASSWORD" rsync -az --delete \
-            src/ "$HOSTINGER_USERNAME@$HOSTINGER_HOST:~/travinno/src/"
-
-      - name: Restart app on Hostinger
+      - name: Deploy to Hostinger via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOSTINGER_HOST }}
           username: ${{ secrets.HOSTINGER_USERNAME }}
           password: ${{ secrets.HOSTINGER_PASSWORD }}
           port: 22
+          command_timeout: 15m
           script: |
             cd ~/travinno
 
-            # Only install production deps — no build needed (already built by GitHub Actions)
-            npm ci --omit=dev --prefer-offline 2>/dev/null || npm ci --omit=dev
+            # Pull latest code from GitHub
+            git pull origin main
 
-            # Graceful restart: keep old process running until new one is ready
+            # Install ALL dependencies (dev deps needed for Next.js build)
+            npm ci
+
+            # Build with increased memory limit to prevent OOM crashes on shared hosting
+            export NODE_OPTIONS="--max-old-space-size=1536"
+            npm run build
+
+            # Zero-downtime restart: pm2 reload keeps old process alive until new one is ready
             if command -v pm2 &> /dev/null; then
               pm2 reload travinno --update-env 2>/dev/null || \
               pm2 restart travinno 2>/dev/null || \
-              pm2 start server.js --name travinno --node-args='--max-old-space-size=512'
+              pm2 start server.js --name travinno
             else
               echo "pm2 not found — please restart Node.js app from Hostinger hPanel"
             fi
 
-            echo "✅ Travinno deployment complete — built remotely, zero-downtime restart"
+            echo "✅ Travinno deployment complete"
