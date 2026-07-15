@@ -102,18 +102,6 @@ export default function DestinationStorySection() {
   const viewportRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const textContainerRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [isMobile, setIsMobile] = useState(false);
-  const [viewportHeight, setViewportHeight] = useState(0);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 1024);
-      setViewportHeight(window.innerHeight);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const [destinationsList] = useState<Destination[]>(() => {
     db.init();
@@ -162,14 +150,15 @@ export default function DestinationStorySection() {
       const getVH = () => window.innerHeight;
 
       ctx = gsap.context(() => {
+        const isMobile = window.innerWidth < 1024;
+
         // Set initial state: Card 0 visible at y:0, others visible but translated offscreen below (y:getVH())
         cards.forEach((card, idx) => {
           gsap.set(card, {
             y: idx === 0 ? 0 : () => getVH(),
             opacity: 1,
             scale: 1,
-            visibility: 'visible',
-            force3D: true,   // ensure GPU layer is promoted immediately
+            visibility: 'visible'
           });
           if (textContainers[idx]) {
             const children = textContainers[idx].querySelectorAll('.story-animate-el');
@@ -194,11 +183,10 @@ export default function DestinationStorySection() {
             trigger: container,
             start: "top top",
             end: () => `+=${scrollDistance()}`,
-            pin: isMobile ? false : viewport,
-            pinSpacing: isMobile ? false : true,
-            // Use uniform 1.2 scrub (matching CSR version) to act as a layout stabilizer
-            // and absorb high-frequency micro-stuttering on scroll.
-            scrub: 1.2,
+            pin: viewport,
+            pinSpacing: true,
+            pinType: isMobile ? 'transform' : 'fixed',
+            scrub: 1.2, // Reduced scrub lag for faster feedback
             invalidateOnRefresh: true,
             anticipatePin: 1
           }
@@ -211,17 +199,15 @@ export default function DestinationStorySection() {
 
           if (isMobile) {
             // Mobile: Card slides upward and stops at a static stacked offset (i * yOffset)
-            // force3D:true ensures the card stays on its own GPU compositor layer
-            // so the transform update never triggers a paint, preventing jitter.
+            // Existing cards 0 to i-1 remain fixed and never move again.
             tl.fromTo(cards[i],
-              { y: () => getVH(), scale: 1, opacity: 1, force3D: true },
+              { y: () => getVH(), scale: 1, opacity: 1 },
               {
                 y: i * yOffset,
                 scale: 1,
                 opacity: 1,
                 duration: transitionDuration,
-                ease: "power2.inOut",
-                force3D: true,
+                ease: "power2.inOut"
               },
               startPos
             );
@@ -235,21 +221,19 @@ export default function DestinationStorySection() {
                 y: finalY,
                 scale: finalScale,
                 duration: transitionDuration,
-                ease: "power2.inOut",
-                force3D: true,
+                ease: "power2.inOut"
               }, startPos);
             }
 
             // Incoming card (i) slides to y: 0
             tl.fromTo(cards[i],
-              { y: () => getVH(), scale: 1, opacity: 1, force3D: true },
+              { y: () => getVH(), scale: 1, opacity: 1 },
               {
                 y: 0,
                 scale: 1,
                 opacity: 1,
                 duration: transitionDuration,
-                ease: "power2.inOut",
-                force3D: true,
+                ease: "power2.inOut"
               },
               startPos
             );
@@ -273,6 +257,7 @@ export default function DestinationStorySection() {
           // Card hold phase before next transition starts
           tl.to({}, { duration: holdDuration });
         }
+
       }, containerRef);
 
       // Defer execution until the browser's painting thread stabilizes
@@ -285,13 +270,22 @@ export default function DestinationStorySection() {
       });
     };
 
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 1024;
+      if (isMobile !== wasMobile) {
+        wasMobile = isMobile;
+        if (ctx) {
+          ctx.revert();
+        }
+        initScrollTrigger();
+      }
+    };
+ 
     const checkAndInit = () => {
       const loader = document.querySelector('.fullscreen-loader');
       const hasLoadedThisSession = typeof window !== 'undefined' ? sessionStorage.getItem('travinno_session_loaded') : false;
-      const isLoaderCompleted = typeof window !== 'undefined' && (window as any).travinnoLoaderCompleted;
 
-      if (loader && !hasLoadedThisSession && !isLoaderCompleted) {
-        // First visit: wait for the loader animation to complete before initializing.
+      if (loader && !hasLoadedThisSession) {
         loaderListener = () => {
           window.removeEventListener('travinnoLoaderComplete', loaderListener);
           if (document.fonts && document.fonts.ready) {
@@ -304,39 +298,22 @@ export default function DestinationStorySection() {
         };
         window.addEventListener('travinnoLoaderComplete', loaderListener);
       } else {
-        // Subsequent refresh (loader skipped this session).
-        // Wait for all stylesheet assets to be fully ready before measuring offsets.
-        const executeInit = () => {
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              if (!isMounted) return;
-              if (document.fonts && document.fonts.ready) {
-                document.fonts.ready.then(() => {
-                  if (isMounted) initScrollTrigger();
-                });
-              } else {
-                initScrollTrigger();
-              }
-            });
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(() => {
+            if (isMounted) initScrollTrigger();
           });
-        };
-
-        if (document.readyState === 'complete') {
-          executeInit();
         } else {
-          const loadListener = () => {
-            window.removeEventListener('load', loadListener);
-            executeInit();
-          };
-          window.addEventListener('load', loadListener);
+          initScrollTrigger();
         }
       }
     };
-
+ 
     checkAndInit();
-
+    window.addEventListener('resize', handleResize);
+ 
     return () => {
       isMounted = false;
+      window.removeEventListener('resize', handleResize);
       if (loaderListener) {
         window.removeEventListener('travinnoLoaderComplete', loaderListener);
       }
@@ -355,10 +332,7 @@ export default function DestinationStorySection() {
         ctx.revert();
       }
     };
-  }, [destinationsList.length, isMobile, viewportHeight]);
-
-  const scrollDistanceVal = viewportHeight * (destinationsList.length - 1) * 0.6;
-  const totalSectionHeight = viewportHeight + scrollDistanceVal;
+  }, [destinationsList.length]);
 
   return (
     <div
@@ -368,8 +342,7 @@ export default function DestinationStorySection() {
         position: 'relative',
         width: '100%',
         backgroundColor: 'transparent',
-        boxSizing: 'border-box',
-        height: isMobile && viewportHeight ? `${totalSectionHeight}px` : undefined
+        boxSizing: 'border-box'
       }}
     >
       <style>{`
@@ -377,6 +350,7 @@ export default function DestinationStorySection() {
           position: relative;
           width: 100%;
           height: 100vh;
+          height: 100dvh;
           overflow: hidden;
           background-color: transparent;
           display: flex;
@@ -384,7 +358,6 @@ export default function DestinationStorySection() {
           align-items: center;
           box-sizing: border-box;
           padding: 0;
-          overscroll-behavior: none;
         }
 
         .destinations-grid-bg {
@@ -413,8 +386,6 @@ export default function DestinationStorySection() {
           justify-content: center;
           align-items: center;
           z-index: 2;
-          transform: translateZ(0);
-          -webkit-transform: translateZ(0);
         }
 
         .destinations-story-card {
@@ -629,18 +600,16 @@ export default function DestinationStorySection() {
           }
 
           .destinations-story-viewport {
-            position: sticky !important;
-            position: -webkit-sticky !important;
-            top: 0 !important;
-            width: 100% !important;
-            height: 100vh !important;
-            overflow: hidden !important;
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
             display: flex !important;
             justify-content: center !important;
-            align-items: center !important;
-            padding: 0 !important;
+            align-items: flex-start !important;
+            padding-top: 15px !important;
             box-sizing: border-box !important;
-            overscroll-behavior: none !important;
           }
 
           .destinations-cards-container {
@@ -653,8 +622,6 @@ export default function DestinationStorySection() {
             gap: 0 !important;
             padding: 0 !important;
             box-sizing: border-box !important;
-            transform: translateZ(0) !important;
-            -webkit-transform: translateZ(0) !important;
           }
 
           .destinations-story-card {
@@ -671,7 +638,6 @@ export default function DestinationStorySection() {
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
-            will-change: transform;
           }
 
           .card-left-panel {
@@ -699,8 +665,6 @@ export default function DestinationStorySection() {
           }
 
           .destination-image-wrapper {
-            width: 100% !important;
-            height: 100% !important;
             border-radius: 24px 24px 0 0 !important;
             overflow: hidden !important;
           }
@@ -755,15 +719,8 @@ export default function DestinationStorySection() {
         }
       `}</style>
 
-      <div
-        ref={viewportRef}
-        className="destinations-story-viewport"
-        style={{
-          position: isMobile ? 'sticky' : undefined,
-          top: isMobile ? 0 : undefined,
-          height: isMobile && viewportHeight ? `${viewportHeight}px` : undefined
-        }}
-      >
+      {/* Immersive Sticky Viewport */}
+      <div ref={viewportRef} className="destinations-story-viewport">
         {/* Subtle grid background */}
         <div className="destinations-grid-bg" />
 
@@ -815,8 +772,6 @@ export default function DestinationStorySection() {
                     src={dest.image}
                     alt={dest.countryName}
                     loading={idx < 2 ? 'eager' : 'lazy'}
-                    width="900"
-                    height="600"
                     className="destination-img"
                   />
                 </div>
