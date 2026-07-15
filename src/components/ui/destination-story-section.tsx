@@ -155,25 +155,48 @@ export default function DestinationStorySection() {
       const textContainers = textContainerRefs.current.filter((t): t is HTMLDivElement => t !== null && document.body.contains(t));
       if (cards.length === 0) return;
 
-      const VH = window.innerHeight;
       const cardCount = cards.length;
-      // Each card gets this many pixels of scroll to complete its entry
-      const scrollPerCard = VH * 0.6;
-      const totalScroll = scrollPerCard * (cardCount - 1);
+      const PEEK_OFFSET = 24; // px each previous card peeks above the new one
 
-      // Set section & viewport heights so sticky works
-      container.style.height = `${VH + totalScroll}px`;
-      viewport.style.height = `${VH}px`;
-      if (isMounted) {
-        setSectionHeight(VH + totalScroll);
-        setClientVH(VH);
-      }
+      // ── Mutable layout vars ─────────────────────────────────────────────
+      // Using `let` so the resize handler can update them and onScroll reads
+      // the latest values every frame (avoids stale closure on resize).
+      let VH = window.innerHeight;
+      let scrollPerCard = VH * 0.6;
 
-      // Initial card positions: card 0 at y=0, rest at y=VH (offscreen below)
+      // Set section & viewport heights so position:sticky works correctly
+      const applyLayout = () => {
+        VH = window.innerHeight;
+        scrollPerCard = VH * 0.6;
+        const totalScroll = scrollPerCard * (cardCount - 1);
+        container.style.height = `${VH + totalScroll}px`;
+        viewport.style.height = `${VH}px`;
+        if (isMounted) {
+          setSectionHeight(VH + totalScroll);
+          setClientVH(VH);
+        }
+        // Reset all offscreen cards to new VH so they enter from the right position
+        cards.forEach((card, idx) => {
+          if (idx === 0) {
+            card.style.transform = `translate3d(0, 0px, 0)`;
+          } else {
+            // Keep already-entered cards in their stacked position,
+            // reset un-entered ones to offscreen (new VH)
+            const entryEnd = idx * scrollPerCard;
+            const containerTop = container.getBoundingClientRect().top + window.scrollY;
+            const scrolled = Math.max(0, window.scrollY - containerTop);
+            if (scrolled < entryEnd) {
+              card.style.transform = `translate3d(0, ${VH}px, 0)`;
+            }
+          }
+        });
+      };
+
+      applyLayout();
+
+      // Initial card text state
       cards.forEach((card, idx) => {
-        card.style.transform = `translate3d(0, ${idx === 0 ? 0 : VH}px, 0)`;
         card.style.opacity = '1';
-        // Ensure text opacity is visible for card 0, hidden for rest
         if (textContainers[idx]) {
           const children = textContainers[idx].querySelectorAll<HTMLElement>('.story-animate-el');
           children.forEach(el => {
@@ -185,7 +208,6 @@ export default function DestinationStorySection() {
       });
 
       let ticking = false;
-      const PEEK_OFFSET = 24; // px each previous card peeks above the new one
 
       const onScroll = () => {
         if (!ticking) {
@@ -202,7 +224,6 @@ export default function DestinationStorySection() {
               if (!card) continue;
 
               if (i === 0) {
-                // Card 0: stays at y=0 always
                 card.style.transform = `translate3d(0, 0px, 0)`;
                 if (textCon) {
                   const children = textCon.querySelectorAll<HTMLElement>('.story-animate-el');
@@ -211,38 +232,32 @@ export default function DestinationStorySection() {
                 continue;
               }
 
-              // Card i enters during scroll range [(i-1)*scrollPerCard, i*scrollPerCard]
+              // NOTE: entryStart/entryEnd use the LIVE scrollPerCard (updated by resize handler)
               const entryStart = (i - 1) * scrollPerCard;
               const entryEnd = i * scrollPerCard;
 
               if (scrolled <= entryStart) {
-                // Not yet entered — keep offscreen
                 card.style.transform = `translate3d(0, ${VH}px, 0)`;
                 if (textCon) {
                   const children = textCon.querySelectorAll<HTMLElement>('.story-animate-el');
                   children.forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(20px)'; });
                 }
               } else if (scrolled >= entryEnd) {
-                // Fully entered — rest at final stacked position
                 card.style.transform = `translate3d(0, ${i * PEEK_OFFSET}px, 0)`;
                 if (textCon) {
                   const children = textCon.querySelectorAll<HTMLElement>('.story-animate-el');
                   children.forEach(el => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; });
                 }
               } else {
-                // Animating: interpolate from VH → i*PEEK_OFFSET
                 const progress = (scrolled - entryStart) / scrollPerCard;
-                // easeInOut cubic
                 const eased = progress < 0.5
                   ? 4 * progress * progress * progress
                   : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-                const yFrom = VH;
-                const yTo = i * PEEK_OFFSET;
-                const y = yFrom + (yTo - yFrom) * eased;
+                const y = VH + (i * PEEK_OFFSET - VH) * eased;
                 card.style.transform = `translate3d(0, ${y}px, 0)`;
 
                 if (textCon) {
-                  const textProgress = Math.max(0, (progress - 0.6) / 0.4); // text fades in last 40% of entry
+                  const textProgress = Math.max(0, (progress - 0.6) / 0.4);
                   const children = textCon.querySelectorAll<HTMLElement>('.story-animate-el');
                   children.forEach(el => {
                     el.style.opacity = String(textProgress);
@@ -256,11 +271,26 @@ export default function DestinationStorySection() {
         }
       };
 
+      // Debounced resize handler — recalculates layout when viewport changes
+      // (handles DevTools device emulation & real orientation changes)
+      let resizeTimer = 0;
+      const onResize = () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => {
+          if (!isMounted) return;
+          applyLayout();
+          onScroll(); // repaint after layout update
+        }, 150);
+      };
+
       window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onResize, { passive: true });
       onScroll(); // initial paint
 
       mobileScrollCleanup = () => {
         window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onResize);
+        clearTimeout(resizeTimer);
       };
     };
 
