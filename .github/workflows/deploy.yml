@@ -37,13 +37,17 @@ jobs:
             export NODE_OPTIONS="--max-old-space-size=1536"
             npm run build
 
+            # Trigger Passenger reload (critical for Hostinger shared hosting Node.js apps)
+            mkdir -p tmp
+            touch tmp/restart.txt
+
             # Zero-downtime restart: pm2 reload keeps old process alive until new one is ready
             if command -v pm2 &> /dev/null; then
               pm2 reload travinno --update-env 2>/dev/null || \
               pm2 restart travinno 2>/dev/null || \
               pm2 start server.js --name travinno
             else
-              echo "pm2 not found — please restart Node.js app from Hostinger hPanel"
+              echo "pm2 not found — triggered Passenger restart via tmp/restart.txt"
             fi
 
             echo "✅ Travinno deployment complete"
