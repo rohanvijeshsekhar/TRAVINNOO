@@ -389,7 +389,6 @@ export default function DestinationStorySection() {
           /* NO transform/will-change properties here! Doing so would create a 
              containing block that forces children's position:fixed to behave as 
              position:absolute, breaking GSAP fixed pinning on mobile. */
-          overscroll-behavior: none;
         }
 
         .destinations-grid-bg {
