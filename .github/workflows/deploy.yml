@@ -24,8 +24,11 @@ jobs:
           script: |
             cd ~/travinno
 
-            # Pull latest code from GitHub
-            git pull origin main
+            # Force-clean any local changes that might block git pull
+            # (e.g. from a previous failed rsync deployment)
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd --exclude='.env' --exclude='*.db' --exclude='travinno-data.json'
 
             # Install ALL dependencies (dev deps needed for Next.js build)
             npm ci
