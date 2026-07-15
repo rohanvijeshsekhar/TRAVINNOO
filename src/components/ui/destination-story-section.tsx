@@ -141,10 +141,10 @@ export default function DestinationStorySection() {
     let loaderListener: any;
 
     // ─── MOBILE IMPLEMENTATION ────────────────────────────────────────────
-    // Pure scroll-event approach. No GSAP ScrollTrigger, no pinning.
-    // The outer container has explicit height = vh + scrollDistance.
-    // The viewport is position:sticky so it stays at top:0.
-    // Cards are driven by reading window.scrollY relative to the container's offsetTop.
+    // JS-managed pinning: container provides scroll space, viewport is
+    // set to position:fixed while the user scrolls through the section.
+    // This is more reliable than position:sticky which breaks when any
+    // parent ancestor has overflow:hidden/clip (including SiteLayoutClient).
     const initMobile = () => {
       if (!isMounted) return;
       const container = containerRef.current;
@@ -156,35 +156,34 @@ export default function DestinationStorySection() {
       if (cards.length === 0) return;
 
       const cardCount = cards.length;
-      const PEEK_OFFSET = 24; // px each previous card peeks above the new one
+      const PEEK_OFFSET = 24;
 
-      // ── Mutable layout vars ─────────────────────────────────────────────
-      // Using `let` so the resize handler can update them and onScroll reads
-      // the latest values every frame (avoids stale closure on resize).
+      // ── Mutable layout vars (updated by resize handler) ─────────────────
       let VH = window.innerHeight;
       let scrollPerCard = VH * 0.6;
+      // Cache the container's document-relative Y so we don't call
+      // getBoundingClientRect() every frame (expensive on mobile)
+      let containerDocTop = container.getBoundingClientRect().top + window.scrollY;
 
-      // Set section & viewport heights so position:sticky works correctly
       const applyLayout = () => {
         VH = window.innerHeight;
         scrollPerCard = VH * 0.6;
         const totalScroll = scrollPerCard * (cardCount - 1);
+        // Explicit height provides the scroll space for the section
         container.style.height = `${VH + totalScroll}px`;
-        viewport.style.height = `${VH}px`;
+        // Recache container position after height change
+        containerDocTop = container.getBoundingClientRect().top + window.scrollY;
         if (isMounted) {
           setSectionHeight(VH + totalScroll);
           setClientVH(VH);
         }
-        // Reset all offscreen cards to new VH so they enter from the right position
+        // Reset un-entered cards to offscreen bottom
+        const scrolled = Math.max(0, window.scrollY - containerDocTop);
         cards.forEach((card, idx) => {
           if (idx === 0) {
             card.style.transform = `translate3d(0, 0px, 0)`;
           } else {
-            // Keep already-entered cards in their stacked position,
-            // reset un-entered ones to offscreen (new VH)
             const entryEnd = idx * scrollPerCard;
-            const containerTop = container.getBoundingClientRect().top + window.scrollY;
-            const scrolled = Math.max(0, window.scrollY - containerTop);
             if (scrolled < entryEnd) {
               card.style.transform = `translate3d(0, ${VH}px, 0)`;
             }
@@ -194,7 +193,7 @@ export default function DestinationStorySection() {
 
       applyLayout();
 
-      // Initial card text state
+      // Initial card text states
       cards.forEach((card, idx) => {
         card.style.opacity = '1';
         if (textContainers[idx]) {
@@ -215,8 +214,34 @@ export default function DestinationStorySection() {
             ticking = false;
             if (!container || !isMounted) return;
 
-            const containerTop = container.getBoundingClientRect().top + window.scrollY;
-            const scrolled = Math.max(0, window.scrollY - containerTop);
+            const scrollY = window.scrollY;
+            const maxScroll = container.offsetHeight - VH; // = totalScroll
+            const scrolledIntoContainer = scrollY - containerDocTop;
+
+            // ── JS-managed pinning (replaces position:sticky) ──────────────
+            // Avoids all parent overflow/containing-block issues.
+            if (scrolledIntoContainer <= 0) {
+              // Before section: viewport in normal flow at top of container
+              viewport.style.position = 'relative';
+              viewport.style.top = '';
+              viewport.style.left = '';
+              viewport.style.width = '';
+            } else if (scrolledIntoContainer >= maxScroll) {
+              // After section: viewport pinned to bottom of container
+              viewport.style.position = 'absolute';
+              viewport.style.top = `${maxScroll}px`;
+              viewport.style.left = '0';
+              viewport.style.width = '100%';
+            } else {
+              // Active zone: viewport fixed at top of window
+              viewport.style.position = 'fixed';
+              viewport.style.top = '0';
+              viewport.style.left = '0';
+              viewport.style.width = '100%';
+            }
+
+            // ── Card animation ─────────────────────────────────────────────
+            const scrolled = Math.max(0, Math.min(scrolledIntoContainer, maxScroll));
 
             for (let i = 0; i < cardCount; i++) {
               const card = cards[i];
@@ -232,7 +257,6 @@ export default function DestinationStorySection() {
                 continue;
               }
 
-              // NOTE: entryStart/entryEnd use the LIVE scrollPerCard (updated by resize handler)
               const entryStart = (i - 1) * scrollPerCard;
               const entryEnd = i * scrollPerCard;
 
@@ -271,15 +295,14 @@ export default function DestinationStorySection() {
         }
       };
 
-      // Debounced resize handler — recalculates layout when viewport changes
-      // (handles DevTools device emulation & real orientation changes)
+      // Debounced resize handler — recalculates layout on viewport changes
       let resizeTimer = 0;
       const onResize = () => {
         clearTimeout(resizeTimer);
         resizeTimer = window.setTimeout(() => {
           if (!isMounted) return;
           applyLayout();
-          onScroll(); // repaint after layout update
+          onScroll();
         }, 150);
       };
 
@@ -291,6 +314,13 @@ export default function DestinationStorySection() {
         window.removeEventListener('scroll', onScroll);
         window.removeEventListener('resize', onResize);
         clearTimeout(resizeTimer);
+        // Reset viewport to normal flow on cleanup
+        if (viewport) {
+          viewport.style.position = '';
+          viewport.style.top = '';
+          viewport.style.left = '';
+          viewport.style.width = '';
+        }
       };
     };
 
@@ -752,18 +782,20 @@ export default function DestinationStorySection() {
           }
 
           .destinations-story-viewport {
-            position: sticky !important;
-            position: -webkit-sticky !important;
-            top: 0 !important;
+            /* JS-managed pinning: position is set to fixed/relative/absolute
+               by initMobile() — never use sticky here (breaks in containers
+               with overflow:clip or overflow:hidden parents) */
+            position: relative !important;
+            top: auto !important;
             width: 100% !important;
-            height: 100vh !important;
+            height: 100dvh !important;
+            height: 100vh !important; /* fallback for browsers without dvh */
             overflow: hidden !important;
             display: flex !important;
             justify-content: center !important;
             align-items: center !important;
             padding: 0 !important;
             box-sizing: border-box !important;
-            overscroll-behavior: none !important;
           }
 
           .destinations-cards-container {
