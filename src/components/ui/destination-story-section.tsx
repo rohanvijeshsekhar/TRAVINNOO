@@ -415,9 +415,56 @@ export default function DestinationStorySection() {
 
     checkAndInit();
 
+    // ─── Cross-breakpoint resize handler ─────────────────────────────────
+    // When the user crosses the 1024px boundary (e.g. DevTools switching
+    // from desktop → mobile or vice versa), we tear down the current
+    // implementation and re-initialize the correct one.
+    // NOTE: The mobile-internal applyLayout/onResize handler handles small
+    // viewport changes within mobile. This handler ONLY fires on breakpoint
+    // crossings (mobile ↔ desktop).
+    let currentBreakpoint = window.innerWidth < 1024 ? 'mobile' : 'desktop';
+    let breakpointTimer = 0;
+
+    const handleBreakpointChange = () => {
+      clearTimeout(breakpointTimer);
+      breakpointTimer = window.setTimeout(() => {
+        if (!isMounted) return;
+        const newBreakpoint = window.innerWidth < 1024 ? 'mobile' : 'desktop';
+        if (newBreakpoint === currentBreakpoint) return; // No crossing — ignore
+        currentBreakpoint = newBreakpoint;
+
+        // ── Tear down current implementation ──
+        if (mobileScrollCleanup) { mobileScrollCleanup(); mobileScrollCleanup = null; }
+        cancelAnimationFrame(rafId1);
+        cancelAnimationFrame(rafId2);
+        ScrollTrigger.getAll().forEach(t => {
+          if (t.vars.trigger === containerRef.current || t.trigger === containerRef.current) t.kill();
+        });
+        if (desktopCtx) { desktopCtx.revert(); desktopCtx = null; }
+
+        // Reset inline styles so next init gets a clean slate
+        if (containerRef.current) containerRef.current.style.height = '';
+        if (viewportRef.current) viewportRef.current.style.height = '';
+        setSectionHeight(0);
+        setClientVH(0);
+
+        // Re-initialize with the correct implementation
+        // Double-RAF to ensure layout is settled before measuring
+        rafId1 = requestAnimationFrame(() => {
+          rafId2 = requestAnimationFrame(() => {
+            if (isMounted) initAll();
+          });
+        });
+      }, 200);
+    };
+
+    window.addEventListener('resize', handleBreakpointChange, { passive: true });
+
     return () => {
       isMounted = false;
       if (loaderListener) window.removeEventListener('travinnoLoaderComplete', loaderListener);
+      window.removeEventListener('resize', handleBreakpointChange);
+      clearTimeout(breakpointTimer);
       cancelAnimationFrame(rafId1);
       cancelAnimationFrame(rafId2);
       (window as any).travinnoScrollTriggerReady = false;
