@@ -108,8 +108,8 @@ export default function DestinationStorySection() {
     const dbDests = db.getDestinations();
     if (!dbDests || dbDests.length === 0) return destinations;
     return destinations.map(d => {
-      const found = dbDests.find(dbD => 
-        dbD.name.toLowerCase() === d.title.toLowerCase() || 
+      const found = dbDests.find(dbD =>
+        dbD.name.toLowerCase() === d.title.toLowerCase() ||
         dbD.id.toLowerCase() === d.title.toLowerCase()
       );
       if (found) {
@@ -152,35 +152,14 @@ export default function DestinationStorySection() {
       ctx = gsap.context(() => {
         const isMobile = window.innerWidth < 1024;
 
-        if (isMobile) {
-          // On mobile: bypass GSAP timeline/ScrollTrigger entirely for butter-smooth native CSS sticky stacking
-          cards.forEach((card, idx) => {
-            gsap.set(card, {
-              y: 0,
-              scale: 1,
-              opacity: 1,
-              visibility: 'visible',
-              position: '',
-              clearProps: "all"
-            });
-            if (textContainers[idx]) {
-              const children = textContainers[idx].querySelectorAll('.story-animate-el');
-              gsap.set(children, { y: 0, opacity: 1, clearProps: "all" });
-            }
-          });
-
-          (window as any).travinnoScrollTriggerReady = true;
-          window.dispatchEvent(new CustomEvent('travinnoScrollTriggerReady'));
-          return;
-        }
-
         // Set initial state: Card 0 visible at y:0, others visible but translated offscreen below (y:getVH())
         cards.forEach((card, idx) => {
           gsap.set(card, {
             y: idx === 0 ? 0 : () => getVH(),
             opacity: 1,
             scale: 1,
-            visibility: 'visible'
+            visibility: 'visible',
+            force3D: true,   // ensure GPU layer is promoted immediately
           });
           if (textContainers[idx]) {
             const children = textContainers[idx].querySelectorAll('.story-animate-el');
@@ -196,7 +175,7 @@ export default function DestinationStorySection() {
         const transitionDuration = 1.0;
         const holdDuration = 0.2; // Speed up scroll transitions
         const totalDurationPerCard = transitionDuration + holdDuration;
-        
+
         // End calculation based on dynamic layout scale - reduced to 0.6x to make transitions scroll faster
         const scrollDistance = () => getVH() * (cards.length - 1) * 0.6;
 
@@ -207,8 +186,11 @@ export default function DestinationStorySection() {
             end: () => `+=${scrollDistance()}`,
             pin: viewport,
             pinSpacing: true,
-            pinType: isMobile ? 'transform' : 'fixed',
-            scrub: 1.2, // Reduced scrub lag for faster feedback
+            // Explicitly force fixed positioning for pinning on all devices.
+            // This bypasses thread synchronization jitter.
+            pinType: 'fixed',
+            // Use very low scrub lag on mobile to keep transitions immediate and synchronized
+            scrub: isMobile ? 0.25 : 1.2,
             invalidateOnRefresh: true,
             anticipatePin: 1
           }
@@ -221,15 +203,17 @@ export default function DestinationStorySection() {
 
           if (isMobile) {
             // Mobile: Card slides upward and stops at a static stacked offset (i * yOffset)
-            // Existing cards 0 to i-1 remain fixed and never move again.
+            // force3D:true ensures the card stays on its own GPU compositor layer
+            // so the transform update never triggers a paint, preventing jitter.
             tl.fromTo(cards[i],
-              { y: () => getVH(), scale: 1, opacity: 1 },
+              { y: () => getVH(), scale: 1, opacity: 1, force3D: true },
               {
                 y: i * yOffset,
                 scale: 1,
                 opacity: 1,
                 duration: transitionDuration,
-                ease: "power2.inOut"
+                ease: "power2.inOut",
+                force3D: true,
               },
               startPos
             );
@@ -243,19 +227,21 @@ export default function DestinationStorySection() {
                 y: finalY,
                 scale: finalScale,
                 duration: transitionDuration,
-                ease: "power2.inOut"
+                ease: "power2.inOut",
+                force3D: true,
               }, startPos);
             }
 
             // Incoming card (i) slides to y: 0
             tl.fromTo(cards[i],
-              { y: () => getVH(), scale: 1, opacity: 1 },
+              { y: () => getVH(), scale: 1, opacity: 1, force3D: true },
               {
                 y: 0,
                 scale: 1,
                 opacity: 1,
                 duration: transitionDuration,
-                ease: "power2.inOut"
+                ease: "power2.inOut",
+                force3D: true,
               },
               startPos
             );
@@ -302,12 +288,14 @@ export default function DestinationStorySection() {
         initScrollTrigger();
       }
     };
- 
+
     const checkAndInit = () => {
       const loader = document.querySelector('.fullscreen-loader');
       const hasLoadedThisSession = typeof window !== 'undefined' ? sessionStorage.getItem('travinno_session_loaded') : false;
+      const isLoaderCompleted = typeof window !== 'undefined' && (window as any).travinnoLoaderCompleted;
 
-      if (loader && !hasLoadedThisSession) {
+      if (loader && !hasLoadedThisSession && !isLoaderCompleted) {
+        // First visit: wait for the loader animation to complete before initializing.
         loaderListener = () => {
           window.removeEventListener('travinnoLoaderComplete', loaderListener);
           if (document.fonts && document.fonts.ready) {
@@ -320,19 +308,38 @@ export default function DestinationStorySection() {
         };
         window.addEventListener('travinnoLoaderComplete', loaderListener);
       } else {
-        if (document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(() => {
-            if (isMounted) initScrollTrigger();
+        // Subsequent refresh (loader skipped this session).
+        // Wait for all stylesheet assets to be fully ready before measuring offsets.
+        const executeInit = () => {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              if (!isMounted) return;
+              if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(() => {
+                  if (isMounted) initScrollTrigger();
+                });
+              } else {
+                initScrollTrigger();
+              }
+            });
           });
+        };
+
+        if (document.readyState === 'complete') {
+          executeInit();
         } else {
-          initScrollTrigger();
+          const loadListener = () => {
+            window.removeEventListener('load', loadListener);
+            executeInit();
+          };
+          window.addEventListener('load', loadListener);
         }
       }
     };
- 
+
     checkAndInit();
     window.addEventListener('resize', handleResize);
- 
+
     return () => {
       isMounted = false;
       window.removeEventListener('resize', handleResize);
@@ -372,7 +379,6 @@ export default function DestinationStorySection() {
           position: relative;
           width: 100%;
           height: 100vh;
-          height: 100dvh;
           overflow: hidden;
           background-color: transparent;
           display: flex;
@@ -380,6 +386,10 @@ export default function DestinationStorySection() {
           align-items: center;
           box-sizing: border-box;
           padding: 0;
+          /* NO transform/will-change properties here! Doing so would create a 
+             containing block that forces children's position:fixed to behave as 
+             position:absolute, breaking GSAP fixed pinning on mobile. */
+          overscroll-behavior: none;
         }
 
         .destinations-grid-bg {
@@ -408,6 +418,7 @@ export default function DestinationStorySection() {
           justify-content: center;
           align-items: center;
           z-index: 2;
+          /* NO transform property here to prevent containing block override of position:fixed */
         }
 
         .destinations-story-card {
@@ -622,46 +633,49 @@ export default function DestinationStorySection() {
           }
 
           .destinations-story-viewport {
-            position: relative !important;
-            width: 100% !important;
-            height: auto !important;
-            overflow: visible !important;
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
             display: flex !important;
             justify-content: center !important;
             align-items: flex-start !important;
-            padding: 0 !important;
+            padding-top: 15px !important;
             box-sizing: border-box !important;
+            will-change: transform;
+            transform: translateZ(0) !important;
+            -webkit-transform: translateZ(0) !important;
+            overscroll-behavior: none !important;
           }
 
           .destinations-cards-container {
             width: 90% !important;
-            height: auto !important;
+            height: 480px !important;
             display: flex !important;
-            flex-direction: column !important;
+            justify-content: center !important;
             align-items: center !important;
             position: relative !important;
-            gap: 12vh !important;
-            padding: 8vh 0 15vh 0 !important;
+            gap: 0 !important;
+            padding: 0 !important;
             box-sizing: border-box !important;
+            transform: translateZ(0) !important;
+            -webkit-transform: translateZ(0) !important;
           }
 
           .destinations-story-card {
-            position: sticky !important;
-            top: calc(10vh + var(--card-index) * 24px) !important;
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
             width: 100% !important;
-            height: auto !important;
-            min-height: 480px !important;
+            height: 100% !important;
             flex-direction: column-reverse !important;
             background: #0B0B0B !important;
             border: 1px solid #181818 !important;
             border-radius: 24px !important;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7) !important;
-            transform: none !important;
-            -webkit-transform: none !important;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
-            will-change: transform;
           }
 
           .card-left-panel {
@@ -755,10 +769,7 @@ export default function DestinationStorySection() {
               key={`dest-story-${idx}`}
               ref={(el) => { cardRefs.current[idx] = el; }}
               className="destinations-story-card"
-              style={{
-                zIndex: idx + 1,
-                ...({ '--card-index': idx } as React.CSSProperties)
-              }}
+              style={{ zIndex: idx + 1 }}
             >
               {/* Left textual storytelling column */}
               <div className="card-left-panel">
@@ -799,6 +810,8 @@ export default function DestinationStorySection() {
                     src={dest.image}
                     alt={dest.countryName}
                     loading={idx < 2 ? 'eager' : 'lazy'}
+                    width="900"
+                    height="600"
                     className="destination-img"
                   />
                 </div>
