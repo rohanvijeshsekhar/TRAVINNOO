@@ -102,19 +102,26 @@ export default function DestinationStorySection() {
   const viewportRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const textContainerRefs = useRef<(HTMLDivElement | null)[]>([]);
-  // NOTE: isMobile / viewportHeight are only used for the section height JSX.
-  // The actual GSAP/scroll logic reads window dimensions at runtime to avoid
-  // SSR hydration mismatches causing wrong initial state.
-  const [sectionHeight, setSectionHeight] = useState(0);
-  const [clientVH, setClientVH] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+      setViewportHeight(window.innerHeight);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const [destinationsList] = useState<Destination[]>(() => {
     db.init();
     const dbDests = db.getDestinations();
     if (!dbDests || dbDests.length === 0) return destinations;
     return destinations.map(d => {
-      const found = dbDests.find(dbD =>
-        dbD.name.toLowerCase() === d.title.toLowerCase() ||
+      const found = dbDests.find(dbD => 
+        dbD.name.toLowerCase() === d.title.toLowerCase() || 
         dbD.id.toLowerCase() === d.title.toLowerCase()
       );
       if (found) {
@@ -123,210 +130,26 @@ export default function DestinationStorySection() {
           const cleanPath = imgUrl.startsWith('/') ? imgUrl.substring(1) : imgUrl;
           imgUrl = `/demo/${cleanPath}`;
         }
-        return { ...d, image: imgUrl || d.image };
+        return {
+          ...d,
+          image: imgUrl || d.image
+        };
       }
       return d;
     });
   });
 
-  // ─── Main scroll effect ─────────────────────────────────────────────────
   useEffect(() => {
     let isMounted = true;
     gsap.registerPlugin(ScrollTrigger);
 
-    let desktopCtx: any = null;
-    let mobileScrollCleanup: (() => void) | null = null;
+    let ctx: any;
     let rafId1 = 0;
     let rafId2 = 0;
     let loaderListener: any;
+    let wasMobile = typeof window !== 'undefined' ? window.innerWidth < 1024 : false;
 
-    // ─── MOBILE IMPLEMENTATION ────────────────────────────────────────────
-    // JS-managed pinning: container provides scroll space, viewport is
-    // set to position:fixed while the user scrolls through the section.
-    // This is more reliable than position:sticky which breaks when any
-    // parent ancestor has overflow:hidden/clip (including SiteLayoutClient).
-    const initMobile = () => {
-      if (!isMounted) return;
-      const container = containerRef.current;
-      const viewport = viewportRef.current;
-      if (!container || !viewport) return;
-
-      const cards = cardRefs.current.filter((c): c is HTMLDivElement => c !== null && document.body.contains(c));
-      const textContainers = textContainerRefs.current.filter((t): t is HTMLDivElement => t !== null && document.body.contains(t));
-      if (cards.length === 0) return;
-
-      const cardCount = cards.length;
-      const PEEK_OFFSET = 24;
-
-      // ── Mutable layout vars (updated by resize handler) ─────────────────
-      let VH = window.innerHeight;
-      let scrollPerCard = VH * 0.6;
-      // Cache the container's document-relative Y so we don't call
-      // getBoundingClientRect() every frame (expensive on mobile)
-      let containerDocTop = container.getBoundingClientRect().top + window.scrollY;
-
-      const applyLayout = () => {
-        VH = window.innerHeight;
-        scrollPerCard = VH * 0.6;
-        const totalScroll = scrollPerCard * (cardCount - 1);
-        // Explicit height provides the scroll space for the section
-        container.style.height = `${VH + totalScroll}px`;
-        // Recache container position after height change
-        containerDocTop = container.getBoundingClientRect().top + window.scrollY;
-        if (isMounted) {
-          setSectionHeight(VH + totalScroll);
-          setClientVH(VH);
-        }
-        // Reset un-entered cards to offscreen bottom
-        const scrolled = Math.max(0, window.scrollY - containerDocTop);
-        cards.forEach((card, idx) => {
-          if (idx === 0) {
-            card.style.transform = `translate3d(0, 0px, 0)`;
-          } else {
-            const entryEnd = idx * scrollPerCard;
-            if (scrolled < entryEnd) {
-              card.style.transform = `translate3d(0, ${VH}px, 0)`;
-            }
-          }
-        });
-      };
-
-      applyLayout();
-
-      // Initial card text states
-      cards.forEach((card, idx) => {
-        card.style.opacity = '1';
-        if (textContainers[idx]) {
-          const children = textContainers[idx].querySelectorAll<HTMLElement>('.story-animate-el');
-          children.forEach(el => {
-            el.style.opacity = idx === 0 ? '1' : '0';
-            el.style.transform = idx === 0 ? 'translateY(0)' : 'translateY(20px)';
-            el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-          });
-        }
-      });
-
-      let ticking = false;
-
-      const onScroll = () => {
-        if (!ticking) {
-          requestAnimationFrame(() => {
-            ticking = false;
-            if (!container || !isMounted) return;
-
-            const scrollY = window.scrollY;
-            const maxScroll = container.offsetHeight - VH; // = totalScroll
-            const scrolledIntoContainer = scrollY - containerDocTop;
-
-            // ── JS-managed pinning (replaces position:sticky) ──────────────
-            // Avoids all parent overflow/containing-block issues.
-            if (scrolledIntoContainer <= 0) {
-              // Before section: viewport in normal flow at top of container
-              viewport.style.position = 'relative';
-              viewport.style.top = '';
-              viewport.style.left = '';
-              viewport.style.width = '';
-            } else if (scrolledIntoContainer >= maxScroll) {
-              // After section: viewport pinned to bottom of container
-              viewport.style.position = 'absolute';
-              viewport.style.top = `${maxScroll}px`;
-              viewport.style.left = '0';
-              viewport.style.width = '100%';
-            } else {
-              // Active zone: viewport fixed at top of window
-              viewport.style.position = 'fixed';
-              viewport.style.top = '0';
-              viewport.style.left = '0';
-              viewport.style.width = '100%';
-            }
-
-            // ── Card animation ─────────────────────────────────────────────
-            const scrolled = Math.max(0, Math.min(scrolledIntoContainer, maxScroll));
-
-            for (let i = 0; i < cardCount; i++) {
-              const card = cards[i];
-              const textCon = textContainers[i];
-              if (!card) continue;
-
-              if (i === 0) {
-                card.style.transform = `translate3d(0, 0px, 0)`;
-                if (textCon) {
-                  const children = textCon.querySelectorAll<HTMLElement>('.story-animate-el');
-                  children.forEach(el => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; });
-                }
-                continue;
-              }
-
-              const entryStart = (i - 1) * scrollPerCard;
-              const entryEnd = i * scrollPerCard;
-
-              if (scrolled <= entryStart) {
-                card.style.transform = `translate3d(0, ${VH}px, 0)`;
-                if (textCon) {
-                  const children = textCon.querySelectorAll<HTMLElement>('.story-animate-el');
-                  children.forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(20px)'; });
-                }
-              } else if (scrolled >= entryEnd) {
-                card.style.transform = `translate3d(0, ${i * PEEK_OFFSET}px, 0)`;
-                if (textCon) {
-                  const children = textCon.querySelectorAll<HTMLElement>('.story-animate-el');
-                  children.forEach(el => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; });
-                }
-              } else {
-                const progress = (scrolled - entryStart) / scrollPerCard;
-                const eased = progress < 0.5
-                  ? 4 * progress * progress * progress
-                  : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-                const y = VH + (i * PEEK_OFFSET - VH) * eased;
-                card.style.transform = `translate3d(0, ${y}px, 0)`;
-
-                if (textCon) {
-                  const textProgress = Math.max(0, (progress - 0.6) / 0.4);
-                  const children = textCon.querySelectorAll<HTMLElement>('.story-animate-el');
-                  children.forEach(el => {
-                    el.style.opacity = String(textProgress);
-                    el.style.transform = `translateY(${20 - textProgress * 20}px)`;
-                  });
-                }
-              }
-            }
-          });
-          ticking = true;
-        }
-      };
-
-      // Debounced resize handler — recalculates layout on viewport changes
-      let resizeTimer = 0;
-      const onResize = () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = window.setTimeout(() => {
-          if (!isMounted) return;
-          applyLayout();
-          onScroll();
-        }, 150);
-      };
-
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onResize, { passive: true });
-      onScroll(); // initial paint
-
-      mobileScrollCleanup = () => {
-        window.removeEventListener('scroll', onScroll);
-        window.removeEventListener('resize', onResize);
-        clearTimeout(resizeTimer);
-        // Reset viewport to normal flow on cleanup
-        if (viewport) {
-          viewport.style.position = '';
-          viewport.style.top = '';
-          viewport.style.left = '';
-          viewport.style.width = '';
-        }
-      };
-    };
-
-    // ─── DESKTOP IMPLEMENTATION ───────────────────────────────────────────
-    // Only runs on ≥1024px via gsap.matchMedia(). Uses full GSAP ScrollTrigger pinning.
-    const initDesktop = () => {
+    const initScrollTrigger = () => {
       if (!isMounted) return;
       const container = containerRef.current;
       const viewport = viewportRef.current;
@@ -338,54 +161,121 @@ export default function DestinationStorySection() {
 
       const getVH = () => window.innerHeight;
 
-      desktopCtx = gsap.context(() => {
+      ctx = gsap.context(() => {
+        // Set initial state: Card 0 visible at y:0, others visible but translated offscreen below (y:getVH())
         cards.forEach((card, idx) => {
-          gsap.set(card, { y: idx === 0 ? 0 : () => getVH(), opacity: 1, scale: 1, visibility: 'visible', force3D: true });
+          gsap.set(card, {
+            y: idx === 0 ? 0 : () => getVH(),
+            opacity: 1,
+            scale: 1,
+            visibility: 'visible',
+            force3D: true,   // ensure GPU layer is promoted immediately
+          });
           if (textContainers[idx]) {
             const children = textContainers[idx].querySelectorAll('.story-animate-el');
-            gsap.set(children, idx === 0 ? { y: 0, opacity: 1 } : { y: 40, opacity: 0 });
+            if (idx === 0) {
+              gsap.set(children, { y: 0, opacity: 1 });
+            } else {
+              gsap.set(children, { y: 40, opacity: 0 });
+            }
           }
         });
 
+        // ─── Unified Timeline & ScrollTrigger ─────────────────────────────
         const transitionDuration = 1.0;
-        const holdDuration = 0.2;
+        const holdDuration = 0.2; // Speed up scroll transitions
         const totalDurationPerCard = transitionDuration + holdDuration;
+        
+        // End calculation based on dynamic layout scale - reduced to 0.6x to make transitions scroll faster
         const scrollDistance = () => getVH() * (cards.length - 1) * 0.6;
-        const yOffset = 40;
 
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: container,
-            start: 'top top',
+            start: "top top",
             end: () => `+=${scrollDistance()}`,
-            pin: viewport,
-            pinSpacing: true,
+            pin: isMobile ? false : viewport,
+            pinSpacing: isMobile ? false : true,
+            // Use uniform 1.2 scrub (matching CSR version) to act as a layout stabilizer
+            // and absorb high-frequency micro-stuttering on scroll.
             scrub: 1.2,
             invalidateOnRefresh: true,
-            anticipatePin: 1,
+            anticipatePin: 1
           }
         });
 
+        // Loop cards to create smooth sequential cinematic card stack transitions
         for (let i = 1; i < cards.length; i++) {
           const startPos = (i - 1) * totalDurationPerCard;
+          const yOffset = isMobile ? 24 : 40; // Maintain 8-12% visible margin responsive to screen height
 
-          for (let j = 0; j < i; j++) {
-            tl.to(cards[j], { y: -(i - j) * yOffset, scale: 1 - (i - j) * 0.02, duration: transitionDuration, ease: 'power2.inOut', force3D: true }, startPos);
+          if (isMobile) {
+            // Mobile: Card slides upward and stops at a static stacked offset (i * yOffset)
+            // force3D:true ensures the card stays on its own GPU compositor layer
+            // so the transform update never triggers a paint, preventing jitter.
+            tl.fromTo(cards[i],
+              { y: () => getVH(), scale: 1, opacity: 1, force3D: true },
+              {
+                y: i * yOffset,
+                scale: 1,
+                opacity: 1,
+                duration: transitionDuration,
+                ease: "power2.inOut",
+                force3D: true,
+              },
+              startPos
+            );
+          } else {
+            // Desktop: Shift all previously stacked cards upward by yOffset
+            for (let j = 0; j < i; j++) {
+              const finalY = -(i - j) * yOffset;
+              const finalScale = 1 - (i - j) * 0.02;
+
+              tl.to(cards[j], {
+                y: finalY,
+                scale: finalScale,
+                duration: transitionDuration,
+                ease: "power2.inOut",
+                force3D: true,
+              }, startPos);
+            }
+
+            // Incoming card (i) slides to y: 0
+            tl.fromTo(cards[i],
+              { y: () => getVH(), scale: 1, opacity: 1, force3D: true },
+              {
+                y: 0,
+                scale: 1,
+                opacity: 1,
+                duration: transitionDuration,
+                ease: "power2.inOut",
+                force3D: true,
+              },
+              startPos
+            );
           }
-          tl.fromTo(cards[i],
-            { y: () => getVH(), scale: 1, opacity: 1, force3D: true },
-            { y: 0, scale: 1, opacity: 1, duration: transitionDuration, ease: 'power2.inOut', force3D: true },
-            startPos
-          );
 
           if (textContainers[i]) {
-            const texts = textContainers[i].querySelectorAll('.story-animate-el');
-            tl.fromTo(texts, { y: 40, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.05, duration: transitionDuration * 0.9, ease: 'power2.out' }, startPos + 0.15);
+            const incomingTexts = textContainers[i].querySelectorAll('.story-animate-el');
+            tl.fromTo(incomingTexts,
+              { y: 40, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                stagger: 0.05,
+                duration: transitionDuration * 0.9,
+                ease: "power2.out"
+              },
+              startPos + 0.15
+            );
           }
+
+          // Card hold phase before next transition starts
           tl.to({}, { duration: holdDuration });
         }
       }, containerRef);
 
+      // Defer execution until the browser's painting thread stabilizes
       rafId1 = requestAnimationFrame(() => {
         rafId2 = requestAnimationFrame(() => {
           ScrollTrigger.refresh(true);
@@ -395,49 +285,49 @@ export default function DestinationStorySection() {
       });
     };
 
-    // ─── Route to mobile vs desktop at runtime ────────────────────────────
-    const initAll = () => {
-      if (!isMounted) return;
-      const mobile = window.innerWidth < 1024;
-      if (mobile) {
-        initMobile();
-      } else {
-        initDesktop();
-      }
-    };
-
     const checkAndInit = () => {
       const loader = document.querySelector('.fullscreen-loader');
       const hasLoadedThisSession = typeof window !== 'undefined' ? sessionStorage.getItem('travinno_session_loaded') : false;
       const isLoaderCompleted = typeof window !== 'undefined' && (window as any).travinnoLoaderCompleted;
 
       if (loader && !hasLoadedThisSession && !isLoaderCompleted) {
+        // First visit: wait for the loader animation to complete before initializing.
         loaderListener = () => {
           window.removeEventListener('travinnoLoaderComplete', loaderListener);
           if (document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(() => { if (isMounted) initAll(); });
+            document.fonts.ready.then(() => {
+              if (isMounted) initScrollTrigger();
+            });
           } else {
-            initAll();
+            initScrollTrigger();
           }
         };
         window.addEventListener('travinnoLoaderComplete', loaderListener);
       } else {
+        // Subsequent refresh (loader skipped this session).
+        // Wait for all stylesheet assets to be fully ready before measuring offsets.
         const executeInit = () => {
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
               if (!isMounted) return;
               if (document.fonts && document.fonts.ready) {
-                document.fonts.ready.then(() => { if (isMounted) initAll(); });
+                document.fonts.ready.then(() => {
+                  if (isMounted) initScrollTrigger();
+                });
               } else {
-                initAll();
+                initScrollTrigger();
               }
             });
           });
         };
+
         if (document.readyState === 'complete') {
           executeInit();
         } else {
-          const loadListener = () => { window.removeEventListener('load', loadListener); executeInit(); };
+          const loadListener = () => {
+            window.removeEventListener('load', loadListener);
+            executeInit();
+          };
           window.addEventListener('load', loadListener);
         }
       }
@@ -445,71 +335,30 @@ export default function DestinationStorySection() {
 
     checkAndInit();
 
-    // ─── Cross-breakpoint resize handler ─────────────────────────────────
-    // When the user crosses the 1024px boundary (e.g. DevTools switching
-    // from desktop → mobile or vice versa), we tear down the current
-    // implementation and re-initialize the correct one.
-    // NOTE: The mobile-internal applyLayout/onResize handler handles small
-    // viewport changes within mobile. This handler ONLY fires on breakpoint
-    // crossings (mobile ↔ desktop).
-    let currentBreakpoint = window.innerWidth < 1024 ? 'mobile' : 'desktop';
-    let breakpointTimer = 0;
-
-    const handleBreakpointChange = () => {
-      clearTimeout(breakpointTimer);
-      breakpointTimer = window.setTimeout(() => {
-        if (!isMounted) return;
-        const newBreakpoint = window.innerWidth < 1024 ? 'mobile' : 'desktop';
-        if (newBreakpoint === currentBreakpoint) return; // No crossing — ignore
-        currentBreakpoint = newBreakpoint;
-
-        // ── Tear down current implementation ──
-        if (mobileScrollCleanup) { mobileScrollCleanup(); mobileScrollCleanup = null; }
-        cancelAnimationFrame(rafId1);
-        cancelAnimationFrame(rafId2);
-        ScrollTrigger.getAll().forEach(t => {
-          if (t.vars.trigger === containerRef.current || t.trigger === containerRef.current) t.kill();
-        });
-        if (desktopCtx) { desktopCtx.revert(); desktopCtx = null; }
-
-        // Reset inline styles so next init gets a clean slate
-        if (containerRef.current) containerRef.current.style.height = '';
-        if (viewportRef.current) viewportRef.current.style.height = '';
-        setSectionHeight(0);
-        setClientVH(0);
-
-        // Re-initialize with the correct implementation
-        // Double-RAF to ensure layout is settled before measuring
-        rafId1 = requestAnimationFrame(() => {
-          rafId2 = requestAnimationFrame(() => {
-            if (isMounted) initAll();
-          });
-        });
-      }, 200);
-    };
-
-    window.addEventListener('resize', handleBreakpointChange, { passive: true });
-
     return () => {
       isMounted = false;
-      if (loaderListener) window.removeEventListener('travinnoLoaderComplete', loaderListener);
-      window.removeEventListener('resize', handleBreakpointChange);
-      clearTimeout(breakpointTimer);
+      if (loaderListener) {
+        window.removeEventListener('travinnoLoaderComplete', loaderListener);
+      }
       cancelAnimationFrame(rafId1);
       cancelAnimationFrame(rafId2);
       (window as any).travinnoScrollTriggerReady = false;
-      if (mobileScrollCleanup) mobileScrollCleanup();
+
+      // Kill any ScrollTriggers bound to our container to prevent duplicate instances
       ScrollTrigger.getAll().forEach(trigger => {
         if (trigger.vars.trigger === containerRef.current || trigger.trigger === containerRef.current) {
           trigger.kill();
         }
       });
-      if (desktopCtx) desktopCtx.revert();
-    };
-  }, [destinationsList.length]);
 
-  // sectionHeight is set client-side in initMobile; on desktop GSAP adds pinSpacing itself
-  const totalSectionHeight = sectionHeight;
+      if (ctx) {
+        ctx.revert();
+      }
+    };
+  }, [destinationsList.length, isMobile, viewportHeight]);
+
+  const scrollDistanceVal = viewportHeight * (destinationsList.length - 1) * 0.6;
+  const totalSectionHeight = viewportHeight + scrollDistanceVal;
 
   return (
     <div
@@ -520,9 +369,7 @@ export default function DestinationStorySection() {
         width: '100%',
         backgroundColor: 'transparent',
         boxSizing: 'border-box',
-        // Height is set directly by initMobile() via element.style on client.
-        // On desktop GSAP pinSpacing adds extra scroll space automatically.
-        height: totalSectionHeight > 0 ? `${totalSectionHeight}px` : undefined
+        height: isMobile && viewportHeight ? `${totalSectionHeight}px` : undefined
       }}
     >
       <style>{`
@@ -782,20 +629,18 @@ export default function DestinationStorySection() {
           }
 
           .destinations-story-viewport {
-            /* JS-managed pinning: position is set to fixed/relative/absolute
-               by initMobile() — never use sticky here (breaks in containers
-               with overflow:clip or overflow:hidden parents) */
-            position: relative !important;
-            top: auto !important;
+            position: sticky !important;
+            position: -webkit-sticky !important;
+            top: 0 !important;
             width: 100% !important;
-            height: 100dvh !important;
-            height: 100vh !important; /* fallback for browsers without dvh */
+            height: 100vh !important;
             overflow: hidden !important;
             display: flex !important;
             justify-content: center !important;
             align-items: center !important;
             padding: 0 !important;
             box-sizing: border-box !important;
+            overscroll-behavior: none !important;
           }
 
           .destinations-cards-container {
@@ -914,9 +759,9 @@ export default function DestinationStorySection() {
         ref={viewportRef}
         className="destinations-story-viewport"
         style={{
-          // Position & height are set directly by initMobile() via element.style.
-          // The CSS class provides the default (relative, 100vh) for desktop.
-          height: clientVH > 0 ? `${clientVH}px` : undefined
+          position: isMobile ? 'sticky' : undefined,
+          top: isMobile ? 0 : undefined,
+          height: isMobile && viewportHeight ? `${viewportHeight}px` : undefined
         }}
       >
         {/* Subtle grid background */}
