@@ -152,6 +152,28 @@ export default function DestinationStorySection() {
       ctx = gsap.context(() => {
         const isMobile = window.innerWidth < 1024;
 
+        if (isMobile) {
+          // On mobile: bypass GSAP timeline/ScrollTrigger entirely for butter-smooth native CSS sticky stacking
+          cards.forEach((card, idx) => {
+            gsap.set(card, {
+              y: 0,
+              scale: 1,
+              opacity: 1,
+              visibility: 'visible',
+              position: '',
+              clearProps: "all"
+            });
+            if (textContainers[idx]) {
+              const children = textContainers[idx].querySelectorAll('.story-animate-el');
+              gsap.set(children, { y: 0, opacity: 1, clearProps: "all" });
+            }
+          });
+
+          (window as any).travinnoScrollTriggerReady = true;
+          window.dispatchEvent(new CustomEvent('travinnoScrollTriggerReady'));
+          return;
+        }
+
         // Set initial state: Card 0 visible at y:0, others visible but translated offscreen below (y:getVH())
         cards.forEach((card, idx) => {
           gsap.set(card, {
@@ -600,44 +622,46 @@ export default function DestinationStorySection() {
           }
 
           .destinations-story-viewport {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
+            position: relative !important;
+            width: 100% !important;
+            height: auto !important;
+            overflow: visible !important;
             display: flex !important;
             justify-content: center !important;
             align-items: flex-start !important;
-            padding-top: 15px !important;
+            padding: 0 !important;
             box-sizing: border-box !important;
           }
 
           .destinations-cards-container {
             width: 90% !important;
-            height: 480px !important;
+            height: auto !important;
             display: flex !important;
-            justify-content: center !important;
+            flex-direction: column !important;
             align-items: center !important;
             position: relative !important;
-            gap: 0 !important;
-            padding: 0 !important;
+            gap: 12vh !important;
+            padding: 8vh 0 15vh 0 !important;
             box-sizing: border-box !important;
           }
 
           .destinations-story-card {
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
+            position: sticky !important;
+            top: calc(10vh + var(--card-index) * 24px) !important;
             width: 100% !important;
-            height: 100% !important;
+            height: auto !important;
+            min-height: 480px !important;
             flex-direction: column-reverse !important;
             background: #0B0B0B !important;
             border: 1px solid #181818 !important;
             border-radius: 24px !important;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7) !important;
+            transform: none !important;
+            -webkit-transform: none !important;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
+            will-change: transform;
           }
 
           .card-left-panel {
@@ -731,7 +755,10 @@ export default function DestinationStorySection() {
               key={`dest-story-${idx}`}
               ref={(el) => { cardRefs.current[idx] = el; }}
               className="destinations-story-card"
-              style={{ zIndex: idx + 1 }}
+              style={{
+                zIndex: idx + 1,
+                ...({ '--card-index': idx } as React.CSSProperties)
+              }}
             >
               {/* Left textual storytelling column */}
               <div className="card-left-panel">
