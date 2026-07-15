@@ -102,7 +102,18 @@ export default function DestinationStorySection() {
   const viewportRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const textContainerRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(0);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+      setViewportHeight(window.innerHeight);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const [destinationsList] = useState<Destination[]>(() => {
     db.init();
@@ -151,31 +162,6 @@ export default function DestinationStorySection() {
       const getVH = () => window.innerHeight;
 
       ctx = gsap.context(() => {
-        const isMobile = window.innerWidth < 1024;
-
-        if (isMobile) {
-          // On mobile: bypass ScrollTrigger timeline and layout pinning entirely.
-          // Reset cards to standard vertical page flow positioning.
-          cards.forEach((card, idx) => {
-            gsap.set(card, {
-              y: 0,
-              scale: 1,
-              opacity: 1,
-              visibility: 'visible',
-              position: 'relative',
-              clearProps: "transform,position"
-            });
-            if (textContainers[idx]) {
-              const children = textContainers[idx].querySelectorAll('.story-animate-el');
-              gsap.set(children, { y: 0, opacity: 1, clearProps: "all" });
-            }
-          });
-
-          (window as any).travinnoScrollTriggerReady = true;
-          window.dispatchEvent(new CustomEvent('travinnoScrollTriggerReady'));
-          return;
-        }
-
         // Set initial state: Card 0 visible at y:0, others visible but translated offscreen below (y:getVH())
         cards.forEach((card, idx) => {
           gsap.set(card, {
@@ -208,8 +194,8 @@ export default function DestinationStorySection() {
             trigger: container,
             start: "top top",
             end: () => `+=${scrollDistance()}`,
-            pin: viewport,
-            pinSpacing: true,
+            pin: isMobile ? false : viewport,
+            pinSpacing: isMobile ? false : true,
             // Use uniform 1.2 scrub (matching CSR version) to act as a layout stabilizer
             // and absorb high-frequency micro-stuttering on scroll.
             scrub: 1.2,
@@ -287,7 +273,6 @@ export default function DestinationStorySection() {
           // Card hold phase before next transition starts
           tl.to({}, { duration: holdDuration });
         }
-
       }, containerRef);
 
       // Defer execution until the browser's painting thread stabilizes
@@ -300,17 +285,6 @@ export default function DestinationStorySection() {
       });
     };
 
-    const handleResize = () => {
-      const isMobile = window.innerWidth < 1024;
-      if (isMobile !== wasMobile) {
-        wasMobile = isMobile;
-        if (ctx) {
-          ctx.revert();
-        }
-        initScrollTrigger();
-      }
-    };
- 
     const checkAndInit = () => {
       const loader = document.querySelector('.fullscreen-loader');
       const hasLoadedThisSession = typeof window !== 'undefined' ? sessionStorage.getItem('travinno_session_loaded') : false;
@@ -358,13 +332,11 @@ export default function DestinationStorySection() {
         }
       }
     };
- 
+
     checkAndInit();
-    window.addEventListener('resize', handleResize);
- 
+
     return () => {
       isMounted = false;
-      window.removeEventListener('resize', handleResize);
       if (loaderListener) {
         window.removeEventListener('travinnoLoaderComplete', loaderListener);
       }
@@ -383,7 +355,10 @@ export default function DestinationStorySection() {
         ctx.revert();
       }
     };
-  }, [destinationsList.length]);
+  }, [destinationsList.length, isMobile, viewportHeight]);
+
+  const scrollDistanceVal = viewportHeight * (destinationsList.length - 1) * 0.6;
+  const totalSectionHeight = viewportHeight + scrollDistanceVal;
 
   return (
     <div
@@ -393,7 +368,8 @@ export default function DestinationStorySection() {
         position: 'relative',
         width: '100%',
         backgroundColor: 'transparent',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        height: isMobile && viewportHeight ? `${totalSectionHeight}px` : undefined
       }}
     >
       <style>{`
@@ -653,57 +629,55 @@ export default function DestinationStorySection() {
           }
 
           .destinations-story-viewport {
-            position: relative !important;
+            position: sticky !important;
+            position: -webkit-sticky !important;
+            top: 0 !important;
             width: 100% !important;
-            height: auto !important;
-            overflow: visible !important;
+            height: 100vh !important;
+            overflow: hidden !important;
             display: flex !important;
             justify-content: center !important;
-            align-items: flex-start !important;
+            align-items: center !important;
             padding: 0 !important;
             box-sizing: border-box !important;
-            overscroll-behavior: auto !important;
+            overscroll-behavior: none !important;
           }
 
           .destinations-cards-container {
-            width: 92% !important;
-            height: auto !important;
-            max-height: none !important;
-            min-height: none !important;
+            width: 90% !important;
+            height: 480px !important;
             display: flex !important;
-            flex-direction: column !important;
+            justify-content: center !important;
             align-items: center !important;
             position: relative !important;
-            gap: 24px !important;
-            padding: 24px 0 !important;
+            gap: 0 !important;
+            padding: 0 !important;
             box-sizing: border-box !important;
-            transform: none !important;
-            -webkit-transform: none !important;
+            transform: translateZ(0) !important;
+            -webkit-transform: translateZ(0) !important;
           }
 
           .destinations-story-card {
-            position: relative !important;
-            left: auto !important;
-            top: auto !important;
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
             width: 100% !important;
-            height: auto !important;
-            min-height: 440px !important;
+            height: 100% !important;
             flex-direction: column-reverse !important;
             background: #0B0B0B !important;
             border: 1px solid #181818 !important;
             border-radius: 24px !important;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7) !important;
-            transform: none !important;
-            -webkit-transform: none !important;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
+            will-change: transform;
           }
 
           .card-left-panel {
             width: 100% !important;
-            height: auto !important;
-            padding: 24px 20px !important;
+            height: 62% !important;
+            padding: 16px 16px !important;
             justify-content: flex-start !important;
             z-index: 5;
             background: transparent !important;
@@ -718,7 +692,7 @@ export default function DestinationStorySection() {
 
           .card-right-panel {
             width: 100% !important;
-            height: 200px !important;
+            height: 38% !important;
             border-radius: 24px 24px 0 0 !important;
             overflow: hidden !important;
             border: none !important;
@@ -781,7 +755,15 @@ export default function DestinationStorySection() {
         }
       `}</style>
 
-      <div ref={viewportRef} className="destinations-story-viewport">
+      <div
+        ref={viewportRef}
+        className="destinations-story-viewport"
+        style={{
+          position: isMobile ? 'sticky' : undefined,
+          top: isMobile ? 0 : undefined,
+          height: isMobile && viewportHeight ? `${viewportHeight}px` : undefined
+        }}
+      >
         {/* Subtle grid background */}
         <div className="destinations-grid-bg" />
 
