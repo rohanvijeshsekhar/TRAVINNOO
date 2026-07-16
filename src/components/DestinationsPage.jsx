@@ -838,7 +838,7 @@ export default function DestinationsPage() {
             {/* Inquiry Call to Action */}
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <a
-                href="/contact/"
+                href="/demo/contact/"
                 style={{
                   backgroundColor: '#C1121F',
                   color: '#FFFFFF',

@@ -466,6 +466,13 @@ export default function Header() {
                         } else {
                           setIsMobileMenuOpen(false);
                           setHoveredMenu(null);
+                          const isOnDestinationsPage = typeof window !== 'undefined' && 
+                            (window.location.pathname.endsWith('/destinations') || 
+                             window.location.pathname.endsWith('/destinations/'));
+                          if (isOnDestinationsPage) {
+                            e.preventDefault();
+                            window.location.hash = `destination-${item.name.toLowerCase()}`;
+                          }
                         }
                       }}
                       style={{
@@ -999,6 +1006,13 @@ export default function Header() {
                                 } else {
                                   setIsMobileMenuOpen(false);
                                   setHoveredMenu(null);
+                                  const isOnDestinationsPage = typeof window !== 'undefined' && 
+                                    (window.location.pathname.endsWith('/destinations') || 
+                                     window.location.pathname.endsWith('/destinations/'));
+                                  if (isOnDestinationsPage) {
+                                    e.preventDefault();
+                                    window.location.hash = `destination-${item.name.toLowerCase()}`;
+                                  }
                                 }
                               }}
                               style={{
