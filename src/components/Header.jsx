@@ -459,7 +459,7 @@ export default function Header() {
                    {destinationItems.map((item) => (
                     <Link
                       key={item.name}
-                      href={isLockedMode ? "#" : `/destinations#destination-${item.name.toLowerCase()}`}
+                      href={isLockedMode ? "#" : `/destinations/#destination-${item.name.toLowerCase()}`}
                       onClick={(e) => {
                         if (isLockedMode) {
                           e.preventDefault();
@@ -992,7 +992,7 @@ export default function Header() {
                           {destinationItems.map((item) => (
                             <Link
                               key={item.name}
-                              href={isLockedMode ? "#" : `/destinations#destination-${item.name.toLowerCase()}`}
+                              href={isLockedMode ? "#" : `/destinations/#destination-${item.name.toLowerCase()}`}
                               onClick={(e) => {
                                 if (isLockedMode) {
                                   e.preventDefault();
