@@ -1210,7 +1210,7 @@ export default function TeamPage() {
 
             <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <a 
-                href="#careers"
+                href="/demo/careers/"
                 style={{
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.8rem',
@@ -1239,7 +1239,7 @@ export default function TeamPage() {
                 Explore Careers
               </a>
               <a 
-                href="#contact"
+                href="/demo/contact/"
                 style={{
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.8rem',

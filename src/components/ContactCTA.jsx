@@ -328,7 +328,7 @@ function ContactCTA() {
           }}
         >
           <a
-            href="#contact"
+            href="/demo/contact/"
             className="contact-cta-primary"
             style={{
               padding: '14px 28px',
