@@ -376,6 +376,9 @@ export const db = {
   } as Record<string, any[]>,
   initialized: false,
   initPromise: null as Promise<void> | null,
+  // When true, SSR already populated db.collections with the latest server data.
+  // db.init() will skip the client-side network fetch entirely.
+  ssrHydrated: false,
 
   // ── Session cache helpers (write-only after MySQL fetch) ──────────────────
   _SS_PREFIX: 'tv_cache_',
@@ -402,7 +405,18 @@ export const db = {
     if (this.initialized) return;
     this.initialized = true;
 
-    // ── Fetch from API (single source of truth on the client) ─────────────────
+    // ── SSR Fast Path ─────────────────────────────────────────────────────────
+    // DBHydrator sets ssrHydrated=true when the server already provided the
+    // latest DB data via page.tsx → getCollections(). In that case we skip
+    // both network round trips (ping + /api/collections) entirely.
+    // serverActive is still set so that subsequent admin saves go to the API.
+    if (this.ssrHydrated) {
+      this.serverActive = true;
+      broadcastChange();
+      return;
+    }
+
+    // ── Fetch from API (used on admin, sub-pages, or when SSR is unavailable) ──
     this.initPromise = (async () => {
       if (typeof window === 'undefined') return;
       try {
