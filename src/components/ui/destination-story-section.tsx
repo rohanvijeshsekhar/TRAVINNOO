@@ -103,8 +103,7 @@ export default function DestinationStorySection() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const textContainerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const [destinationsList] = useState<Destination[]>(() => {
-    db.init();
+  const getLatestDestinations = (): Destination[] => {
     const dbDests = db.getDestinations();
     if (!dbDests || dbDests.length === 0) return destinations;
     return destinations.map(d => {
@@ -125,7 +124,25 @@ export default function DestinationStorySection() {
       }
       return d;
     });
+  };
+
+  const [destinationsList, setDestinationsList] = useState<Destination[]>(() => {
+    db.init();
+    return getLatestDestinations();
   });
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setDestinationsList(getLatestDestinations());
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('travinno-db-update', handleUpdate);
+      return () => window.removeEventListener('travinno-db-update', handleUpdate);
+    }
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
