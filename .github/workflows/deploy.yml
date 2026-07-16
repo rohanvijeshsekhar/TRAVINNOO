@@ -37,19 +37,15 @@ jobs:
             export NODE_OPTIONS="--max-old-space-size=1536"
             npm run build
 
-            # Trigger Passenger reload (critical for Hostinger shared hosting Node.js apps)
+            # ── Restart the Node.js app ─────────────────────────────────────────────
+            # Hostinger runs Node.js via Phusion Passenger / LiteSpeed.
+            # Passenger spawns server.js itself, injecting LSNODE_SOCKET so the app
+            # listens on a UNIX socket (not port 3000).
+            # The ONLY correct restart mechanism on Hostinger is touching tmp/restart.txt.
+            # Do NOT use pm2 here — it conflicts with Passenger by binding to port 3000
+            # while Passenger expects its UNIX socket, breaking all request handling.
             mkdir -p tmp
             touch tmp/restart.txt
-
-            # Force restart: stop any stale pm2 process, then start fresh via npm start
-            # npm start now correctly runs: node server.js (not next start)
-            if command -v pm2 &> /dev/null; then
-              pm2 stop travinno 2>/dev/null || true
-              pm2 delete travinno 2>/dev/null || true
-              pm2 start server.js --name travinno --update-env
-              pm2 save 2>/dev/null || true
-            else
-              echo "pm2 not found — triggered Passenger restart via tmp/restart.txt"
-            fi
+            echo "🔄 Passenger restart triggered via tmp/restart.txt"
 
             echo "✅ Travinno deployment complete"
