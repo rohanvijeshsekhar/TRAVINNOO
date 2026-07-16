@@ -41,11 +41,13 @@ jobs:
             mkdir -p tmp
             touch tmp/restart.txt
 
-            # Zero-downtime restart: pm2 reload keeps old process alive until new one is ready
+            # Force restart: stop any stale pm2 process, then start fresh via npm start
+            # npm start now correctly runs: node server.js (not next start)
             if command -v pm2 &> /dev/null; then
-              pm2 reload travinno --update-env 2>/dev/null || \
-              pm2 restart travinno 2>/dev/null || \
-              pm2 start server.js --name travinno
+              pm2 stop travinno 2>/dev/null || true
+              pm2 delete travinno 2>/dev/null || true
+              pm2 start server.js --name travinno --update-env
+              pm2 save 2>/dev/null || true
             else
               echo "pm2 not found — triggered Passenger restart via tmp/restart.txt"
             fi
