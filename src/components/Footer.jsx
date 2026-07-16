@@ -45,7 +45,7 @@ function Footer() {
       style={{
         position: 'relative',
         backgroundColor: '#050505',
-        borderTop: 'none',
+        borderTop: '1px solid rgba(245, 242, 236, 0.08)',
         padding: '90px 24px 60px 24px',
         overflow: 'hidden',
         zIndex: 10,
