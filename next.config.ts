@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   basePath: '/demo',
+  trailingSlash: true,
   typescript: {
     ignoreBuildErrors: true,
   },
