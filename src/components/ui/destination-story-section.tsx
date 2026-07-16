@@ -177,8 +177,9 @@ export default function DestinationStorySection() {
         const holdDuration = 0.2; // Speed up scroll transitions
         const totalDurationPerCard = transitionDuration + holdDuration;
 
-        // End calculation based on dynamic layout scale - reduced to 0.6x to make transitions scroll faster
-        const scrollDistance = () => getVH() * (cards.length - 1) * 0.6;
+        // End calculation based on dynamic layout scale - reduced to 0.6x on desktop,
+        // and set to 1.0x on mobile so each full screen scroll moves exactly one card.
+        const scrollDistance = () => getVH() * (cards.length - 1) * (isMobile ? 1.0 : 0.6);
 
         const tl = gsap.timeline({
           scrollTrigger: {
