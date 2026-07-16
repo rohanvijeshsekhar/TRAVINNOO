@@ -24,6 +24,13 @@ jobs:
           script: |
             cd ~/travinno
 
+            # ── ONE-TIME CLEANUP: kill any stale pm2 process from a previous bad deploy ──
+            # pm2 conflicts with Phusion Passenger on Hostinger by binding to port 3000
+            # instead of the LSNODE_SOCKET UNIX socket. This ensures pm2 never runs here.
+            pm2 stop travinno 2>/dev/null || true
+            pm2 delete travinno 2>/dev/null || true
+            pm2 save --force 2>/dev/null || true
+
             # Force-clean any local changes that might block git pull
             # (e.g. from a previous failed rsync deployment)
             git fetch origin main
