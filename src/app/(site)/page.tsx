@@ -20,6 +20,16 @@ const LogoCloudSection = dynamic(() => import('@/components/LogoCloudSection'), 
 const WhyTravinno = dynamic(() => import('@/components/WhyTravinno'), { ssr: true });
 const ContactCTA = dynamic(() => import('@/components/ContactCTA'), { ssr: true });
 
+export async function generateMetadata() {
+  const collections = await getCollections();
+  const seoList = collections['travinno_seo'] || [];
+  const entry = seoList.find((item: any) => item.page === 'home');
+  return {
+    title: entry?.title || 'Travinno - Crafting Journeys, Creating Memories',
+    description: entry?.description || 'Premium B2B travel partner contract for luxury custom packages, destination management, and leisure travel.',
+  };
+}
+
 export default async function HomePage() {
   // 1. Fetch collections from database on the server
   const collections = await getCollections();

@@ -5,10 +5,15 @@ import DBHydrator from '@/components/DBHydrator';
 import { ParallaxComponent } from '@/components/ui/parallax-scrolling';
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'About Our Journey - Travinno',
-  description: 'Explore the legacy, core purpose, and chronological journey of Travinno.',
-};
+export async function generateMetadata() {
+  const collections = await getCollections();
+  const seoList = collections['travinno_seo'] || [];
+  const entry = seoList.find((item: any) => item.page === 'about');
+  return {
+    title: entry?.title || 'About Our Journey - Travinno',
+    description: entry?.description || 'Explore the legacy, core purpose, and chronological journey of Travinno.',
+  };
+}
 
 export default async function AboutPage() {
   const collections = await getCollections();

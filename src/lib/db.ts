@@ -349,6 +349,18 @@ const INITIAL_ACTIVITIES = [
   { id: 'act_2', text: 'Sample partner contract inquiry received from Sterling Luxury Travels', date: 'July 01, 2026 12:05 PM' }
 ];
 
+const INITIAL_SEO = [
+  { page: 'home', title: 'Travinno - Crafting Journeys, Creating Memories', description: 'Premium B2B travel partner contract for luxury custom packages, destination management, and leisure travel.' },
+  { page: 'about', title: 'About Our Journey - Travinno', description: 'Explore the legacy, core purpose, and chronological journey of Travinno.' },
+  { page: 'services', title: 'Luxury Travel Services & MICE - Travinno', description: 'Discover our premium destination services, corporate retreats, MICE coordination, and bespoke packages.' },
+  { page: 'destinations', title: 'Luxury Destinations Showcase - Travinno', description: 'Discover futuristic cities, private deserts, and tropical archipelagos designed by Travinno specialists.' },
+  { page: 'team', title: 'Our Executive Leadership & Travel Specialists - Travinno', description: 'Meet the passionate professionals and travel specialists behind Travinno.' },
+  { page: 'testimonials', title: 'What Our B2B Partners Say - Travinno', description: 'Read client reviews and testimonials from our global B2B travel partners.' },
+  { page: 'careers', title: 'Careers at Travinno - Join Our Team', description: 'Join the dynamic Travinno team. Apply for premium travel and operations positions around the globe.' },
+  { page: 'blog', title: 'Travel Journal & Insights - Travinno', description: 'Read the latest travel tips, destinations guides, and B2B hospitality insights by Travinno editors.' },
+  { page: 'contact', title: 'Contact Us - Travinno Partner Onboarding', description: 'Reach out to establish a B2B partner contract or make custom travel inquiries with Travinno.' }
+];
+
 // Helper to broadcast state changes to active components
 const broadcastChange = () => {
   if (typeof window !== 'undefined') {
@@ -372,7 +384,8 @@ export const db = {
     'travinno_hero_slides': INITIAL_HERO_SLIDES,
     'travinno_inquiries': INITIAL_INQUIRIES,
     'travinno_applications': INITIAL_APPLICATIONS,
-    'travinno_activities': INITIAL_ACTIVITIES
+    'travinno_activities': INITIAL_ACTIVITIES,
+    'travinno_seo': INITIAL_SEO
   } as Record<string, any[]>,
   initialized: false,
   initPromise: null as Promise<void> | null,
@@ -443,7 +456,8 @@ export const db = {
             { key: 'travinno_hero_slides', defaultVal: INITIAL_HERO_SLIDES },
             { key: 'travinno_inquiries', defaultVal: INITIAL_INQUIRIES },
             { key: 'travinno_applications', defaultVal: INITIAL_APPLICATIONS },
-            { key: 'travinno_activities', defaultVal: INITIAL_ACTIVITIES }
+            { key: 'travinno_activities', defaultVal: INITIAL_ACTIVITIES },
+            { key: 'travinno_seo', defaultVal: INITIAL_SEO }
           ];
 
           for (const item of collectionsToSync) {
@@ -477,7 +491,8 @@ export const db = {
       { key: 'travinno_hero_slides', defaultVal: INITIAL_HERO_SLIDES },
       { key: 'travinno_inquiries', defaultVal: INITIAL_INQUIRIES },
       { key: 'travinno_applications', defaultVal: INITIAL_APPLICATIONS },
-      { key: 'travinno_activities', defaultVal: INITIAL_ACTIVITIES }
+      { key: 'travinno_activities', defaultVal: INITIAL_ACTIVITIES },
+      { key: 'travinno_seo', defaultVal: INITIAL_SEO }
     ];
     collectionsToSync.forEach(item => { this.collections[item.key] = item.defaultVal; });
     broadcastChange();
@@ -649,6 +664,22 @@ export const db = {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: 'travinno_applications', value: data })
       }).catch(err => console.error('Error writing applications:', err));
+    }
+    if (activityMsg) this.logActivity(activityMsg);
+    broadcastChange();
+  },
+  getSeo() {
+    this.init();
+    return this.collections['travinno_seo'] || [];
+  },
+  saveSeo(data: any[], activityMsg?: string) {
+    this.collections['travinno_seo'] = data;
+    this._ssSet('travinno_seo', data);
+    if (this.serverActive || process.env.NODE_ENV === 'production') {
+      fetch(`${API_BASE}/api/save`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'travinno_seo', value: data })
+      }).catch(err => console.error('Error writing seo data:', err));
     }
     if (activityMsg) this.logActivity(activityMsg);
     broadcastChange();

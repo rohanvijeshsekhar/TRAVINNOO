@@ -30,7 +30,9 @@ import {
   Sun,
   Moon,
   Menu,
-  X as XIcon
+  X as XIcon,
+  Search,
+  Sliders
 } from 'lucide-react';
 
 // ==========================================
@@ -479,6 +481,50 @@ export default function AdminPanel() {
   const [testimonialForm, setTestimonialForm] = useState({ name: '', company: '', location: '', text: '', rating: 5 });
   const [heroSlideForm, setHeroSlideForm] = useState({ name: '', duration: 4.0, desktopImage: '', mobileImage: '', effect: { scaleStart: 1.05, scaleEnd: 1.11, xStart: 0, xEnd: 0, yStart: 0, yEnd: 0 } });
 
+  // SEO Management states
+  const [seo, setSeo] = useState([]);
+  const [selectedSeoPage, setSelectedSeoPage] = useState('home');
+  const [seoForm, setSeoForm] = useState({ title: '', description: '' });
+
+  const SEO_PAGE_DEFAULTS = {
+    home: { title: 'Travinno - Crafting Journeys, Creating Memories', description: 'Premium B2B travel partner contract for luxury custom packages, destination management, and leisure travel.' },
+    about: { title: 'About Our Journey - Travinno', description: 'Explore the legacy, core purpose, and chronological journey of Travinno.' },
+    services: { title: 'Luxury Travel Services & MICE - Travinno', description: 'Discover our premium destination services, corporate retreats, MICE coordination, and bespoke packages.' },
+    destinations: { title: 'Luxury Destinations Showcase - Travinno', description: 'Discover futuristic cities, private deserts, and tropical archipelagos designed by Travinno specialists.' },
+    team: { title: 'Our Executive Leadership & Travel Specialists - Travinno', description: 'Meet the passionate professionals and travel specialists behind Travinno.' },
+    testimonials: { title: 'What Our B2B Partners Say - Travinno', description: 'Read client reviews and testimonials from our global B2B travel partners.' },
+    careers: { title: 'Careers at Travinno - Join Our Team', description: 'Join the dynamic Travinno team. Apply for premium travel and operations positions around the globe.' },
+    blog: { title: 'Travel Journal & Insights - Travinno', description: 'Read the latest travel tips, destinations guides, and B2B hospitality insights by Travinno editors.' },
+    contact: { title: 'Contact Us - Travinno Partner Onboarding', description: 'Reach out to establish a B2B partner contract or make custom travel inquiries with Travinno.' }
+  };
+
+  useEffect(() => {
+    const pageEntry = seo.find(s => s.page === selectedSeoPage) || SEO_PAGE_DEFAULTS[selectedSeoPage] || { title: '', description: '' };
+    setSeoForm({
+      title: pageEntry.title || '',
+      description: pageEntry.description || ''
+    });
+  }, [selectedSeoPage, seo]);
+
+  const saveSeoSettings = (e) => {
+    e.preventDefault();
+    const updatedSeo = [...seo];
+    const index = updatedSeo.findIndex(s => s.page === selectedSeoPage);
+    const entry = {
+      page: selectedSeoPage,
+      title: seoForm.title,
+      description: seoForm.description
+    };
+    if (index !== -1) {
+      updatedSeo[index] = entry;
+    } else {
+      updatedSeo.push(entry);
+    }
+    setSeo(updatedSeo);
+    db.saveSeo(updatedSeo, `Updated SEO settings for ${selectedSeoPage.toUpperCase()} page`);
+    alert(`SEO settings for ${selectedSeoPage.toUpperCase()} page saved successfully!`);
+  };
+
   // Initial Auth & Sync load
   useEffect(() => {
     const savedTheme = localStorage.getItem('travinno_theme');
@@ -519,6 +565,7 @@ export default function AdminPanel() {
     setApplications(db.getApplications());
     setActivities(db.getActivities());
     setHeroSlides(db.getHeroSlides());
+    setSeo(db.getSeo());
   };
 
   const handleLogin = (e) => {
@@ -983,7 +1030,8 @@ export default function AdminPanel() {
               { id: 'team', label: 'Team Members', icon: <Users size={16} /> },
               { id: 'testimonials', label: 'Testimonials', icon: <MessageSquare size={16} /> },
               { id: 'logos', label: 'Client Logos', icon: <Image size={16} /> },
-              { id: 'inquiries', label: 'Inquiries', icon: <Mail size={16} />, badge: inquiries.filter(i => !i.read).length }
+              { id: 'inquiries', label: 'Inquiries', icon: <Mail size={16} />, badge: inquiries.filter(i => !i.read).length },
+              { id: 'seo', label: 'SEO Settings', icon: <Sliders size={16} /> }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -2127,6 +2175,205 @@ export default function AdminPanel() {
                 </tbody>
               </table>
             )}
+          </div>
+        )}
+
+        {/* ==========================================
+            VIEW: SEO MANAGEMENT
+            ========================================== */}
+        {activeTab === 'seo' && (
+          <div style={{
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            gap: '24px',
+            alignItems: 'flex-start'
+          }}>
+            {/* Pages selection sub-sidebar */}
+            <div style={{
+              width: isMobile ? '100%' : '260px',
+              backgroundColor: 'rgba(255, 255, 255, 0.015)',
+              border: '1px solid rgba(255, 255, 255, 0.05)',
+              borderRadius: '16px',
+              padding: '16px',
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+              flexShrink: 0
+            }}>
+              <span style={{
+                fontSize: '0.72rem',
+                fontWeight: 600,
+                color: 'rgba(255, 255, 255, 0.4)',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                paddingLeft: '12px',
+                marginBottom: '8px'
+              }}>
+                Website Pages
+              </span>
+              {[
+                { key: 'home', label: 'Home Page' },
+                { key: 'about', label: 'About Us' },
+                { key: 'services', label: 'Services (Section)' },
+                { key: 'destinations', label: 'Destinations' },
+                { key: 'team', label: 'Team Members' },
+                { key: 'testimonials', label: 'Testimonials (Section)' },
+                { key: 'careers', label: 'Careers' },
+                { key: 'blog', label: 'Blog Listing' },
+                { key: 'contact', label: 'Contact Us' }
+              ].map(p => {
+                const isSelected = selectedSeoPage === p.key;
+                const hasCustom = seo.some(s => s.page === p.key && (s.title || s.description));
+                return (
+                  <button
+                    key={p.key}
+                    onClick={() => setSelectedSeoPage(p.key)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '10px 14px',
+                      backgroundColor: isSelected ? 'rgba(193, 18, 31, 0.08)' : 'transparent',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: isSelected ? '#FFFFFF' : 'rgba(255,255,255,0.7)',
+                      fontSize: '0.82rem',
+                      fontWeight: isSelected ? 600 : 400,
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    <span>{p.label}</span>
+                    <span style={{
+                      fontSize: '0.62rem',
+                      padding: '2px 6px',
+                      borderRadius: '100px',
+                      backgroundColor: hasCustom ? 'rgba(46, 196, 182, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                      color: hasCustom ? '#2EC4B6' : 'rgba(255, 255, 255, 0.4)',
+                      fontWeight: 600
+                    }}>
+                      {hasCustom ? 'Custom' : 'Default'}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Editing form panel */}
+            <div style={{
+              flex: 1,
+              backgroundColor: 'rgba(255, 255, 255, 0.02)',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+              borderRadius: '16px',
+              padding: '32px',
+              boxSizing: 'border-box'
+            }}>
+              <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)', paddingBottom: '16px', marginBottom: '24px' }}>
+                <h3 style={{ fontSize: '1.15rem', color: '#FFFFFF', margin: 0, fontWeight: 500 }}>
+                  SEO Metadata Settings
+                </h3>
+                <span style={{ fontSize: '0.76rem', color: 'rgba(255, 255, 255, 0.45)' }}>
+                  Manage the header tags served during SSR for search engine indexing.
+                </span>
+              </div>
+
+              <form onSubmit={saveSeoSettings} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                {/* Meta Title Field */}
+                <div style={fieldStyle}>
+                  <div style={{ display: 'flex', justifySelf: 'stretch', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <label style={labelStyle}>Meta Title</label>
+                    <span style={{
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      color: seoForm.title.length > 60 ? '#FF6B6B' : 'rgba(255,255,255,0.45)'
+                    }}>
+                      {seoForm.title.length} / 60 chars {seoForm.title.length > 60 && '• Limit Exceeded'}
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    required
+                    value={seoForm.title}
+                    onChange={(e) => setSeoForm({ ...seoForm, title: e.target.value })}
+                    style={{
+                      ...inputStyle,
+                      borderColor: seoForm.title.length > 60 ? 'rgba(255, 107, 107, 0.4)' : 'rgba(255, 255, 255, 0.1)'
+                    }}
+                    placeholder="Enter page SEO title..."
+                  />
+                  <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)', marginTop: '2px' }}>
+                    The title tag is displayed on browser tabs and search engine result headings. Keep it brief and relevant.
+                  </span>
+                </div>
+
+                {/* Meta Description Field */}
+                <div style={fieldStyle}>
+                  <div style={{ display: 'flex', justifySelf: 'stretch', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <label style={labelStyle}>Meta Description</label>
+                    <span style={{
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      color: seoForm.description.length > 160 ? '#FF6B6B' : 'rgba(255,255,255,0.45)'
+                    }}>
+                      {seoForm.description.length} / 160 chars {seoForm.description.length > 160 && '• Limit Exceeded'}
+                    </span>
+                  </div>
+                  <textarea
+                    required
+                    value={seoForm.description}
+                    onChange={(e) => setSeoForm({ ...seoForm, description: e.target.value })}
+                    style={{
+                      ...textareaStyle,
+                      height: '120px',
+                      borderColor: seoForm.description.length > 160 ? 'rgba(255, 107, 107, 0.4)' : 'rgba(255, 255, 255, 0.1)'
+                    }}
+                    placeholder="Enter page SEO description narrative..."
+                  />
+                  <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)', marginTop: '2px' }}>
+                    The meta description tag summarizes the page content in search results. A limit of 160 characters ensures it is fully readable.
+                  </span>
+                </div>
+
+                {/* Info Note Banner */}
+                <div style={{
+                  padding: '14px 18px',
+                  backgroundColor: 'rgba(193, 18, 31, 0.04)',
+                  border: '1px solid rgba(193, 18, 31, 0.15)',
+                  borderRadius: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}>
+                  <div style={{
+                    width: '6px',
+                    height: '6px',
+                    backgroundColor: '#C1121F',
+                    borderRadius: '50%',
+                    flexShrink: 0
+                  }} />
+                  <span style={{ fontSize: '0.74rem', color: 'rgba(255, 255, 255, 0.65)', lineHeight: '1.4' }}>
+                    <strong>Note:</strong> Changes saved here are written to MySQL and will update the site HTML instantly for all visitors, bots, and crawlers without rebuilding.
+                  </span>
+                </div>
+
+                {/* Form Actions */}
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
+                  <button
+                    type="submit"
+                    style={{
+                      ...btnSubmitStyle,
+                      padding: '11px 24px',
+                      borderRadius: '8px',
+                      fontSize: '0.84rem'
+                    }}
+                  >
+                    Save SEO Settings
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         )}
 

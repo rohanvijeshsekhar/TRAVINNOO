@@ -5,10 +5,15 @@ import DBHydrator from '@/components/DBHydrator';
 import BlogPage from '@/components/BlogPage';
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Travel Journal & Insights - Travinno',
-  description: 'Read the latest travel tips, destinations guides, and B2B hospitality insights by Travinno editors.',
-};
+export async function generateMetadata() {
+  const collections = await getCollections();
+  const seoList = collections['travinno_seo'] || [];
+  const entry = seoList.find((item: any) => item.page === 'blog');
+  return {
+    title: entry?.title || 'Travel Journal & Insights - Travinno',
+    description: entry?.description || 'Read the latest travel tips, destinations guides, and B2B hospitality insights by Travinno editors.',
+  };
+}
 
 export default async function BlogPageRoute() {
   const collections = await getCollections();

@@ -5,10 +5,15 @@ import DBHydrator from '@/components/DBHydrator';
 import TeamPage from '@/components/TeamPage';
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Our Executive Leadership & Travel Specialists - Travinno',
-  description: 'Meet the passionate professionals and travel specialists behind Travinno.',
-};
+export async function generateMetadata() {
+  const collections = await getCollections();
+  const seoList = collections['travinno_seo'] || [];
+  const entry = seoList.find((item: any) => item.page === 'team');
+  return {
+    title: entry?.title || 'Our Executive Leadership & Travel Specialists - Travinno',
+    description: entry?.description || 'Meet the passionate professionals and travel specialists behind Travinno.',
+  };
+}
 
 export default async function TeamPageRoute() {
   const collections = await getCollections();
