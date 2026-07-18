@@ -250,7 +250,7 @@ function Footer() {
               { cx: 600, cy: 200, label: "THAILAND", labelY: 214, delay: "2s" },
               { cx: 710, cy: 160, label: "MALAYSIA", labelY: 146, delay: "3.5s" },
               { cx: 810, cy: 220, label: "SINGAPORE", labelY: 206, delay: "5s" },
-              { cx: 880, cy: 300, label: "VIETNAM", labelY: 314, delay: "6.8s" },
+              { cx: 880, cy: 300, label: "KERALA", labelY: 314, delay: "6.8s" },
               { cx: 680, cy: 470, label: "KENYA", labelY: 484, delay: "8.5s" }
             ].map((node, index) => (
               <g key={index}>
@@ -549,7 +549,7 @@ function Footer() {
               { name: 'Bali', href: '/destinations#destination-bali' },
               { name: 'Singapore', href: '/destinations#destination-singapore' },
               { name: 'Malaysia', href: '/destinations#destination-malaysia' },
-              { name: 'Vietnam', href: '/destinations#destination-vietnam' }
+              { name: 'Kerala', href: '/destinations#destination-kerala' }
             ].map((link, idx) => (
               <li key={idx}>
                 <Link
@@ -650,7 +650,7 @@ function Footer() {
               Thailand <span style={{ fontSize: '0.62rem', color: 'rgba(245, 242, 236, 0.4)', marginLeft: '3px', verticalAlign: 'super' }}>TH</span>
             </div>
             <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.84rem', color: 'rgba(245, 242, 236, 0.65)', lineHeight: 1.5 }}>
-              Vietnam <span style={{ fontSize: '0.62rem', color: 'rgba(245, 242, 236, 0.4)', marginLeft: '3px', verticalAlign: 'super' }}>VN</span>
+              Kerala <span style={{ fontSize: '0.62rem', color: 'rgba(245, 242, 236, 0.4)', marginLeft: '3px', verticalAlign: 'super' }}>IN</span>
             </div>
 
           </div>

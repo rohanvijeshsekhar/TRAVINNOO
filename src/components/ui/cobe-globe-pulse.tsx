@@ -22,7 +22,7 @@ const defaultMarkers: PulseMarker[] = [
   { id: "pulse-thailand", location: [13.7563, 100.5018], delay: 1.0 },
   { id: "pulse-malaysia", location: [3.1390, 101.6869], delay: 1.5 },
   { id: "pulse-singapore", location: [1.3521, 103.8198], delay: 2.0 },
-  { id: "pulse-vietnam", location: [21.0285, 105.8542], delay: 2.5 },
+  { id: "pulse-kerala", location: [9.9312, 76.2673], delay: 2.5 },
   { id: "pulse-bali", location: [-8.4095, 115.1889], delay: 3.0 }
 ]
 

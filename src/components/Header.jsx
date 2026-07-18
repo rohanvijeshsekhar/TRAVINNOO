@@ -102,7 +102,7 @@ export default function Header() {
     { name: 'Thailand', index: 1 },
     { name: 'Singapore', index: 2 },
     { name: 'Malaysia', index: 3 },
-    { name: 'Vietnam', index: 4 },
+    { name: 'Kerala', index: 4 },
     { name: 'Kenya', index: 5 },
     { name: 'Bali', index: 6 }
   ];

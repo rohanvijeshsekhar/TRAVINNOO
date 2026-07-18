@@ -102,21 +102,21 @@ const DEFAULT_DESTINATIONS = [
     services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
-    id: 'vietnam',
-    name: 'Vietnam',
-    region: 'Southeast Asia',
-    tagline: 'Intimate tea rituals and dynamic culinary paths.',
-    image: 'images/destinations/vietnam.webp',
-    description: 'Vietnam is a country of quiet elegance and spectacular natural beauty, defined by misty mountain peaks, emerald rice paddies, and thousands of towering limestone islands in Halong Bay. Its rich history is woven into the fabric of lantern-lit ancient trading towns and imperial cities, where traditional tea ceremonies offer a window into a graceful heritage. The country’s cuisine is a masterclass in fresh herbs and delicate balance, offering sophisticated travelers an authentic, multi-layered journey through time and culture.',
+    id: 'kerala',
+    name: 'Kerala',
+    region: 'South India',
+    tagline: 'Tranquil houseboats and emerald backwaters.',
+    image: 'images/destinations/kerala.png',
+    description: 'Kerala, known as God\'s Own Country, is a sanctuary of quiet elegance and spectacular natural beauty. Defined by its tranquil emerald backwaters, rolling tea estates of Munnar, and pristine palm-fringed coastlines, it offers a profound sense of rejuvenation. Traditional houseboats drift slowly along scenic canals, while ancient Ayurvedic wellness sanctuaries and rich cultural performances like Kathakali offer travelers a soulful, immersive journey through time-honored heritage.',
     experiences: [
-      'Private junk boat cruise in Halong Bay',
-      'Kaiseki-inspired royal cuisine tour in Hue',
-      'Traditional tea ceremony guided by master brewers'
+      'Private luxury houseboat cruise in Alleppey backwaters',
+      'Custom spice trail and historic walking tour in Fort Kochi',
+      'Traditional Kathakali performance and Ayurvedic wellness massage'
     ],
     itinerary: [
-      { day: 1, title: 'Halong Bay Boarding', desc: 'Embark on a luxury classic wooden junk boat. Cruise past the towering karsts.' },
-      { day: 2, title: 'Imperial Gastronomy in Hue', desc: 'Flight to Hue. Evening tasting of imperial multi-course banquets.' },
-      { day: 3, title: 'Master Tea Ceremony', desc: 'Learn the slow art of traditional Vietnamese tea brewing in a silent pavilion.' }
+      { day: 1, title: 'Houseboat Embarkation', desc: 'Check-in to a luxury traditional wooden houseboat, cruising the scenic palm-fringed backwaters.' },
+      { day: 2, title: 'Fort Kochi Spice Trails', desc: 'Explore historic colonial streets, spice markets, and the famous Chinese fishing nets.' },
+      { day: 3, title: 'Ayurvedic Rejuvenation', desc: 'Enjoy a traditional Ayurvedic wellness treatment followed by an evening Kathakali dance performance.' }
     ],
     services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
@@ -190,7 +190,7 @@ export default function DestinationsPage() {
     return () => window.removeEventListener('hashchange', handleHash);
   }, [destinationsData]);
 
-  const regions = ['All', 'Middle East', 'Southeast Asia', 'East Africa'];
+  const regions = ['All', 'Middle East', 'Southeast Asia', 'South India', 'East Africa'];
 
   const filteredDestinations = selectedRegion === 'All'
     ? destinationsData

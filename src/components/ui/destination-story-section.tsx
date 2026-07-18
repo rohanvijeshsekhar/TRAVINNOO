@@ -26,7 +26,7 @@ const getFlagEmoji = (title: string) => {
     case "Singapore": return "🇸🇬";
     case "Bali": return "🇮🇩";
     case "Kenya": return "🇰🇪";
-    case "Vietnam": return "🇻🇳";
+    case "Kerala": return "🇮🇳";
     default: return "";
   }
 };
@@ -51,13 +51,13 @@ const destinations: Destination[] = [
     image: `${BASE}images/destinations/thailand.webp`
   },
   {
-    title: "Vietnam",
-    region: "Southeast Asia",
-    countryName: "Vietnam",
-    heading: "Historic Cities & Dramatic Karst Bays",
-    description: "Cruise the emerald waters of Ha Long Bay and explore French colonial cities, combining rich historic heritage with luxury maritime travel.",
+    title: "Kerala",
+    region: "South India",
+    countryName: "India",
+    heading: "Tranquil Houseboats & Emerald Canals",
+    description: "Cruise the emerald waters of Alleppey backwaters on a traditional luxury houseboat, combining rich heritage with wellness and tranquility.",
     highlights: ["Luxury Travel", "MICE", "Corporate", "Leisure", "Adventure"],
-    image: `${BASE}images/destinations/vietnam.webp`
+    image: `${BASE}images/destinations/kerala.png`
   },
   {
     title: "Kenya",

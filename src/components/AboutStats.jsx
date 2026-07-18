@@ -344,7 +344,7 @@ export default function AboutStats() {
           Offers <span className="stats-highlight">personalized</span> travel solutions for{' '}
           <span className="stats-cursive-highlight">UAE</span>,{' '}
           <span className="stats-cursive-highlight">Thailand</span>,{' '}
-          <span className="stats-cursive-highlight">Vietnam</span>,{' '}
+          <span className="stats-cursive-highlight">Kerala</span>,{' '}
           <span className="stats-cursive-highlight">Kenya</span>,{' '}
           <span className="stats-cursive-highlight">Malaysia</span>,{' '}
           <span className="stats-cursive-highlight">Singapore</span> and{' '}

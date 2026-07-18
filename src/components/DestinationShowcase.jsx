@@ -47,14 +47,14 @@ const DESTINATIONS_DATA = [
     sketch: 'M 25,80 L 95,80 M 35,80 V 55 L 60,30 L 85,55 V 80 M 60,30 V 15 M 30,55 C 25,50 15,55 10,65 M 90,55 C 95,50 105,55 110,65'
   },
   {
-    code: 'HAN',
-    name: 'Vietnam',
-    quote: 'Timeless traditions with modern energy.',
+    code: 'COK',
+    name: 'Kerala',
+    quote: "God's Own Country, defined by serene waters.",
     date: 'NOV 23, 2026',
-    image: `https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
-    description: 'Cruise through limestone pillars and lantern-lit ancient trading towns.',
-    notes: 'Old Quarter is a maze of sensory wonders. Sipped strong egg coffee in a quiet colonial courtyard while rain fell on tiles. Tomorrow we board the junk boat into the emerald maze of Ha Long Bay.',
-    coordinates: '21.0285° N / 105.8542° E',
+    image: `https://images.unsplash.com/photo-1593693397690-362cb9666fc2?q=80&w=${IMG_WIDTH}&auto=format&fit=crop`,
+    description: 'Cruise through tranquil emerald canals and lush palm-fringed lagoons.',
+    notes: 'Woke up to soft rain on the thatch roof of our houseboat in Alleppey. Sipped hot cardamon chai as we drifted slowly past emerald green coconut palms and local villages. An absolute sensory peace.',
+    coordinates: '9.9312° N / 76.2673° E',
     sketch: 'M 20,70 L 60,30 L 100,70 Z M 20,70 C 40,73 80,73 100,70 M 60,30 V 71'
   },
   {
@@ -97,7 +97,7 @@ const getDestinationAltText = (name) => {
     'Dubai': 'Luxury travel in Dubai with Travinno Trusted DMC',
     'Kenya': 'Kenya safari destination managed by Travinno Trusted DMC',
     'Thailand': 'Premium Thailand holiday experiences by Travinno Trusted DMC',
-    'Vietnam': 'Bespoke Vietnam tours and luxury cruises with Travinno Trusted DMC',
+    'Kerala': 'Bespoke Kerala backwater tours and luxury houseboat cruises with Travinno Trusted DMC',
     'Singapore': 'Singapore destination management services by Travinno Trusted DMC',
     'Malaysia': 'Destination management services in Malaysia with Travinno Trusted DMC',
     'Bali': 'Luxury holidays in Bali by Travinno Trusted DMC'

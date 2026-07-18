@@ -282,7 +282,7 @@ export default function AboutPurpose() {
               To curate travel not as mere itineraries, but as works of art—extraordinary journeys that inspire, transform, and linger in memory forever.
             </h2>
             <p className="purpose-paragraph">
-              At Travinno, we believe that true luxury lies in the unseen details and the depth of connection. We build bespoke pathways that connect discerning travelers with the authentic heart of the UAE, Thailand, and Vietnam, crafting seamless narratives that honor local legacy and elevate global hospitality standards.
+              At Travinno, we believe that true luxury lies in the unseen details and the depth of connection. We build bespoke pathways that connect discerning travelers with the authentic heart of the UAE, Thailand, and Kerala, crafting seamless narratives that honor local legacy and elevate global hospitality standards.
             </p>
             <div className="red-accent-line" />
           </FadeInContainer>

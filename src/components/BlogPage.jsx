@@ -72,31 +72,31 @@ const DEFAULT_BLOGS = [
   },
   {
     id: 3,
-    title: 'Vietnam’s Culinary Secrets: A Connoisseur’s Diary',
+    title: 'Kerala’s Backwaters: A Connoisseur’s Diary',
     category: 'Gastronomy',
     readTime: '8 min read',
     date: 'May 30, 2026',
-    image: 'images/destinations/vietnam.webp',
-    description: "An intimate journey through Kaiseki dining and the ancient tea ceremonies of Vietnam's cultural heart.",
+    image: 'images/destinations/kerala.png',
+    description: "An intimate journey through historic spice routes, houseboats, and traditional Ayurvedic wellness sanctuaries in Kerala.",
     content: (
       <>
         <p className="article-lead">
-          Vietnamese cuisine is a masterclass in balance. It is a sensory journey where sweet, sour, salty, bitter, and hot elements meet in perfect harmony. From the royal tables of Hue to the vibrant street food stalls of Hanoi, every bite tells a story of heritage and adaptation.
+          Kerala's backwaters offer a masterclass in tranquility. It is a sensory journey where shimmering canals, emerald green palms, and slow-paced houseboats meet in perfect harmony. From the historic spice ports of Kochi to the pristine shores of Alleppey, every canal tells a story of heritage and nature.
         </p>
-        <h2>The Royal Heritage of Hue</h2>
+        <h2>The Spice Heritage of Kochi</h2>
         <p>
-          In the former imperial capital of Hue, dining was historically elevated to an art form. Royal chefs created intricate, multi-course dishes designed to please the emperors. Today, this tradition lives on in delicate bites like banh beo (steamed rice cakes) and bun bo Hue (spicy beef noodle soup), where complex spice blends reflect a rich dynastic legacy.
+          In the historic port town of Fort Kochi, spice trading was historically elevated to a global commerce. Merchants from around the world traded cardamoms, cinnamon, and black pepper. Today, this legacy lives on in fragrant local dishes and the bustling spice markets, reflecting a rich colonial and native history.
         </p>
         <blockquote>
-          "A Vietnamese dish is a landscape painted in fresh herbs, rich broths, and delicate spices."
+          "A journey along Kerala's backwaters is a landscape painted in quiet lagoons, whispering palms, and rich spices."
         </blockquote>
-        <h2>The Art of the Broth</h2>
+        <h2>The Art of the Houseboat</h2>
         <p>
-          Nowhere is the dedication to culinary perfection more visible than in a bowl of Pho. A master broth takes upwards of twelve hours to simmer, drawing deep flavors from charred ginger, star anise, cinnamon, and roasted beef bones. It is a slow culinary craft that demands patience and absolute precision.
+          Nowhere is the dedication to slow travel more visible than on a traditional Kettuvallam (houseboat). Handcrafted from jackwood planks and coir ropes, these floating sanctuaries glide silently along the canals, offering local delicacies prepared fresh by an onboard chef.
         </p>
-        <h2>Street Food Connoisseurship</h2>
+        <h2>Ayurveda and Soulful Wellness</h2>
         <p>
-          The true heart of Vietnamese gastronomy lies on the street. Pull up a tiny plastic stool on a Hanoi sidewalk, and order a bowl of Bun Cha—grilled pork belly served over cold rice noodles with fresh herbs and a tangy dipping sauce. It is simple, unpretentious, and gastronomically perfect.
+          The true heart of Kerala's heritage lies in its wellness tradition. Surrounded by the gentle rustle of palm trees, travelers can experience authentic Ayurvedic therapies designed to restore balance and harmony to the body and mind. It is a time-tested craft of holistic healing.
         </p>
       </>
     )

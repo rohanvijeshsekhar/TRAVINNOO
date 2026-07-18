@@ -48,12 +48,12 @@ const INITIAL_DESTINATIONS = [
     services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
-    id: 'vietnam',
-    name: 'Vietnam',
-    region: 'Southeast Asia',
-    tagline: 'Intimate tea rituals and dynamic culinary paths.',
-    image: 'images/destinations/vietnam.webp',
-    description: 'Vietnam is a country of quiet elegance and spectacular natural beauty, defined by misty mountain peaks, emerald rice paddies, and thousands of towering limestone islands in Halong Bay. Its rich history is woven into the fabric of lantern-lit ancient trading towns and imperial cities, where traditional tea ceremonies offer a window into a graceful heritage. The country’s cuisine is a masterclass in fresh herbs and delicate balance, offering sophisticated travelers an authentic, multi-layered journey through time and culture.',
+    id: 'kerala',
+    name: 'Kerala',
+    region: 'South India',
+    tagline: 'Tranquil houseboats and emerald backwaters.',
+    image: 'images/destinations/kerala.png',
+    description: 'Kerala, known as God\'s Own Country, is a sanctuary of quiet elegance and spectacular natural beauty. Defined by its tranquil emerald backwaters, rolling tea estates of Munnar, and pristine palm-fringed coastlines, it offers a profound sense of rejuvenation. Traditional houseboats drift slowly along scenic canals, while ancient Ayurvedic wellness sanctuaries and rich cultural performances like Kathakali offer travelers a soulful, immersive journey through time-honored heritage.',
     services: { tours: true, hotels: true, transfers: true, corporate: true }
   },
   {
@@ -90,13 +90,13 @@ const INITIAL_BLOGS = [
   },
   {
     id: 3,
-    title: 'Vietnam’s Culinary Secrets: A Connoisseur’s Diary',
+    title: 'Kerala’s Backwaters: A Connoisseur’s Diary',
     category: 'Gastronomy',
     readTime: '8 min read',
     date: 'May 30, 2026',
-    image: 'images/destinations/vietnam.webp',
-    description: "An intimate journey through Kaiseki dining and the ancient tea ceremonies of Vietnam's cultural heart.",
-    content: `<p class="article-lead">Vietnamese cuisine is a masterclass in balance. It is a sensory journey where sweet, sour, salty, bitter, and hot elements meet in perfect harmony. From the royal tables of Hue to the vibrant street food stalls of Hanoi, every bite tells a story of heritage and adaptation.</p><h2>The Royal Heritage of Hue</h2><p>In the former imperial capital of Hue, dining was historically elevated to an art form. Royal chefs created intricate, multi-course dishes designed to please the emperors. Today, this tradition lives on in delicate bites like banh beo (steamed rice cakes) and bun bo Hue (spicy beef noodle soup), where complex spice blends reflect a rich dynastic legacy.</p><blockquote>"A Vietnamese dish is a landscape painted in fresh herbs, rich broths, and delicate spices."</blockquote><h2>The Art of the Broth</h2><p>Nowhere is the dedication to culinary perfection more visible than in a bowl of Pho. A master broth takes upwards of twelve hours to simmer, drawing deep flavors from charred ginger, star anise, cinnamon, and roasted beef bones. It is a slow culinary craft that demands patience and absolute precision.</p><h2>Street Food Connoisseurship</h2><p>The true heart of Vietnamese gastronomy lies on the street. Pull up a tiny plastic stool on a Hanoian sidewalk, and order a bowl of Bun Cha—grilled pork belly served over cold rice noodles with fresh herbs and a tangy dipping sauce. It is simple, unpretentious, and gastronomically perfect.</p>`
+    image: 'images/destinations/kerala.png',
+    description: "An intimate journey through historic spice routes, houseboats, and traditional Ayurvedic wellness sanctuaries in Kerala.",
+    content: `<p class="article-lead">Kerala's backwaters offer a masterclass in tranquility. It is a sensory journey where shimmering canals, emerald green palms, and slow-paced houseboats meet in perfect harmony. From the historic spice ports of Kochi to the pristine shores of Alleppey, every canal tells a story of heritage and nature.</p><h2>The Spice Heritage of Kochi</h2><p>In the historic port town of Fort Kochi, spice trading was historically elevated to a global commerce. Merchants from around the world traded cardamoms, cinnamon, and black pepper. Today, this legacy lives on in fragrant local dishes and the bustling spice markets, reflecting a rich colonial and native history.</p><blockquote>"A journey along Kerala's backwaters is a landscape painted in quiet lagoons, whispering palms, and rich spices."</blockquote><h2>The Art of the Houseboat</h2><p>Nowhere is the dedication to slow travel more visible than on a traditional Kettuvallam (houseboat). Handcrafted from jackwood planks and coir ropes, these floating sanctuaries glide silently along the canals, offering local delicacies prepared fresh by an onboard chef.</p><h2>Ayurveda and Soulful Wellness</h2><p>The true heart of Kerala's heritage lies in its wellness tradition. Surrounded by the gentle rustle of palm trees, travelers can experience authentic Ayurvedic therapies designed to restore balance and harmony to the body and mind. It is a time-tested craft of holistic healing.</p>`
   }
 ];
 
@@ -235,7 +235,7 @@ const INITIAL_TESTIMONIALS = [
     company: "Aura Creative",
     location: "Milan, Italy",
     rating: 5,
-    text: "The custom Vietnam route they designed for our VIP clients was spectacular. Their local expertise and responsiveness are unmatched in B2B travel."
+    text: "The custom Kerala route they designed for our VIP clients was spectacular. Their local expertise and responsiveness are unmatched in B2B travel."
   },
   {
     id: 3,
@@ -292,10 +292,10 @@ const INITIAL_HERO_SLIDES = [
   },
   {
     id: 'hero_6',
-    name: 'Vietnam',
+    name: 'Kerala',
     duration: 3.7,
-    desktopImage: 'images/hero/vietnam.webp',
-    mobileImage: 'images/hero/vietnam.webp',
+    desktopImage: 'images/hero/kerala.png',
+    mobileImage: 'images/hero/kerala.png',
     effect: { scaleStart: 1.14, scaleEnd: 1.08, xStart: 2, xEnd: -2, yStart: 0, yEnd: 0 }
   },
   {
@@ -315,7 +315,7 @@ const INITIAL_INQUIRIES = [
     email: 'robert@sterlingtravels.co.uk',
     phone: '+44 7911 123456',
     agencyName: 'Sterling Luxury Travels',
-    message: 'Hello, we are interested in setting up a preferred B2B partner contract for luxury custom packages across Singapore and Vietnam. Looking forward to your contracting rates.',
+    message: 'Hello, we are interested in setting up a preferred B2B partner contract for luxury custom packages across Singapore and Kerala. Looking forward to your contracting rates.',
     date: 'July 01, 2026',
     read: false
   },

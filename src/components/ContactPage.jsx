@@ -35,7 +35,7 @@ export default function ContactPage() {
     },
     {
       q: "Which destinations does Travinno handle?",
-      a: "We focus on key travel destinations such as Dubai (UAE), Thailand, and Vietnam, offering well-curated experiences for leisure, business, and group travelers."
+      a: "We focus on key travel destinations such as Dubai (UAE), Thailand, and Kerala, offering well-curated experiences for leisure, business, and group travelers."
     },
     {
       q: "Can Travinno handle large group bookings and MICE events?",
@@ -488,30 +488,30 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Vietnam Office */}
+            {/* Kerala Office */}
             <div className="office-section">
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: 500, color: '#F5F2EC', margin: '0 0 16px 0' }}>Vietnam Office</h2>
+              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: 500, color: '#F5F2EC', margin: '0 0 16px 0' }}>Kerala Office</h2>
               <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', fontWeight: 600, color: 'rgba(245, 242, 236, 0.45)', textTransform: 'uppercase', letterSpacing: '1px', margin: '0 0 4px 0' }}>Travinno</p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                   <MapPin size={15} style={{ color: 'rgba(245, 242, 236, 0.4)', marginTop: '3px', flexShrink: 0 }} />
                   <span style={{ fontSize: '0.86rem', lineHeight: 1.5, color: 'rgba(245, 242, 236, 0.75)' }}>
-                    Level 8, Bitexco Financial Tower, District 1, Ho Chi Minh City, Vietnam
+                    Building 4B, Infopark, Kakkanad, Kochi, Kerala, India
                   </span>
                 </div>
 
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                   <Phone size={15} style={{ color: 'rgba(245, 242, 236, 0.4)', flexShrink: 0 }} />
-                  <a href="tel:+842838228888" className="editorial-contact-link" style={{ fontSize: '0.86rem' }}>+84 28 3822 8888</a>
+                  <a href="tel:+914842588888" className="editorial-contact-link" style={{ fontSize: '0.86rem' }}>+91 484 258 8888</a>
                 </div>
 
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                   <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, opacity: 0.4 }}>
                     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                   </svg>
-                  <a href="https://wa.me/+842838228888" target="_blank" rel="noopener noreferrer" className="editorial-contact-link" style={{ fontSize: '0.86rem' }}>
-                    +84 28 3822 8888 (WhatsApp)
+                  <a href="https://wa.me/914842588888" target="_blank" rel="noopener noreferrer" className="editorial-contact-link" style={{ fontSize: '0.86rem' }}>
+                    +91 484 258 8888 (WhatsApp)
                   </a>
                 </div>
               </div>
