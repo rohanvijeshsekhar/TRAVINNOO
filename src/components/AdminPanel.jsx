@@ -700,7 +700,7 @@ export default function AdminPanel() {
 
   const deleteBlog = (id, title) => {
     if (confirm(`Are you sure you want to delete "${title}"?`)) {
-      const list = blogs.filter(item => item.id !== id);
+      const list = blogs.filter(item => String(item.id) !== String(id));
       db.saveBlogs(list, `Deleted blog post: ${title}`);
     }
   };
@@ -726,7 +726,7 @@ export default function AdminPanel() {
 
   const deleteCareer = (id, title) => {
     if (confirm(`Delete job opening: ${title}?`)) {
-      const list = careers.filter(item => item.id !== id);
+      const list = careers.filter(item => String(item.id) !== String(id));
       db.saveCareers(list, `Deleted job opening: ${title}`);
     }
   };
@@ -752,7 +752,7 @@ export default function AdminPanel() {
 
   const deleteTeamMember = (id, name) => {
     if (confirm(`Remove team member ${name}?`)) {
-      const list = team.filter(item => item.id !== id);
+      const list = team.filter(item => String(item.id) !== String(id));
       db.saveTeam(list, `Removed team member: ${name}`);
     }
   };
@@ -778,7 +778,7 @@ export default function AdminPanel() {
 
   const deleteTestimonial = (id, name) => {
     if (confirm(`Remove review by ${name}?`)) {
-      const list = testimonials.filter(item => item.id !== id);
+      const list = testimonials.filter(item => String(item.id) !== String(id));
       db.saveTestimonials(list, `Removed review by: ${name}`);
     }
   };
