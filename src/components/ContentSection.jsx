@@ -3,6 +3,7 @@
 import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
+import Link from 'next/link';
 
 // GSAP Magnetic Hook (disabled or subtle pull for minimal flat buttons)
 function useMagnetic(ref) {
@@ -132,7 +133,8 @@ export default function ContentSection() {
       >
         {/* Primary button (Thin White border, transparent background, white hover fill) */}
         <div style={{ position: 'relative' }} className="hero-btn-wrapper">
-          <button
+          <Link
+            href="/destinations"
             ref={primaryBtnRef}
             className="hero-btn hero-btn-primary"
             style={{
@@ -147,7 +149,12 @@ export default function ContentSection() {
               padding: '16px 36px',
               borderRadius: '0px',
               boxShadow: 'none',
-              transition: 'all 0.35s ease'
+              transition: 'all 0.35s ease',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = '#F5F2EC';
@@ -159,7 +166,7 @@ export default function ContentSection() {
             }}
           >
             Explore Destinations
-          </button>
+          </Link>
         </div>
       </motion.div>
     </div>

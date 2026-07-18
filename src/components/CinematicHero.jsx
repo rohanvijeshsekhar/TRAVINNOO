@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { db } from '../lib/db';
+import Link from 'next/link';
 
 // Use smaller Unsplash images on mobile — 2400px originals are ~400 KB each
 const IS_MOBILE = typeof window !== 'undefined'
@@ -349,8 +350,8 @@ export default function CinematicHero() {
 
         {/* Fixed Explore CTA Outline Button */}
         <div style={{ pointerEvents: 'auto' }}>
-          <a
-            href="#destinations"
+          <Link
+            href="/destinations"
             style={{
               fontFamily: 'var(--font-sans)',
               fontSize: '0.75rem',
@@ -379,7 +380,7 @@ export default function CinematicHero() {
             }}
           >
             Explore Destinations &rarr;
-          </a>
+          </Link>
         </div>
       </div>
     </div>

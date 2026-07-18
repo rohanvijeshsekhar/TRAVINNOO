@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 const IS_TOUCH = typeof window !== 'undefined'
   ? window.matchMedia('(hover: none) and (pointer: coarse)').matches
@@ -327,8 +328,8 @@ function ContactCTA() {
             boxSizing: 'border-box'
           }}
         >
-          <a
-            href="/demo/contact/"
+          <Link
+            href="/contact"
             className="contact-cta-primary"
             style={{
               padding: '14px 28px',
@@ -345,9 +346,9 @@ function ContactCTA() {
             }}
           >
             Contact Us
-          </a>
-          <a
-            href="#destinations"
+          </Link>
+          <Link
+            href="/destinations"
             className="contact-cta-secondary"
             style={{
               padding: '14px 28px',
@@ -364,7 +365,7 @@ function ContactCTA() {
             }}
           >
             Destinations
-          </a>
+          </Link>
         </motion.div>
       </div>
 
