@@ -13,7 +13,7 @@ const GLOBAL_LOCATIONS = [
   'India',
   'Kenya',
   'Malaysia',
-  'Kerala',
+  'Vietnam',
   'Singapore'
 ];
 
@@ -26,7 +26,7 @@ const DESTINATION_METADATA = {
   'India': { tagline: 'Heritage & Grandeur' },
   'Kenya': { tagline: 'Untamed Wilderness' },
   'Malaysia': { tagline: 'Rainforest Horizons' },
-  'Kerala': { tagline: 'Serene Backwaters' },
+  'Vietnam': { tagline: 'Emerald Estuaries' },
   'Singapore': { tagline: 'Garden City Innovation' }
 };
 
@@ -41,7 +41,7 @@ const renderLocationIcon = (locName) => {
     case 'India': return <Gem size={size} strokeWidth={strokeWidth} color={color} />;
     case 'Kenya': return <Wind size={size} strokeWidth={strokeWidth} color={color} />;
     case 'Malaysia': return <Activity size={size} strokeWidth={strokeWidth} color={color} />;
-    case 'Kerala': return <Anchor size={size} strokeWidth={strokeWidth} color={color} />;
+    case 'Vietnam': return <Anchor size={size} strokeWidth={strokeWidth} color={color} />;
     case 'Singapore': return <Globe size={size} strokeWidth={strokeWidth} color={color} />;
     default: return <Compass size={size} strokeWidth={strokeWidth} color={color} />;
   }

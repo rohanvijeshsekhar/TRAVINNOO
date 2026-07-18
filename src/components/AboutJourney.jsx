@@ -31,7 +31,7 @@ const journalPages = [
     coordinates: '9.9312° N, 76.2673° E',
     title: 'EXPANSION',
     action: 'Dubai Mainland & India Offices',
-    story: 'Transitioning to a mainland Dubai license allowed us to scale up. Simultaneously, opening our operational headquarters in Kerala, bridged our execution capabilities directly with the ground team.',
+    story: 'Transitioning to a mainland Dubai license allowed us to scale up. Simultaneously, opening our operational headquarters in Vietnam, bridged our execution capabilities directly with the ground team.',
     quote: '"Borders are lines on a map; our mission is to build the bridges between them."',
     photo: 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=800&q=80',
     stampColor: '#1a365d',
@@ -95,7 +95,7 @@ const journalPages = [
     coordinates: '13.7563° N, 100.5018° E',
     title: 'THAILAND OFFICE',
     action: 'Southeast Asian Hub',
-    story: 'Expanding into Southeast Asia, we established a regional office in Bangkok. Backed by a full local team, this hub enables us to design unique destination experiences across Thailand, Kerala, and Indonesia.',
+    story: 'Expanding into Southeast Asia, we established a regional office in Bangkok. Backed by a full local team, this hub enables us to design unique destination experiences across Thailand, Vietnam, and Indonesia.',
     quote: '"The East holds secret pathways; we have local eyes to reveal them."',
     photo: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=800&q=80',
     stampColor: '#c1121f',
@@ -167,7 +167,7 @@ export default function AboutJourney() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Intercept scroll down events when Page 7 (Kerala) is locked
+  // Intercept scroll down events when Page 7 (Vietnam) is locked
   useEffect(() => {
     let lastTouchY = 0;
     const handleTouchStart = (e) => {

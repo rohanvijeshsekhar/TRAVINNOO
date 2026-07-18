@@ -17,7 +17,7 @@ const getDestinationAltText = (name) => {
     'Dubai': 'Luxury travel in Dubai with Travinno Trusted DMC',
     'Kenya': 'Kenya safari destination managed by Travinno Trusted DMC',
     'Thailand': 'Premium Thailand holiday experiences by Travinno Trusted DMC',
-    'Kerala': 'Bespoke Kerala backwater tours and luxury houseboat cruises with Travinno Trusted DMC',
+    'Vietnam': 'Bespoke Vietnam tours and luxury cruises with Travinno Trusted DMC',
     'Singapore': 'Singapore destination management services by Travinno Trusted DMC',
     'Malaysia': 'Destination management services in Malaysia with Travinno Trusted DMC',
     'Bali': 'Luxury holidays in Bali by Travinno Trusted DMC'

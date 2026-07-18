@@ -549,7 +549,7 @@ function Footer() {
               { name: 'Bali', href: '/destinations#destination-bali' },
               { name: 'Singapore', href: '/destinations#destination-singapore' },
               { name: 'Malaysia', href: '/destinations#destination-malaysia' },
-              { name: 'Kerala', href: '/destinations#destination-kerala' }
+              { name: 'Kerala', href: '/destinations#destination-vietnam' }
             ].map((link, idx) => (
               <li key={idx}>
                 <Link
