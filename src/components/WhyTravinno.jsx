@@ -452,17 +452,17 @@ function ProvenExperienceVisual({ isHovered }) {
         <text x="0" y="16" fill="rgba(245, 242, 236, 0.4)" fontSize="8.5" fontFamily="var(--font-mono)" letterSpacing="1.2">YEARS OF EXPERTISE</text>
       </g>
       
-      {/* 150K+ Travellers */}
+      {/* 200K+ Travellers */}
       <g transform="translate(240, 95)">
-        <text x="12" y="0" fill={isHovered ? "#fff" : "#F5F2EC"} fontSize="30" fontWeight="500" fontFamily="var(--font-heading)" letterSpacing="0.5" className="transition-colors duration-300">150K+</text>
+        <text x="12" y="0" fill={isHovered ? "#fff" : "#F5F2EC"} fontSize="30" fontWeight="500" fontFamily="var(--font-heading)" letterSpacing="0.5" className="transition-colors duration-300">200K+</text>
         <text x="0" y="16" fill="rgba(245, 242, 236, 0.4)" fontSize="8.5" fontFamily="var(--font-mono)" letterSpacing="1.2">HAPPY TRAVELLERS</text>
       </g>
 
       
-      {/* 47 Partners */}
+      {/* 75+ Travel Professionals */}
       <g transform="translate(200, 165)">
-        <text x="0" y="0" fill={isHovered ? "#C1121F" : "rgba(245,242,236,0.85)"} fontSize="34" fontWeight="500" fontFamily="var(--font-heading)" letterSpacing="0.5" className="transition-colors duration-300" textAnchor="middle">47</text>
-        <text x="0" y="16" fill="rgba(245, 242, 236, 0.4)" fontSize="8.5" fontFamily="var(--font-mono)" letterSpacing="1.5" textAnchor="middle">PREFERRED PARTNERS</text>
+        <text x="0" y="0" fill={isHovered ? "#C1121F" : "rgba(245,242,236,0.85)"} fontSize="34" fontWeight="500" fontFamily="var(--font-heading)" letterSpacing="0.5" className="transition-colors duration-300" textAnchor="middle">75+</text>
+        <text x="0" y="16" fill="rgba(245, 242, 236, 0.4)" fontSize="8.5" fontFamily="var(--font-mono)" letterSpacing="1.5" textAnchor="middle">TRAVEL PROFESSIONALS</text>
       </g>
     </svg>
   );
@@ -477,7 +477,7 @@ const whyData = [
   },
   {
     title: 'Trusted Partnerships',
-    description: 'Strong relationships with hotels, attractions, transport providers and local suppliers worldwide.'
+    description: 'Building trusted partnerships across travel agents, hotels, excursion providers, transport companies, and all travel service partners.'
   },
   {
     title: '24/7 Support',
@@ -485,7 +485,7 @@ const whyData = [
   },
   {
     title: 'Global Network',
-    description: 'Supporting travel professionals, corporates and partners across multiple international markets.'
+    description: 'Connecting a trusted global network of travel agents through lasting partnerships.'
   },
   {
     title: 'Operational Excellence',
@@ -526,7 +526,7 @@ function WhyTravinno() {
   };
 
   return (
-    <section ref={sectionRef} className="why-section relative overflow-hidden">
+    <section id="why" ref={sectionRef} className="why-section relative overflow-hidden">
       {/* Inline styles for keyframe animations self-containment */}
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes spin {

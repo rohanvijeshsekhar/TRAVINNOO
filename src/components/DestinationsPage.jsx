@@ -167,8 +167,9 @@ export default function DestinationsPage() {
   // Synchronize state with URL hash — consults DEFAULT_DESTINATIONS as fallback
   useEffect(() => {
     const resolveById = (id) => {
+      const targetId = (id || '').toLowerCase();
       const allData = destinationsData.length > 0 ? destinationsData : DEFAULT_DESTINATIONS;
-      return allData.find(d => d.id === id) || DEFAULT_DESTINATIONS.find(d => d.id === id);
+      return allData.find(d => (d.id || '').toLowerCase() === targetId) || DEFAULT_DESTINATIONS.find(d => (d.id || '').toLowerCase() === targetId);
     };
 
     const handleHash = () => {
@@ -176,7 +177,14 @@ export default function DestinationsPage() {
       const match = hash.match(/^#destination-([^?#/]+)/);
       if (match) {
         const dest = resolveById(match[1]);
-        if (dest) { setActiveDestination(dest); return; }
+        if (dest) {
+          setActiveDestination(dest);
+          window.scrollTo(0, 0);
+          if (window.lenis) {
+            window.lenis.scrollTo(0, { immediate: true });
+          }
+          return;
+        }
       }
       // Only clear if hash is genuinely gone or points to the listing
       if (!hash || hash === '#destinations' || hash === '#') {
@@ -185,9 +193,15 @@ export default function DestinationsPage() {
     };
 
     window.addEventListener('hashchange', handleHash);
+    window.addEventListener('popstate', handleHash);
+    window.addEventListener('travinno-destination-change', handleHash);
     handleHash(); // check on initial mount
 
-    return () => window.removeEventListener('hashchange', handleHash);
+    return () => {
+      window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('popstate', handleHash);
+      window.removeEventListener('travinno-destination-change', handleHash);
+    };
   }, [destinationsData]);
 
   const regions = ['All', 'Middle East', 'Southeast Asia', 'East Africa'];
@@ -302,13 +316,13 @@ export default function DestinationsPage() {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          filter: contrast(90%) brightness(70%);
+          filter: contrast(95%) brightness(90%);
           transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
         }
 
         .destination-editorial-card:hover .destination-img-wrapper img {
           transform: scale(1.08);
-          filter: contrast(100%) brightness(85%);
+          filter: contrast(100%) brightness(100%);
         }
 
         .destination-content-block {
@@ -409,13 +423,13 @@ export default function DestinationsPage() {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          filter: contrast(95%) brightness(60%);
+          filter: contrast(100%) brightness(92%);
         }
 
         .destination-detail-hero-overlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(180deg, rgba(5, 5, 5, 0.35) 0%, rgba(5, 5, 5, 0.95) 100%);
+          background: linear-gradient(180deg, rgba(5, 5, 5, 0.25) 0%, rgba(5, 5, 5, 0.45) 50%, rgba(5, 5, 5, 0.8) 100%);
           display: flex;
           flex-direction: column;
           justify-content: space-between;

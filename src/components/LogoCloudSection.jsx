@@ -187,17 +187,10 @@ function LogoCloudSection() {
     return () => observer.disconnect();
   }, []);
 
-  // Pre-generate loop elements with dividers placed dynamically every 7 logos
-  const marqueeItems = [];
-  partners.forEach((partner, idx) => {
-    marqueeItems.push({ type: 'logo', data: partner });
-    // Subtly inject pin divider between every 7 logos (6-8 range)
-    if ((idx + 1) % 7 === 0) {
-      marqueeItems.push({ type: 'divider' });
-    }
-  });
+  // Pre-generate loop elements for the marquee track
+  const marqueeItems = partners.map((partner) => ({ type: 'logo', data: partner }));
 
-  // Duplicate the entire set of items (including dividers) to create a seamless infinite track
+  // Duplicate the entire set of items to create a seamless infinite track
   const loopTrack = [...marqueeItems, ...marqueeItems];
 
   return (
@@ -264,16 +257,6 @@ function LogoCloudSection() {
           </div>
         </div>
 
-        {/* Editorial Bottom Caption */}
-        <motion.div
-          className="partners-bottom-caption"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 0.4, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 1.0, ease: 'easeOut', delay: 0.3 }}
-        >
-          52 TRUSTED PARTNERSHIPS. ONE SHARED COMMITMENT TO EXCEPTIONAL JOURNEYS.
-        </motion.div>
 
         {/* Separator Line */}
         <motion.div

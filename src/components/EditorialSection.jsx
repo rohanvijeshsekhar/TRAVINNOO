@@ -463,13 +463,13 @@ function EditorialSection() {
             </motion.div>
             <motion.div className="editorial-stat-item" variants={itemVariants}>
               <span className="editorial-stat-number">
-                <CountUp to={150} suffix="K+" />
+                <CountUp to={200} suffix="K+" />
               </span>
               <span className="editorial-stat-label">Happy<br />Travellers</span>
             </motion.div>
             <motion.div className="editorial-stat-item" variants={itemVariants}>
               <span className="editorial-stat-number">
-                <CountUp to={70} suffix="+" />
+                <CountUp to={75} suffix="+" />
               </span>
               <span className="editorial-stat-label">Travel<br />Professionals</span>
             </motion.div>

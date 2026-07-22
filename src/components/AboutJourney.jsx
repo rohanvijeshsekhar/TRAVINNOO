@@ -104,19 +104,19 @@ const journalPages = [
     noteRight: 'Bridging UAE luxury benchmarks with warm Thai hospitality.'
   },
   {
-    year: '2024',
-    date: 'January 01, 2024',
+    year: '2026',
+    date: 'January 01, 2026',
     city: 'Global Network',
-    country: '13 Markets',
+    country: '7 Markets',
     coordinates: '24.4539° N, 54.3773° E',
     title: 'GLOBAL NETWORK',
-    action: '13 Markets & 70+ Staff',
-    story: 'Today, Travinno represents a global family of over 70 hospitality professionals managing portfolios across 13 major travel markets. We continue to challenge boundaries, making travel a form of high art.',
+    action: '7 Markets & 75+ Staff',
+    story: 'Today, Travinno represents a global family of over 75 travel field professionals managing portfolios across 7 major travel markets. We continue to challenge boundaries, making travel a form of high art.',
     quote: '"Our network spans the globe, but our devotion remains personal."',
     photo: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80',
     stampColor: '#c1121f',
-    stampText: 'TRAVINNO GLOBAL / 2024',
-    noteLeft: '70+ professionals, 13 markets, and one shared passion for detail.',
+    stampText: 'TRAVINNO GLOBAL / 2026',
+    noteLeft: '75+ professionals, 7 markets, and one shared passion for detail.',
     noteRight: 'The journal continues. The next destination is waiting.'
   }
 ];

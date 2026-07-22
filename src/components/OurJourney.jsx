@@ -11,7 +11,7 @@ const milestones = [
   { step: 'MILESTONE 04', year: '2021', title: '100K TRAVELLERS', action: 'Passenger Milestone', desc: 'Served over 100,000 travellers worldwide.' },
   { step: 'MILESTONE 05', year: '2022', title: 'FLEET EXPANSION', action: '10 Premium Vehicles', desc: 'Expanded fleet to 10 luxury custom vehicles.' },
   { step: 'MILESTONE 06', year: '2023', title: 'THAILAND OFFICE', action: 'SE Asia Hub', desc: 'Opened regional Thailand hub with local team.' },
-  { step: 'MILESTONE 07', year: '2024', title: 'GLOBAL NETWORK', action: '13 Markets & 70+ Staff', desc: 'Scaled to 13 global markets with 70+ professionals.' }
+  { step: 'MILESTONE 07', year: '2026', title: 'GLOBAL NETWORK', action: '7 Markets & 75+ Staff', desc: 'Scaled to 7 global markets with 75+ professionals.' }
 ];
 
 // Background Coordinates removed to prevent text overlaps
@@ -343,6 +343,7 @@ export default function OurJourney() {
 
   return (
     <section 
+      id="journey"
       ref={containerRef}
       className="journey-section"
       style={{

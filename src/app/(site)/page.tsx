@@ -227,22 +227,22 @@ export default async function HomePage() {
       </div>
 
       {/* Our Journey Section */}
-      <div className="home-journey-fade-wrap">
+      <div id="journey" className="home-journey-fade-wrap">
         <OurJourney />
       </div>
 
       {/* Partner Section */}
-      <div className="home-contact-fade-wrap">
+      <div id="partners" className="home-contact-fade-wrap">
         <LogoCloudSection />
       </div>
 
       {/* Why Travinno Grid Section */}
-      <div className="home-why-fade-wrap">
+      <div id="why" className="home-why-fade-wrap">
         <WhyTravinno />
       </div>
 
       {/* Contact CTA Section */}
-      <div className="home-contact-cta-fade-wrap">
+      <div id="contact" className="home-contact-cta-fade-wrap">
         <ContactCTA />
       </div>
     </>

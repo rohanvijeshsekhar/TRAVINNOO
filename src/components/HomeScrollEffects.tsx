@@ -59,14 +59,9 @@ export default function HomeScrollEffects() {
         const el = document.getElementById(pendingTarget);
         if (!el) return;
 
-        let absoluteTop = 0;
-        let node: HTMLElement | null = el;
-        while (node) {
-          absoluteTop += node.offsetTop || 0;
-          node = node.offsetParent as HTMLElement | null;
-        }
-        absoluteTop = Math.max(0, absoluteTop - 80);
-        lenis.scrollTo(absoluteTop, { duration: 1.5 });
+        const scrollY = window.pageYOffset || window.scrollY || document.documentElement.scrollTop || 0;
+        const absoluteTop = Math.max(0, el.getBoundingClientRect().top + scrollY - 80);
+        lenis.scrollTo(absoluteTop, { duration: 1.2 });
       };
 
       // @ts-ignore

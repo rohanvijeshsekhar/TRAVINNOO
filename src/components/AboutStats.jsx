@@ -36,7 +36,7 @@ export default function AboutStats() {
   const stats = [
     {
       id: "clients",
-      value: 150,
+      value: 200,
       suffix: "K+",
       label: "Happy clients",
       icon: (
@@ -50,7 +50,7 @@ export default function AboutStats() {
     },
     {
       id: "professionals",
-      value: 70,
+      value: 75,
       suffix: "+",
       label: "Travel professionals",
       icon: (

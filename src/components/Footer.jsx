@@ -250,7 +250,7 @@ function Footer() {
               { cx: 600, cy: 200, label: "THAILAND", labelY: 214, delay: "2s" },
               { cx: 710, cy: 160, label: "MALAYSIA", labelY: 146, delay: "3.5s" },
               { cx: 810, cy: 220, label: "SINGAPORE", labelY: 206, delay: "5s" },
-              { cx: 880, cy: 300, label: "KERALA", labelY: 314, delay: "6.8s" },
+              { cx: 880, cy: 300, label: "VIETNAM", labelY: 314, delay: "6.8s" },
               { cx: 680, cy: 470, label: "KENYA", labelY: 484, delay: "8.5s" }
             ].map((node, index) => (
               <g key={index}>
@@ -412,7 +412,7 @@ function Footer() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {/* SVG Logo */}
-            <svg viewBox="0 0 100 130" style={{ width: '28px', height: '36px', display: 'block' }}>
+            <svg viewBox="0 0 100 130" style={{ width: '34px', height: '44px', display: 'block' }}>
               <path
                 d={`${outerPinPath} ${innerTPath}`}
                 fillRule="evenodd"
@@ -423,10 +423,10 @@ function Footer() {
             <img
               src="/demo/images/logo_loading.png"
               alt="Travinno"
-              width="112"
-              height="20"
+              width="140"
+              height="25"
               style={{
-                height: '20px',
+                height: '25px',
                 width: 'auto',
                 objectFit: 'contain',
                 display: 'block',
@@ -444,7 +444,7 @@ function Footer() {
               maxWidth: '300px'
             }}
           >
-            Orchestrating extraordinary luxury journeys, bespoke itineraries, and elite destination management services worldwide.
+            Orchestrating extraordinary journeys, bespoke itineraries, and trusted destination management services at competitive rates worldwide.
           </p>
           {/* Social Handles */}
           <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
@@ -549,11 +549,23 @@ function Footer() {
               { name: 'Bali', href: '/destinations#destination-bali' },
               { name: 'Singapore', href: '/destinations#destination-singapore' },
               { name: 'Malaysia', href: '/destinations#destination-malaysia' },
-              { name: 'Kerala', href: '/destinations#destination-vietnam' }
+              { name: 'Vietnam', href: '/destinations#destination-vietnam' }
             ].map((link, idx) => (
               <li key={idx}>
                 <Link
                   href={link.href}
+                  onClick={(e) => {
+                    if (typeof window !== 'undefined') {
+                      const isDestPage = window.location.pathname.includes('/destinations');
+                      if (isDestPage) {
+                        e.preventDefault();
+                        const targetHash = `#destination-${link.name.toLowerCase()}`;
+                        window.location.hash = targetHash;
+                        window.dispatchEvent(new Event('hashchange'));
+                        window.dispatchEvent(new Event('travinno-destination-change'));
+                      }
+                    }
+                  }}
                   style={{
                     fontFamily: 'var(--font-sans)',
                     fontSize: '0.84rem',
@@ -604,6 +616,34 @@ function Footer() {
               <li key={idx}>
                 <Link
                   href={link.href}
+                  onClick={(e) => {
+                    const hashMatch = link.href && link.href.includes('#') ? link.href.split('#')[1] : null;
+                    if (hashMatch) {
+                      const isHomeSection = ['services', 'testimonials', 'contact', 'why', 'journey', 'destinations'].includes(hashMatch);
+                      if (isHomeSection) {
+                        const isOnHomePage = typeof window !== 'undefined' && (
+                          window.location.pathname === '/' || 
+                          window.location.pathname === '/demo' || 
+                          window.location.pathname === '/demo/'
+                        );
+                        if (isOnHomePage) {
+                          e.preventDefault();
+                          const el = document.getElementById(hashMatch);
+                          if (el) {
+                            const scrollY = window.pageYOffset || window.scrollY || document.documentElement.scrollTop || 0;
+                            const absoluteTop = Math.max(0, el.getBoundingClientRect().top + scrollY - 80);
+                            if (window.lenis) {
+                              window.lenis.scrollTo(absoluteTop, { duration: 1.2 });
+                            } else {
+                              window.scrollTo({ top: absoluteTop, behavior: 'smooth' });
+                            }
+                          }
+                        } else {
+                          sessionStorage.setItem('travinno_pending_scroll', hashMatch);
+                        }
+                      }
+                    }
+                  }}
                   style={{
                     fontFamily: 'var(--font-sans)',
                     fontSize: '0.84rem',

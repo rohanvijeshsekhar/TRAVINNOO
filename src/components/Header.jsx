@@ -123,17 +123,19 @@ export default function Header() {
           window.location.pathname === '/'
         );
         
-        if (isOnHomePage && window.lenis) {
+        if (isOnHomePage) {
           e.preventDefault();
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
               const el = document.getElementById(hashMatch);
               if (!el) return;
-              let absoluteTop = 0;
-              let node = el;
-              while (node) { absoluteTop += node.offsetTop || 0; node = node.offsetParent; }
-              absoluteTop = Math.max(0, absoluteTop - 80);
-              window.lenis.scrollTo(absoluteTop, { duration: 1.5 });
+              const scrollY = window.pageYOffset || window.scrollY || document.documentElement.scrollTop || 0;
+              const absoluteTop = Math.max(0, el.getBoundingClientRect().top + scrollY - 80);
+              if (window.lenis) {
+                window.lenis.scrollTo(absoluteTop, { duration: 1.2 });
+              } else {
+                window.scrollTo({ top: absoluteTop, behavior: 'smooth' });
+              }
             });
           });
         } else {
@@ -213,7 +215,7 @@ export default function Header() {
           <svg
             viewBox="0 0 100 130"
             style={{
-              height: '36px',
+              height: '46px',
               width: 'auto',
               display: 'block'
             }}
@@ -466,12 +468,13 @@ export default function Header() {
                         } else {
                           setIsMobileMenuOpen(false);
                           setHoveredMenu(null);
-                          const isOnDestinationsPage = typeof window !== 'undefined' && 
-                            (window.location.pathname.endsWith('/destinations') || 
-                             window.location.pathname.endsWith('/destinations/'));
+                          const isOnDestinationsPage = typeof window !== 'undefined' && window.location.pathname.includes('/destinations');
                           if (isOnDestinationsPage) {
                             e.preventDefault();
-                            window.location.hash = `destination-${item.name.toLowerCase()}`;
+                            const targetHash = `#destination-${item.name.toLowerCase()}`;
+                            window.location.hash = targetHash;
+                            window.dispatchEvent(new Event('hashchange'));
+                            window.dispatchEvent(new Event('travinno-destination-change'));
                           }
                         }
                       }}
@@ -723,7 +726,7 @@ export default function Header() {
                     <svg
                       viewBox="0 0 100 130"
                       style={{
-                        height: '32px',
+                        height: '40px',
                         width: 'auto',
                         display: 'block'
                       }}
@@ -1006,12 +1009,13 @@ export default function Header() {
                                 } else {
                                   setIsMobileMenuOpen(false);
                                   setHoveredMenu(null);
-                                  const isOnDestinationsPage = typeof window !== 'undefined' && 
-                                    (window.location.pathname.endsWith('/destinations') || 
-                                     window.location.pathname.endsWith('/destinations/'));
+                                  const isOnDestinationsPage = typeof window !== 'undefined' && window.location.pathname.includes('/destinations');
                                   if (isOnDestinationsPage) {
                                     e.preventDefault();
-                                    window.location.hash = `destination-${item.name.toLowerCase()}`;
+                                    const targetHash = `#destination-${item.name.toLowerCase()}`;
+                                    window.location.hash = targetHash;
+                                    window.dispatchEvent(new Event('hashchange'));
+                                    window.dispatchEvent(new Event('travinno-destination-change'));
                                   }
                                 }
                               }}
