@@ -1431,7 +1431,7 @@ export default function AdminPanel() {
             }}>
               {[
                 { label: 'Total Blogs', count: blogs.length, color: '#C1121F' },
-                { label: 'Total Destinations', count: destinations.length, color: '#F5F2EC' },
+                { label: 'Total Destinations', count: destinations.length, color: '#D97706' },
                 { label: 'Active Careers', count: careers.filter(c => c.status === 'Open').length, color: '#2EC4B6' },
                 { label: 'Team Members', count: team.length, color: '#FF9F1C' },
                 { label: 'Client Reviews', count: testimonials.length, color: '#E71D36' },
@@ -1480,15 +1480,15 @@ export default function AdminPanel() {
                     <button onClick={() => setActiveTab('inquiries')} style={panelLinkStyle}>View All</button>
                   </div>
                   {inquiries.filter(i => !i.read).length === 0 ? (
-                    <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.82rem', margin: 0, padding: '24px 0', textAlign: 'center' }}>No unread inquiries.</p>
+                    <p style={{ color: currentTheme.subText, fontSize: '0.82rem', margin: 0, padding: '24px 0', textAlign: 'center' }}>No unread inquiries.</p>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       {inquiries.filter(i => !i.read).slice(0, 3).map((inq) => (
                         <div key={inq.id} style={listItemStyle}>
                           <div>
-                            <span style={{ fontWeight: 600, fontSize: '0.85rem' }}>{inq.name}</span>
-                            <span style={{ fontSize: '0.75rem', opacity: 0.5, marginLeft: '8px' }}>{inq.agencyName}</span>
-                            <p style={{ margin: '4px 0 0 0', fontSize: '0.78rem', color: 'rgba(255,255,255,0.6)', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                            <span style={{ fontWeight: 600, fontSize: '0.85rem', color: currentTheme.text }}>{inq.name}</span>
+                            <span style={{ fontSize: '0.75rem', color: currentTheme.subText, marginLeft: '8px' }}>{inq.agencyName}</span>
+                            <p style={{ margin: '4px 0 0 0', fontSize: '0.78rem', color: currentTheme.subText, display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                               {inq.message}
                             </p>
                           </div>
@@ -1499,7 +1499,7 @@ export default function AdminPanel() {
                               backgroundColor: 'rgba(193, 18, 31, 0.1)',
                               border: '1px solid rgba(193, 18, 31, 0.3)',
                               borderRadius: '4px',
-                              color: '#FFFFFF',
+                              color: currentTheme.text,
                               fontSize: '0.7rem',
                               cursor: 'pointer'
                             }}
@@ -1517,9 +1517,9 @@ export default function AdminPanel() {
                   <h4 style={panelTitleStyle}>Audit Trail & Activities</h4>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '250px', overflowY: 'auto', marginTop: '16px' }}>
                     {activities.map((act) => (
-                      <div key={act.id} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '6px', fontSize: '0.78rem' }}>
-                        <span style={{ color: 'rgba(255,255,255,0.75)' }}>{act.text}</span>
-                        <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.72rem' }}>{act.date}</span>
+                      <div key={act.id} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: `1px solid ${currentTheme.border}`, paddingBottom: '6px', fontSize: '0.78rem' }}>
+                        <span style={{ color: currentTheme.text }}>{act.text}</span>
+                        <span style={{ color: currentTheme.subText, fontSize: '0.72rem' }}>{act.date}</span>
                       </div>
                     ))}
                   </div>
@@ -1535,16 +1535,16 @@ export default function AdminPanel() {
                     <button onClick={() => setActiveTab('applications')} style={panelLinkStyle}>View All</button>
                   </div>
                   {applications.length === 0 ? (
-                    <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.82rem', margin: 0, padding: '24px 0', textAlign: 'center' }}>No applications.</p>
+                    <p style={{ color: currentTheme.subText, fontSize: '0.82rem', margin: 0, padding: '24px 0', textAlign: 'center' }}>No applications.</p>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       {applications.slice(0, 3).map((app) => (
-                        <div key={app.id} style={{ paddingBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.04)', fontSize: '0.78rem' }}>
+                        <div key={app.id} style={{ paddingBottom: '10px', borderBottom: `1px solid ${currentTheme.border}`, fontSize: '0.78rem' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <span style={{ fontWeight: 600 }}>{app.fullName}</span>
+                            <span style={{ fontWeight: 600, color: currentTheme.text }}>{app.fullName}</span>
                             <span style={{ color: '#C1121F', fontSize: '0.72rem' }}>{app.jobTitle}</span>
                           </div>
-                          <span style={{ display: 'block', opacity: 0.4, fontSize: '0.72rem', marginTop: '2px' }}>{app.date}</span>
+                          <span style={{ display: 'block', color: currentTheme.subText, fontSize: '0.72rem', marginTop: '2px' }}>{app.date}</span>
                         </div>
                       ))}
                     </div>
@@ -1561,8 +1561,8 @@ export default function AdminPanel() {
                     {blogs.slice(0, 3).map((b) => (
                       <div key={b.id} style={listItemStyle}>
                         <div>
-                          <span style={{ fontWeight: 500, fontSize: '0.8rem' }}>{b.title}</span>
-                          <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)', display: 'block', marginTop: '2px' }}>{b.category} • {b.date}</span>
+                          <span style={{ fontWeight: 500, fontSize: '0.8rem', color: currentTheme.text }}>{b.title}</span>
+                          <span style={{ fontSize: '0.72rem', color: currentTheme.subText, display: 'block', marginTop: '2px' }}>{b.category} • {b.date}</span>
                         </div>
                       </div>
                     ))}
@@ -1582,8 +1582,8 @@ export default function AdminPanel() {
               <div
                 key={item.id}
                 style={{
-                  backgroundColor: 'rgba(255,255,255,0.02)',
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  backgroundColor: currentTheme.surface,
+                  border: `1px solid ${currentTheme.border}`,
                   borderRadius: '16px',
                   overflow: 'hidden',
                   display: 'flex',
@@ -1592,45 +1592,45 @@ export default function AdminPanel() {
                 }}
               >
                 {/* Desktop & Mobile Previews Side-by-Side */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '150px', borderBottom: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '150px', borderBottom: `1px solid ${currentTheme.border}`, overflow: 'hidden' }}>
                   <div style={{ position: 'relative', overflow: 'hidden', height: '100%' }}>
                     {item.desktopImage ? (
                       <img src={item.desktopImage.startsWith('data:') || item.desktopImage.startsWith('http') ? item.desktopImage : `/demo/${item.desktopImage.startsWith('/') ? item.desktopImage.slice(1) : item.desktopImage}`} alt="Desktop" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
-                      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255,255,255,0.03)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.65rem' }}>No Desktop</div>
+                      <div style={{ width: '100%', height: '100%', backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.65rem', color: currentTheme.subText }}>No Desktop</div>
                     )}
-                    <span style={{ position: 'absolute', bottom: '6px', left: '6px', backgroundColor: 'rgba(0,0,0,0.7)', padding: '2px 6px', fontSize: '0.55rem', borderRadius: '3px', textTransform: 'uppercase' }}>Desktop</span>
+                    <span style={{ position: 'absolute', bottom: '6px', left: '6px', backgroundColor: 'rgba(0,0,0,0.7)', color: '#FFFFFF', padding: '2px 6px', fontSize: '0.55rem', borderRadius: '3px', textTransform: 'uppercase' }}>Desktop</span>
                   </div>
-                  <div style={{ position: 'relative', overflow: 'hidden', height: '100%', borderLeft: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div style={{ position: 'relative', overflow: 'hidden', height: '100%', borderLeft: `1px solid ${currentTheme.border}` }}>
                     {item.mobileImage ? (
                       <img src={item.mobileImage.startsWith('data:') || item.mobileImage.startsWith('http') ? item.mobileImage : `/demo/${item.mobileImage.startsWith('/') ? item.mobileImage.slice(1) : item.mobileImage}`} alt="Mobile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
-                      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255,255,255,0.03)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.65rem' }}>No Mobile</div>
+                      <div style={{ width: '100%', height: '100%', backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.65rem', color: currentTheme.subText }}>No Mobile</div>
                     )}
-                    <span style={{ position: 'absolute', bottom: '6px', left: '6px', backgroundColor: 'rgba(0,0,0,0.7)', padding: '2px 6px', fontSize: '0.55rem', borderRadius: '3px', textTransform: 'uppercase' }}>Mobile</span>
+                    <span style={{ position: 'absolute', bottom: '6px', left: '6px', backgroundColor: 'rgba(0,0,0,0.7)', color: '#FFFFFF', padding: '2px 6px', fontSize: '0.55rem', borderRadius: '3px', textTransform: 'uppercase' }}>Mobile</span>
                   </div>
                 </div>
 
                 {/* Details */}
                 <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
                   <div>
-                    <h3 style={{ fontSize: '1.1rem', color: '#FFFFFF', margin: '0 0 4px 0' }}>{item.name}</h3>
-                    <div style={{ display: 'flex', gap: '8px', fontSize: '0.72rem', color: 'rgba(255,255,255,0.45)' }}>
+                    <h3 style={{ fontSize: '1.1rem', color: currentTheme.text, margin: '0 0 4px 0' }}>{item.name}</h3>
+                    <div style={{ display: 'flex', gap: '8px', fontSize: '0.72rem', color: currentTheme.subText }}>
                       <span>Duration: {item.duration}s</span>
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px', marginTop: '12px' }}>
+                  <div style={{ display: 'flex', gap: '8px', borderTop: `1px solid ${currentTheme.border}`, paddingTop: '12px', marginTop: '12px' }}>
                     <button
                       onClick={() => openForm(item)}
                       style={{
                         flex: 1,
                         padding: '8px',
-                        backgroundColor: 'rgba(255,255,255,0.05)',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
+                        border: `1px solid ${currentTheme.border}`,
                         borderRadius: '6px',
-                        color: '#FFFFFF',
+                        color: currentTheme.text,
                         fontSize: '0.75rem',
                         fontWeight: 600,
                         cursor: 'pointer',
@@ -1673,8 +1673,8 @@ export default function AdminPanel() {
               <div
                 key={item.id}
                 style={{
-                  backgroundColor: 'rgba(255,255,255,0.02)',
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  backgroundColor: currentTheme.surface,
+                  border: `1px solid ${currentTheme.border}`,
                   borderRadius: '16px',
                   overflow: 'hidden',
                   display: 'flex',
@@ -1687,7 +1687,7 @@ export default function AdminPanel() {
                   {item.image ? (
                     <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <div style={{ width: '100%', height: '100%', backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <Globe size={28} style={{ opacity: 0.3 }} />
                     </div>
                   )}
@@ -1710,14 +1710,14 @@ export default function AdminPanel() {
                 {/* Details */}
                 <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
                   <div>
-                    <h3 style={{ fontSize: '1.25rem', color: '#FFFFFF', margin: '0 0 4px 0' }}>{item.name}</h3>
-                    <p style={{ margin: '0 0 12px 0', fontSize: '0.78rem', color: 'rgba(255,255,255,0.5)', fontStyle: 'italic' }}>
+                    <h3 style={{ fontSize: '1.25rem', color: currentTheme.text, margin: '0 0 4px 0' }}>{item.name}</h3>
+                    <p style={{ margin: '0 0 12px 0', fontSize: '0.78rem', color: currentTheme.subText, fontStyle: 'italic' }}>
                       {item.tagline}
                     </p>
                     <p style={{
                       margin: 0,
                       fontSize: '0.78rem',
-                      color: 'rgba(255,255,255,0.65)',
+                      color: currentTheme.subText,
                       lineHeight: '1.4',
                       display: '-webkit-box',
                       WebkitLineClamp: 3,
@@ -1729,16 +1729,16 @@ export default function AdminPanel() {
                   </div>
 
                   {/* Actions */}
-                  <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px', marginTop: '12px' }}>
+                  <div style={{ display: 'flex', gap: '8px', borderTop: `1px solid ${currentTheme.border}`, paddingTop: '12px', marginTop: '12px' }}>
                     <button
                       onClick={() => openForm(item)}
                       style={{
                         flex: 1,
                         padding: '8px',
-                        backgroundColor: 'rgba(255,255,255,0.05)',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
+                        border: `1px solid ${currentTheme.border}`,
                         borderRadius: '6px',
-                        color: '#FFFFFF',
+                        color: currentTheme.text,
                         fontSize: '0.75rem',
                         fontWeight: 600,
                         cursor: 'pointer',
