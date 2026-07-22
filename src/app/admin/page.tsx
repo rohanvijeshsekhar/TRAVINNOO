@@ -26,7 +26,7 @@ export default async function AdminPageRoute() {
   return (
     <>
       <DBHydrator data={collections} />
-      <div style={{ minHeight: '100vh', backgroundColor: '#050505', color: '#F5F2EC' }}>
+      <div style={{ minHeight: '100vh' }}>
         <AdminPanel />
       </div>
     </>

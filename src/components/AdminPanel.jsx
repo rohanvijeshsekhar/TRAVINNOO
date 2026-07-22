@@ -452,6 +452,158 @@ export default function AdminPanel() {
   const [theme, setTheme] = useState('dark');
   const currentTheme = theme === 'dark' ? darkTheme : lightTheme;
   const [passcode, setPasscode] = useState('');
+
+  // Dynamic Theme-Aware Helper Styles
+  const cardBg = currentTheme.surface;
+  const cardBorder = currentTheme.border;
+  const textPrimary = currentTheme.text;
+  const textSub = currentTheme.subText;
+
+  const panelCardStyle = {
+    backgroundColor: currentTheme.surface,
+    border: `1px solid ${currentTheme.border}`,
+    borderRadius: '16px',
+    padding: '24px',
+    boxSizing: 'border-box'
+  };
+
+  const panelHeaderStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '16px'
+  };
+
+  const panelTitleStyle = {
+    margin: 0,
+    fontSize: '1rem',
+    fontWeight: 500,
+    color: currentTheme.text
+  };
+
+  const panelLinkStyle = {
+    background: 'none',
+    border: 'none',
+    color: '#C1121F',
+    fontSize: '0.78rem',
+    fontWeight: 600,
+    cursor: 'pointer',
+    padding: 0
+  };
+
+  const listItemStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '12px 14px',
+    backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)',
+    border: `1px solid ${currentTheme.border}`,
+    borderRadius: '10px'
+  };
+
+  const tableWrapperStyle = {
+    backgroundColor: currentTheme.surface,
+    border: `1px solid ${currentTheme.border}`,
+    borderRadius: '16px',
+    overflow: 'hidden'
+  };
+
+  const tableStyle = {
+    width: '100%',
+    borderCollapse: 'collapse',
+    textAlign: 'left'
+  };
+
+  const thStyle = {
+    padding: '16px 20px',
+    borderBottom: `1px solid ${currentTheme.border}`,
+    fontSize: '0.78rem',
+    fontWeight: 600,
+    textTransform: 'uppercase',
+    color: currentTheme.subText,
+    letterSpacing: '0.5px'
+  };
+
+  const trStyle = {
+    borderBottom: `1px solid ${currentTheme.border}`,
+    transition: 'background-color 0.2s'
+  };
+
+  const tdStyle = {
+    padding: '16px 20px',
+    fontSize: '0.82rem',
+    color: currentTheme.text,
+    verticalAlign: 'middle'
+  };
+
+  const labelStyle = {
+    fontSize: '0.72rem',
+    fontWeight: 600,
+    color: currentTheme.subText,
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px'
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '10px 14px',
+    backgroundColor: currentTheme.inputBg,
+    border: `1px solid ${currentTheme.inputBorder}`,
+    borderRadius: '8px',
+    color: currentTheme.text,
+    fontSize: '0.85rem',
+    outline: 'none',
+    boxSizing: 'border-box'
+  };
+
+  const selectStyle = {
+    width: '100%',
+    padding: '10px 14px',
+    backgroundColor: currentTheme.inputBg,
+    border: `1px solid ${currentTheme.inputBorder}`,
+    borderRadius: '8px',
+    color: currentTheme.text,
+    fontSize: '0.85rem',
+    outline: 'none',
+    boxSizing: 'border-box'
+  };
+
+  const textareaStyle = {
+    width: '100%',
+    height: '100px',
+    padding: '10px 14px',
+    backgroundColor: currentTheme.inputBg,
+    border: `1px solid ${currentTheme.inputBorder}`,
+    borderRadius: '8px',
+    color: currentTheme.text,
+    fontSize: '0.85rem',
+    outline: 'none',
+    boxSizing: 'border-box',
+    resize: 'vertical',
+    lineHeight: '1.4'
+  };
+
+  const btnCancelStyle = {
+    padding: '10px 20px',
+    backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+    border: `1px solid ${currentTheme.border}`,
+    borderRadius: '8px',
+    color: currentTheme.text,
+    fontSize: '0.8rem',
+    fontWeight: 600,
+    cursor: 'pointer'
+  };
+
+  const btnSubmitStyle = {
+    padding: '10px 20px',
+    backgroundColor: '#C1121F',
+    border: 'none',
+    borderRadius: '8px',
+    color: '#FFFFFF',
+    fontSize: '0.8rem',
+    fontWeight: 600,
+    cursor: 'pointer'
+  };
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -1009,7 +1161,7 @@ export default function AdminPanel() {
               fontSize: '1.4rem',
               margin: '0 0 4px 0',
               fontWeight: 450,
-              color: '#FFFFFF'
+              color: currentTheme.text
             }}>
               Travinno
             </h3>
@@ -1041,10 +1193,10 @@ export default function AdminPanel() {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   padding: '12px 16px',
-                  backgroundColor: activeTab === tab.id ? 'rgba(193, 18, 31, 0.1)' : 'transparent',
+                  backgroundColor: activeTab === tab.id ? (theme === 'dark' ? 'rgba(193, 18, 31, 0.15)' : 'rgba(193, 18, 31, 0.08)') : 'transparent',
                   border: 'none',
                   borderRadius: '10px',
-                  color: activeTab === tab.id ? '#FFFFFF' : 'rgba(255,255,255,0.65)',
+                  color: activeTab === tab.id ? (theme === 'dark' ? '#FFFFFF' : '#C1121F') : currentTheme.subText,
                   fontFamily: 'var(--font-sans)',
                   fontSize: '0.84rem',
                   fontWeight: activeTab === tab.id ? 600 : 500,
@@ -1290,8 +1442,8 @@ export default function AdminPanel() {
                 <div
                   key={idx}
                   style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                    border: '1px solid rgba(255, 255, 255, 0.06)',
+                    backgroundColor: currentTheme.surface,
+                    border: `1px solid ${currentTheme.border}`,
                     borderRadius: '16px',
                     padding: '24px',
                     boxSizing: 'border-box',
@@ -1307,10 +1459,10 @@ export default function AdminPanel() {
                     height: '100%',
                     backgroundColor: stat.color
                   }} />
-                  <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontWeight: 600, letterSpacing: '0.5px' }}>
+                  <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: currentTheme.subText, fontWeight: 600, letterSpacing: '0.5px' }}>
                     {stat.label}
                   </span>
-                  <h3 style={{ fontSize: '2.2rem', margin: '8px 0 0 0', fontWeight: 650, color: '#FFFFFF', lineHeight: '1' }}>
+                  <h3 style={{ fontSize: '2.2rem', margin: '8px 0 0 0', fontWeight: 650, color: currentTheme.text, lineHeight: '1' }}>
                     {stat.count}
                   </h3>
                 </div>
@@ -2399,8 +2551,8 @@ export default function AdminPanel() {
               maxWidth: '650px',
               maxHeight: '90vh',
               overflowY: 'auto',
-              backgroundColor: '#0C0C0E',
-              border: '1px solid rgba(255,255,255,0.08)',
+              backgroundColor: currentTheme.surface,
+              border: `1px solid ${currentTheme.border}`,
               borderRadius: '20px',
               padding: '32px',
               boxSizing: 'border-box',
@@ -2408,8 +2560,8 @@ export default function AdminPanel() {
               flexDirection: 'column',
               gap: '24px'
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '16px' }}>
-                <h3 style={{ fontSize: '1.25rem', color: '#FFFFFF', margin: 0 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px solid ${currentTheme.border}`, paddingBottom: '16px' }}>
+                <h3 style={{ fontSize: '1.25rem', color: currentTheme.text, margin: 0 }}>
                   {editingItem ? 'Edit Existing' : 'Add New'} {activeTab.slice(0, -1)}
                 </h3>
                 <button
